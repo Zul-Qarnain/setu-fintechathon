@@ -10,7 +10,8 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "test:e2e": "playwright test",
-    "screenshots": "playwright test --project=screenshots"
+    "screenshots": "NEXT_PUBLIC_MOCK=true next build && playwright test --project=screenshots",
+    "e2e": "NEXT_PUBLIC_MOCK=true next build && playwright test --project=smoke"
   },
   "dependencies": {
     "@fontsource/noto-sans-sc": "^5.3.1",

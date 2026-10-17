@@ -1,1 +1,37 @@
-{}
+{
+  "title": "Audit log",
+  "subtitle": "Every state change is appended to a SHA-256 hash chain. Verify it to prove nothing was altered.",
+  "verify": "Verify chain",
+  "verifying": "Verifying…",
+  "export": "Export evidence (JSON)",
+  "chainOk": "Chain verified ✓",
+  "checked": "{n} entries checked",
+  "chainBroken": "Chain broken at seq {seq}",
+  "reason": "Reason",
+  "brokenHint": "A stored row no longer matches its hash. Everything from this entry onward cannot be trusted.",
+  "tamperedRow": "tampered",
+  "cols": {
+    "seq": "Seq",
+    "time": "Time",
+    "actor": "Actor",
+    "event": "Event",
+    "hash": "Hash",
+    "details": "Details"
+  },
+  "empty": "No audit entries yet.",
+  "details": "Details",
+  "hide": "Hide",
+  "payloadHash": "Payload hash",
+  "prevHash": "Previous hash",
+  "hash": "Hash",
+  "payload": "Payload",
+  "hiddenBreak": "The break is at seq {seq}, which is outside the entries visible to your account.",
+  "demo": {
+    "title": "Demo tools (synthetic data only)",
+    "body": "Edit a stored audit row out-of-band, then press “Verify chain” to see detection. Only available when the backend runs in demo mode.",
+    "seq": "Entry #",
+    "tamper": "Tamper with entry",
+    "done": "Entry #{seq} was modified. Now press “Verify chain”.",
+    "unavailable": "Tamper helper is not available on this server."
+  }
+}

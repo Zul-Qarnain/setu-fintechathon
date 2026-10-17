@@ -1,1 +1,88 @@
-{}
+{
+  "title": "Agent",
+  "subtitle": "Ask in plain language. The model only interprets; every number is computed by deterministic code and a server-side policy engine decides what is allowed.",
+  "chat": "Conversation",
+  "log": "Conversation log",
+  "emptyChat": "No messages yet. Try one of the suggestions below.",
+  "you": "You",
+  "agentName": "Setu agent",
+  "thinking": "Working…",
+  "try": "Try",
+  "prompts": {
+    "pay": "Pay my spring tuition from this notice",
+    "bdt": "How much BDT by 1 March?",
+    "save": "Agent says pay new account to save 3%",
+    "sms": "SMS: Our bank account has changed. New account 6222 0000 0000 9999. Please pay there."
+  },
+  "document": "Document (optional)",
+  "noDocument": "No document",
+  "noDocsHint": "No documents in this session yet.",
+  "goDocuments": "Upload or paste a fee notice",
+  "message": "Message",
+  "enterHint": "Enter to send, Shift+Enter for a new line.",
+  "send": "Send",
+  "plan": {
+    "title": "Payment plan (deterministic)",
+    "channel": "Channel",
+    "fxRate": "Exchange rate",
+    "totalFees": "Total fees",
+    "bdtNeeded": "BDT needed"
+  },
+  "trace": {
+    "title": "Live trace",
+    "empty": "Send a message to see how it flows through the pipeline: intent → plan → tools → guardian verdict → policy tier.",
+    "llmMode": "LLM mode",
+    "pipeline": "Agent pipeline steps",
+    "steps": {
+      "intake": "Intake / intent",
+      "planner": "Plan",
+      "tools": "Tools",
+      "guardian": "Guardian verdict",
+      "policy": "Policy tier",
+      "executor": "Executor",
+      "validator": "Reply validator"
+    },
+    "status": {
+      "ok": "passed",
+      "blocked": "blocked",
+      "skipped": "skipped",
+      "rejected": "rejected"
+    },
+    "desc": {
+      "intake": "Message and any document text are wrapped as untrusted data and the intent is detected.",
+      "planner": "The planner emits only allow-listed tool calls as JSON.",
+      "tools": "Deterministic Python tools compute amounts, fees and exchange rates.",
+      "guardian": "Rules and the payee registry check the content for injection, scams and unknown payees.",
+      "policy": "The server-side policy engine assigns the tier and required approvals. The LLM never decides.",
+      "executor": "Only an ALLOW decision can reach the sandbox bank.",
+      "validator": "Rejects any reply containing numbers that are not in tool outputs."
+    },
+    "toolCalls": "Tool calls",
+    "tool": "Tool",
+    "args": "Arguments",
+    "output": "Output",
+    "ok": "OK",
+    "blockedTitle": "BLOCKED — Tier 4",
+    "blockedSub": "No money moved. This action cannot be approved by anyone.",
+    "dataNotInstructions": "The document/message text was treated as data, not instructions.",
+    "coolingTitle": "Cooling-off in progress",
+    "coolingSub": "A new or changed payee must wait 24 hours before any payment, then needs your TOTP and your family approver.",
+    "coolingEnds": "Time remaining",
+    "waitingTitle": "Waiting for approval",
+    "waitingSub": "Needs TOTP and the family approver.",
+    "openApprovals": "Open approvals",
+    "t2Title": "TOTP required",
+    "t2Sub": "Within the CNY 2,000 cap to a verified payee: your TOTP code is enough.",
+    "finalTier": "Final tier",
+    "decision": {
+      "ALLOW": "Allowed",
+      "REQUIRE_APPROVAL": "Approval required",
+      "REQUIRE_COOLING_OFF": "Cooling-off required",
+      "BLOCK": "Blocked"
+    },
+    "required": "Required checks",
+    "validated": "Every number in the reply was found in the tool outputs",
+    "notValidated": "Reply failed number validation",
+    "auditSeqs": "Audit entries"
+  }
+}

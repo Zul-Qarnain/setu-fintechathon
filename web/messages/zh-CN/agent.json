@@ -1,1 +1,88 @@
-{}
+{
+  "title": "智能助手",
+  "subtitle": "用自然语言提问。模型仅负责理解意图；所有数字均由确定性代码计算，由服务器端策略引擎决定哪些操作被允许。",
+  "chat": "对话",
+  "log": "对话记录",
+  "emptyChat": "还没有消息。请试试下面的建议。",
+  "you": "您",
+  "agentName": "Setu 助手",
+  "thinking": "处理中…",
+  "try": "试试",
+  "prompts": {
+    "pay": "根据这份通知帮我支付春季学期学费",
+    "bdt": "3 月 1 日前需要多少 BDT？",
+    "save": "助手说向新账户付款可以省 3%",
+    "sms": "短信：我们的银行账号已变更。新账号 6222 0000 0000 9999，请汇到该账号。"
+  },
+  "document": "文档（可选）",
+  "noDocument": "不使用文档",
+  "noDocsHint": "本次会话中还没有文档。",
+  "goDocuments": "上传或粘贴缴费通知",
+  "message": "消息",
+  "enterHint": "按 Enter 发送，Shift+Enter 换行。",
+  "send": "发送",
+  "plan": {
+    "title": "汇款方案（确定性计算）",
+    "channel": "渠道",
+    "fxRate": "汇率",
+    "totalFees": "手续费合计",
+    "bdtNeeded": "所需 BDT"
+  },
+  "trace": {
+    "title": "实时轨迹",
+    "empty": "发送一条消息，查看它如何经过流程：意图 → 计划 → 工具 → 守卫裁决 → 策略等级。",
+    "llmMode": "LLM 模式",
+    "pipeline": "助手流程步骤",
+    "steps": {
+      "intake": "接收 / 意图",
+      "planner": "计划",
+      "tools": "工具",
+      "guardian": "守卫裁决",
+      "policy": "策略等级",
+      "executor": "执行器",
+      "validator": "回复校验"
+    },
+    "status": {
+      "ok": "通过",
+      "blocked": "已阻止",
+      "skipped": "已跳过",
+      "rejected": "已拒绝"
+    },
+    "desc": {
+      "intake": "消息和文档文本会被包裹为不可信数据，并识别意图。",
+      "planner": "计划器只输出白名单内的工具调用（JSON）。",
+      "tools": "确定性的 Python 工具计算金额、手续费和汇率。",
+      "guardian": "规则与收款人名单检查内容中的注入、诈骗和未知收款人。",
+      "policy": "服务器端策略引擎决定等级和所需审批，LLM 从不做决定。",
+      "executor": "只有“允许”的决定才能到达沙盒银行。",
+      "validator": "拒绝包含工具输出中不存在的数字的回复。"
+    },
+    "toolCalls": "工具调用",
+    "tool": "工具",
+    "args": "参数",
+    "output": "输出",
+    "ok": "成功",
+    "blockedTitle": "已阻止——等级 T4",
+    "blockedSub": "没有资金被转出。任何人都无法批准此操作。",
+    "dataNotInstructions": "文档/消息中的文字被当作数据，而不是指令。",
+    "coolingTitle": "冷静期进行中",
+    "coolingSub": "新增或变更的收款人需等待 24 小时才能付款，之后还需要您的动态验证码和家人审批人审批。",
+    "coolingEnds": "剩余时间",
+    "waitingTitle": "等待审批",
+    "waitingSub": "需要动态验证码和家人审批人。",
+    "openApprovals": "前往审批",
+    "t2Title": "需要动态验证码",
+    "t2Sub": "向已验证收款人汇款且不超过 ¥2,000：只需您的动态验证码。",
+    "finalTier": "最终等级",
+    "decision": {
+      "ALLOW": "允许",
+      "REQUIRE_APPROVAL": "需要审批",
+      "REQUIRE_COOLING_OFF": "需要冷静期",
+      "BLOCK": "已阻止"
+    },
+    "required": "所需验证",
+    "validated": "回复中的每个数字都能在工具输出中找到",
+    "notValidated": "回复未通过数字校验",
+    "auditSeqs": "审计记录"
+  }
+}
