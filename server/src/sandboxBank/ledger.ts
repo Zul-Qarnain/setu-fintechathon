@@ -4,7 +4,7 @@
  * cents == .99 -> RISK_HOLD (held, funds not moved); balance < amount -> INSUFFICIENT_FUNDS.
  */
 import { createHash } from 'node:crypto';
-import { Decimal } from 'decimal.js';
+import { Decimal, HALF_EVEN } from '../domain/money.js';
 import type { Db } from '../db/connection.js';
 import { nowTs } from '../domain/audit.js';
 import { normalizeAccount } from '../domain/tokenize.js';
@@ -57,19 +57,25 @@ export function transferResultDict(r: TransferResult) {
   };
 }
 
+/** `amount` must already be quantized (HALF_EVEN, 2dp) so the hash matches Python's f"{amount:.2f}". */
 const reqHash = (from: string, to: string, amount: Decimal, reference: string | null | undefined): string =>
   createHash('sha256').update(`${from}|${to}|${amount.toFixed(2)}|${reference ?? ''}`, 'utf8').digest('hex');
 
-export function openAccount(db: Db, accountNumber: string, holder: string, balance: Decimal.Value = '0', ownerId: string | null = null): AccountRow {
+const toDecimal = (v: string | Decimal): Decimal => {
+  if (typeof v === 'number') throw new TypeError('money must be a decimal string or Decimal, never a JS number');
+  return new Decimal(v);
+};
+
+export function openAccount(db: Db, accountNumber: string, holder: string, balance: string | Decimal = '0', ownerId: string | null = null): AccountRow {
   const n = normalizeAccount(accountNumber);
   const existing = getAccount(db, n);
   if (existing) return existing;
   const row: AccountRow = {
-    id: newId('sbx'),
+    id: newId('sba'),
     owner_id: ownerId,
     account_number: n,
     holder,
-    balance_cny: new Decimal(balance).toFixed(2),
+    balance_cny: toDecimal(balance).toFixed(2),
     closed: 0,
   };
   db.prepare('INSERT INTO sbx_accounts (id, owner_id, account_number, holder, balance_cny, closed) VALUES (@id,@owner_id,@account_number,@holder,@balance_cny,@closed)').run(row);
@@ -90,14 +96,14 @@ export function transfer(
   idempotencyKey: string,
   fromAccountNumber: string,
   toAccountNumber: string,
-  amountCny: Decimal.Value,
+  amountCny: string | Decimal,
   reference: string | null = null,
 ): TransferResult {
   return db.transaction((): TransferResult => {
     const srcN = normalizeAccount(fromAccountNumber);
     const dstN = normalizeAccount(toAccountNumber);
-    const amountIn = new Decimal(amountCny);
-    const rh = reqHash(srcN, dstN, amountIn, reference);
+    const amount = toDecimal(amountCny).toDecimalPlaces(2, HALF_EVEN); // Python quantize default
+    const rh = reqHash(srcN, dstN, amount, reference);
     const prior = db.prepare('SELECT * FROM sbx_txns WHERE idempotency_key = ?').get(idempotencyKey) as TxnRow | undefined;
     if (prior) {
       if (prior.request_hash !== rh) throw new IdempotencyMismatch('idempotency key reused with different parameters');
@@ -105,7 +111,6 @@ export function transfer(
     }
     const src = getAccount(db, srcN);
     if (!src) throw new UnknownAccount('source account not found');
-    const amount = amountIn.toDecimalPlaces(2, Decimal.ROUND_HALF_EVEN); // Python quantize default (ROUND_HALF_EVEN)
     const dst = getAccount(db, dstN);
     let state: TxnRow['state'] = 'settled';
     let code: string | null = null;
@@ -119,7 +124,7 @@ export function transfer(
       if (dst) db.prepare('UPDATE sbx_accounts SET balance_cny = ? WHERE account_number = ?').run(new Decimal(dst.balance_cny).plus(amount).toFixed(2), dstN);
     }
     const txn: TxnRow = {
-      id: newId('txn'),
+      id: newId('sbx_txn'),
       idempotency_key: idempotencyKey,
       request_hash: rh,
       from_account: srcN,

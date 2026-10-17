@@ -44,11 +44,15 @@ export function canonicalJSON(v: unknown): string {
 const sha256hex = (s: string): string => createHash('sha256').update(s, 'utf8').digest('hex');
 export const payloadHash = (payload: unknown): string => sha256hex(canonicalJSON(payload));
 
-/** Microsecond-precision UTC stamp 'YYYY-MM-DDTHH:MM:SS.ffffffZ' (what Python's ts_str produces). */
+let lastUs = 0;
+/** Microsecond-precision UTC stamp 'YYYY-MM-DDTHH:MM:SS.ffffffZ'; wall-clock based and strictly increasing within the process. */
 export function nowTs(): string {
-  const ms = Date.now();
-  const us = Number(process.hrtime.bigint() % 1000n);
-  return new Date(ms).toISOString().replace(/\.(\d{3})Z$/, (_m, f: string) => `.${f}${String(us).padStart(3, '0')}Z`);
+  let us = Math.floor((performance.timeOrigin + performance.now()) * 1000);
+  if (us <= lastUs) us = lastUs + 1;
+  lastUs = us;
+  const ms = Math.floor(us / 1000);
+  const frac = String(us % 1000_000).padStart(6, '0');
+  return new Date(ms).toISOString().replace(/\.\d{3}Z$/, `.${frac}Z`);
 }
 
 export function computeHash(seq: number, ts: string, actor: string, event: string, pHash: string, prevHash: string): string {

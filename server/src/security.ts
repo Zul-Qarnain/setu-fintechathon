@@ -4,11 +4,13 @@ import { hash as argonHash, verify as argonVerify } from '@node-rs/argon2';
 import { SignJWT, jwtVerify } from 'jose';
 import { decrypt, encrypt } from './domain/crypto.js';
 
+/** Same cost as Python argon2-cffi PasswordHasher() defaults: m=64 MiB, t=3, p=4 (argon2id). */
+export const ARGON2_PARAMS = { memoryCost: 65536, timeCost: 3, parallelism: 4 } as const;
 export const JWT_ALG = 'HS256';
 export const JWT_TTL_SECONDS = 3600;
 
 export async function hashPassword(pw: string): Promise<string> {
-  return argonHash(pw); // argon2id, library defaults (m=19MiB,t=2,p=1)
+  return argonHash(pw, ARGON2_PARAMS);
 }
 export async function verifyPassword(pw: string, hashed: string): Promise<boolean> {
   try {

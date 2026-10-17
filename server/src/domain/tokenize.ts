@@ -46,7 +46,7 @@ export function maskAccount(raw: string): string {
 /** Confusable-folded, case-folded, punctuation-free form for lookalike comparison. */
 export function nameSkeleton(name: string): string {
   let s = Array.from(name, (ch) => CONFUSABLES[ch] ?? ch).join('');
-  s = s.normalize('NFKC').toLowerCase();
+  s = s.normalize('NFKC').toLowerCase().replace(/[ßẞ]/g, 'ss'); // ~ str.casefold()
   s = s.replace(/\(.*?\)|（.*?）/gs, '');
   s = Array.from(s, (ch) => LOOKALIKE[ch] ?? ch).join('');
   return s.replace(/[^a-z\u4e00-\u9fff]/g, '');
