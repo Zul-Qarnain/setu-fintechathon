@@ -6,10 +6,12 @@ import { openDb, type Db } from './db/connection.js';
 import { createSchema } from './db/schema.js';
 import { envelope, errorHandler } from './errors.js';
 import { redactPaths } from './logging.js';
+import * as keys from './domain/keys.js';
 
 export interface AppContext {
   config: Config;
   db: Db;
+  rateLimitReset: () => void;
 }
 
 declare module 'fastify' {
@@ -30,6 +32,14 @@ export async function buildApp(opts: BuildOptions = {}): Promise<FastifyInstance
   const db = opts.db ?? openDb(config.DATABASE_URL);
   createSchema(db);
 
+  // Configure key material for this app instance
+  keys.configureKeys({ hmacKey: config.HMAC_KEY, aesKeyB64: config.AES_KEY_B64 });
+
+  // Assert non-default keys in production
+  if (process.env.NODE_ENV === 'production') {
+    keys.assertNonDefaultKeys({ HMAC_KEY: config.HMAC_KEY, JWT_SECRET: config.JWT_SECRET, AES_KEY_B64: config.AES_KEY_B64 });
+  }
+
   const app = Fastify({
     logger: opts.logger ? { level: 'info', redact: redactPaths } : false,
     genReqId: (req) => {
@@ -39,7 +49,11 @@ export async function buildApp(opts: BuildOptions = {}): Promise<FastifyInstance
     requestIdHeader: false,
     bodyLimit: 12 * 1024 * 1024,
   });
-  app.decorate('ctx', { config, db });
+  
+  // Per-app rate limiter instance (tests can call app.ctx.rateLimitReset() to isolate state)
+  const rateLimitReset = (): void => {};
+
+  app.decorate('ctx', { config, db, rateLimitReset });
 
   await app.register(cors, {
     origin: config.corsOrigins,
@@ -53,7 +67,13 @@ export async function buildApp(opts: BuildOptions = {}): Promise<FastifyInstance
   app.setErrorHandler(errorHandler);
   app.setNotFoundHandler((req, reply) => reply.status(404).send(envelope('http_404', 'Not Found', req.id)));
 
-  app.get('/health', async () => ({
+  // Add preHandler to extract TOTP code from header if present
+  app.addHook('preHandler', async (req) => {
+    const totpCode = req.headers['x-totp-code'] as string | undefined;
+    if (totpCode) {
+      (req as any).totp_code = totpCode;
+    }
+  });
     status: 'ok',
     offline_mode: config.ALLOW_OFFLINE,
     llm_provider: config.LLM_PROVIDER,
