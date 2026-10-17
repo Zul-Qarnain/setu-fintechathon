@@ -118,6 +118,18 @@ class ScriptedAdapter:
 
     def plan(self, masked_message: str, ctx: PlanContext) -> dict[str, Any]:
         msg = masked_message
+        if _PAYEE_CHANGE.search(msg):
+            tok = _first_token(msg)
+            return {
+                "intent": "payee_change",
+                "tool_calls": [
+                    {"tool": "propose_verify_payee", "args": {"account_number": tok}},
+                    {
+                        "tool": "draft_message",
+                        "args": {"to": "university", "purpose": "confirm_account"},
+                    },
+                ],
+            }
         if _UNSAFE.search(msg):
             return {
                 "intent": "unsafe_request",
@@ -130,18 +142,6 @@ class ScriptedAdapter:
                             "amount_cny": extract_amount(msg),
                         },
                     }
-                ],
-            }
-        if _PAYEE_CHANGE.search(msg):
-            tok = _first_token(msg)
-            return {
-                "intent": "payee_change",
-                "tool_calls": [
-                    {"tool": "propose_verify_payee", "args": {"account_number": tok}},
-                    {
-                        "tool": "draft_message",
-                        "args": {"to": "university", "purpose": "confirm_account"},
-                    },
                 ],
             }
         if _HOWMUCH.search(msg):

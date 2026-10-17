@@ -13,7 +13,7 @@ from app.agents import tools
 from app.db import append_audit, get_session
 from app.deps import current_user, rate_limit
 from app.domain.fx import get_fx_service
-from app.models import Document, Obligation, Payee, User
+from app.models import ActionRow, Document, Obligation, Payee, Plan, User
 
 router = APIRouter(tags=["dashboard"], dependencies=[Depends(rate_limit)])
 
@@ -60,11 +60,16 @@ def dashboard(user: User = Depends(current_user), db: Session = Depends(get_sess
 @router.delete("/me")
 def erase_me(user: User = Depends(current_user), db: Session = Depends(get_session)) -> dict[str, Any]:
     """PIPL erasure: delete personal data; the audit chain keeps only redacted payload hashes."""
-    for model, col in ((Payee, Payee.owner_id), (Document, Document.owner_id)):
+    for model, col in (
+        (ActionRow, ActionRow.owner_id),
+        (Plan, Plan.owner_id),
+        (Obligation, Obligation.user_id),
+        (Document, Document.owner_id),
+        (Payee, Payee.owner_id),
+    ):
         for row in db.execute(select(model).where(col == user.id)).scalars():
             db.delete(row)
-    for o in db.execute(select(Obligation).where(Obligation.user_id == user.id)).scalars():
-        db.delete(o)
+        db.flush()
     user.email = f"erased+{user.id}@erased.invalid"
     user.password_hash = "!"
     user.totp_secret_enc = None

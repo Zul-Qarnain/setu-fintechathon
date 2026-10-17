@@ -541,7 +541,7 @@ csv_lines = [
     "channel,type,send_cost_pct_200usd,fixed_fee_usd,fx_margin_pct,speed,source,notes",
     "South Asia average,bank_transfer,5.30,8.50,0.75,2-4 days,\"World Bank Remittance Prices Worldwide (RPW), Q3 2025\",\"Average actual market rate; VERIFY before citing in production\"",
     "SmaRT compliance target,benchmark,3.29,5.00,0.50,1-3 days,\"World Bank Remittance Prices Worldwide (RPW), Q3 2025\",\"Compliant benchmark rate for transparency\"",
-    "SDG target,target,3.00,5.00,0.50,1-3 days,UN Sustainable Development Goals 2025,"SYNTHETIC TARGET - not an actual quote",
+    'SDG target,target,3.00,5.00,0.50,1-3 days,UN Sustainable Development Goals 2025,"SYNTHETIC TARGET - not an actual quote"',
     "Sandbox licensed partner A,priority_wire,4.10,12.00,0.65,Same day,"ILLUSTRATIVE only - not a real quoted rate",
     "Sandbox licensed partner B,standard_wire,4.50,10.00,0.70,1-2 days,"ILLUSTRATIVE only - not a real quoted rate",
     "Sandbox mobile wallet,digital_wallet,2.80,2.00,0.40,Instant,"ILLUSTRATIVE only - sandbox simulator parameter",

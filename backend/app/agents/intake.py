@@ -47,8 +47,11 @@ def extract_text(filename: str, data: bytes) -> str:
     if filename.lower().endswith(".pdf"):
         from pypdf import PdfReader
 
-        reader = PdfReader(io.BytesIO(data))
-        text = "\n".join((p.extract_text() or "") for p in reader.pages)
+        try:
+            reader = PdfReader(io.BytesIO(data))
+            text = "\n".join((p.extract_text() or "") for p in reader.pages[:20])
+        except Exception as exc:  # malformed / encrypted PDFs must never 500
+            raise ValueError("Could not read PDF text layer") from exc
         if not text.strip():
             raise ValueError("PDF has no text layer (OCR is not supported)")
         return text[:MAX_TEXT]
