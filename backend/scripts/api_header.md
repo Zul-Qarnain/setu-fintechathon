@@ -3,7 +3,7 @@
 Base URL: `http://localhost:8000`. CORS allows `http://localhost:3000`. All data is **SYNTHETIC**; the bank is a **sandbox**; Setu never holds funds.
 OpenAPI: `GET /openapi.json`, Swagger UI: `GET /docs`.
 
-> Examples below are generated from the running app (`make api-docs`). During the skeleton phase the server returns stub data in exactly these shapes; real logic replaces the stubs without changing the contract.
+> Examples below are REAL responses captured from the running app on a seeded synthetic database (`make api-docs`).
 
 ## Conventions
 - **Auth**: `Authorization: Bearer <JWT>` from `/auth/login`. Roles: `student`, `family_approver`, `admin`.
@@ -20,7 +20,7 @@ Every non-2xx response:
   "request_id": "req_3fa91c2e0b17"
 }
 ```
-Common codes: `validation_error` (422), `UNAUTHORIZED` (401), `FORBIDDEN` (403), `NOT_FOUND` (404), `TOTP_INVALID` (403), `TOTP_LOCKED` (429), `COOLING_OFF_ACTIVE` (409), `POLICY_BLOCKED` (403), `AMOUNT_MISMATCH` (409), `RATE_LIMITED` (429).
+Codes in use: `UNAUTHORIZED` (401), `FORBIDDEN` (403), `NOT_FOUND` (404), `validation_error` (422), `UNSUPPORTED_DOCUMENT` (422, e.g. malformed/blank PDF), `UNSUPPORTED_PAIR` (422), `TOO_LARGE` (413), `TOTP_INVALID` (403), `TOTP_NOT_ENABLED` (403), `TOTP_NOT_STARTED` / `TOTP_ALREADY_ENABLED` (409), `TOTP_LOCKED` (429, 5 failures → 300 s), `COOLING_OFF_ACTIVE` (409), `INVALID_STATE` (409, e.g. approving a terminal action), `ALREADY_APPROVED` / `ALREADY_CONFIRMED` (409), `AMOUNT_MISMATCH` (409), `EMAIL_EXISTS` (409), `POLICY_BLOCKED` (403), `RATE_LIMITED` (429).
 (Cross-user resource access returns `NOT_FOUND`, never `FORBIDDEN`, to avoid leaking existence.)
 
 ## Tier labels

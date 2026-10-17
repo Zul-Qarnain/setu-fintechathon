@@ -20,7 +20,7 @@ Draft glossary — to be reviewed by a native Chinese speaker before publication
 | 10 | remittance cost | 汇款成本 | huì kuǎn chéng běn | Total cost including fees and FX spread |
 | 11 | financial inclusion | 金融普惠 | jīn róng pǔ huì | Access to affordable financial services for underserved populations |
 | 12 | licensed payment institution | 持牌支付机构 | chí pái zhī fù jī gòu | Entity authorized by regulators to process payments |
-| 13 | Setu never holds funds | 桥平台不托管资金 | qiáo píng tái bù tuǎn guǎn zī jīn | Platform acts only as routing layer; funds go directly to payees |
+| 13 | Setu never holds funds | Setu 不托管资金 | qiáo píng tái bù tuō guǎn zī jīn | Setu only prepares and checks payments; licensed partners move the money (sandbox only in this entry) |
 
 ---
 
@@ -29,7 +29,7 @@ Draft glossary — to be reviewed by a native Chinese speaker before publication
 | # | English | 简体中文 | Pinyin | Note |
 |---|---------|---------|--------|------|
 | 14 | family approver | 家庭审批人 | jiā tíng shěn pī rén | Parent/guardian who must approve large transactions |
-| 15 | cooling-off period | 冷静期 | lěng jìng qī | Time window after payment where reversal is possible |
+| 15 | cooling-off period | 冷静期 | lěng jìng qī | Mandatory waiting period before a payment to a new or changed payee can be approved (24 h in Setu) |
 | 16 | scholarship | 奖学金 | jiǎng xué jīn | Financial award reducing tuition burden |
 | 17 | living allowance | 生活补助 | shēng huó bǔ zhù | Regular stipend for daily expenses |
 
@@ -41,10 +41,10 @@ Draft glossary — to be reviewed by a native Chinese speaker before publication
 |---|---------|---------|--------|------|
 | 18 | bank card | 银行卡 | yín háng kǎ | Debit or credit card linked to bank account |
 | 19 | UnionPay | 银联 | yín lián | China's domestic card network (China UnionPay) |
-| 20 | Alipay | 支付宝 | Zhī fù bǎo | Third-party mobile payment platform owned by Alibaba |
-| 21 | WeChat Pay | 微信支付 | Wēi Xìn zhī fù | Mobile payment service within WeChat app (Tencent) |
+| 20 | Alipay | 支付宝 | zhī fù bǎo | Third-party mobile payment platform owned by Alibaba |
+| 21 | WeChat Pay | 微信支付 | wēi xìn zhī fù | Mobile payment service within WeChat app (Tencent) |
 | 22 | SAFE (State Administration of Foreign Exchange) | 国家外汇管理局 | guó jiā wài huí guǎn lǐ jú | Regulates foreign exchange flows into/out of China |
-| 23 | PBOC (People's Bank of China) | 中国人民银行 | Zhōng guó rén mín yín xíng | Central bank; issues payment licenses |
+| 23 | PBOC (People's Bank of China) | 中国人民银行 | zhōng guó rén mín yín xíng | Central bank; issues payment licenses |
 
 ---
 
@@ -56,8 +56,8 @@ Draft glossary — to be reviewed by a native Chinese speaker before publication
 | 25 | KYC (Know Your Customer) | 客户身份识别 | kè hù shēn fèn shí bié | Process verifying user identity per regulations |
 | 26 | AML (Anti-Money Laundering) | 反洗钱 | fǎn xǐ qián | Measures to detect/report suspicious transactions |
 | 27 | two-factor authentication | 双因素认证 | shuāng yīn sù rèn zhèng | Login requires password + second factor (phone, token) |
-| 28 | one-time password (TOTP) | 一次性密码 | yī cì xìng mì mǎ | Time-based code valid for single login session |
-| 29 | audit log | 审计日志 | shěn jì rì zhì | Immutable record of system actions for accountability |
+| 28 | one-time password (TOTP) | 一次性密码 | yī cì xìng mì mǎ | Time-based 6-digit code that changes every 30 seconds (RFC 6238); each code is accepted once |
+| 29 | audit log | 审计日志 | shěn jì rì zhì | Append-only record of system actions; Setu makes it tamper-evident with a hash chain |
 | 30 | hash chain | 哈希链 | hā mì liàn | Cryptographic linkage of records preventing tampering |
 | 31 | phishing | 钓鱼攻击 | diào yú gōng jī | Fraud attempt to steal credentials via fake sites/emails |
 | 32 | scam | 诈骗 | zhà piàn | General term for financial fraud schemes |
@@ -79,7 +79,7 @@ Draft glossary — to be reviewed by a native Chinese speaker before publication
 | 41 | cross-border data transfer | 个人信息出境 | gè rén xìn xī chū jìng | Transferring personal data out of mainland China |
 | 42 | data classification | 数据分级 | shù jù fēn jí | Categorizing data by sensitivity and regulatory requirements |
 | 43 | encryption at rest | 静态加密 | jìng tài jiā mì | Encrypting data stored on disk or database |
-| 44 | tokenisation | 令牌化 | téng pái huà | Replacing sensitive data with non-sensitive surrogate value |
+| 44 | tokenisation | 令牌化 | lìng pái huà | Replacing sensitive data with non-sensitive surrogate value |
 | 45 | access control | 访问控制 | fǎng wèn kòng zhì | Restricting system access based on roles/permissions |
 | 46 | approval | 审批 | shěn pī | Required authorization step before transaction execution |
 | 47 | payment limit | 支付限额 | zhī fù xiàn é | Maximum allowable transaction size per policy |
@@ -99,9 +99,9 @@ Draft glossary — to be reviewed by a native Chinese speaker before publication
 | 54 | guardrail | 安全围栏 | ān quán wéi lán | Controls preventing AI from generating harmful/inappropriate content |
 | 55 | untrusted content | 不可信内容 | bù kě xìn nèi róng | Input/output that may be malicious, inaccurate, or harmful |
 | 56 | prompt injection | 提示词注入 | tí shì cí zhù rù | Malicious input designed to override system instructions |
-| 57 | synthetic data | 合成数据 | hé chéng shù jù | Artificially generated data mimicking real patterns without exposing真实 user data |
-| 58 | offline mode | 离线模式 | lí xiàn mó shì | App functions without internet connection; syncs later |
-| 59 | sandboxed processing | 沙箱处理 | shā xiān chǔ lǐ | AI processing executed in isolated environment to contain risks |
+| 57 | synthetic data | 合成数据 | hé chéng shù jù | Artificially generated data mimicking real patterns without exposing real user data |
+| 58 | offline mode | 离线模式 | lí xiàn mó shì | Runs on bundled sample data and a scripted planner with no network or API keys |
+| 59 | sandboxed processing | 沙箱处理 | shā xiāng chǔ lǐ | AI processing executed in isolated environment to contain risks |
 | 60 | audit trail for AI | AI 审计追踪 | AI shěn jì zhuī zōng | Complete record of AI interactions for compliance verification |
 
 ---
