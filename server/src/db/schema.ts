@@ -225,7 +225,7 @@ export function createSchema(db: Database.Database): void {
       owner_id TEXT NOT NULL,
       plan_id TEXT,
       type TEXT NOT NULL,
-      tier TEXT DEFAULT 'standard' CHECK(tier IN ('standard', 'priority', 'express')),
+      tier TEXT NOT NULL,
       params_json TEXT NOT NULL,
       status TEXT NOT NULL,
       approvals_json TEXT DEFAULT '[]',

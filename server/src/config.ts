@@ -24,9 +24,24 @@ const envSchema = z.object({
   PORT: z.coerce.number().int().default(8000),
   SETU_DATA_DIR: z.string().optional(),
   RATE_LIMIT_PER_MINUTE: z.coerce.number().int().default(120),
+  JWT_TTL_SECONDS: z.coerce.number().int().default(3600),
+  COOLING_OFF_HOURS: z.coerce.number().int().default(24),
+  T2_CAP_CNY: z.string().default('2000'),
+  TOTP_MAX_FAILURES: z.coerce.number().int().default(5),
+  FIXED_TODAY: z.string().default(''),
+  TOTP_LOCK_SECONDS: z.coerce.number().int().default(300),
 });
 
-export type Config = z.infer<typeof envSchema> & { corsOrigins: string[]; dataDir: string };
+export type Config = z.infer<typeof envSchema> & { 
+  corsOrigins: string[]; 
+  dataDir: string;
+  jwtTtlSeconds: number;
+  coolingOffHours: number;
+  t2CapCny: string;
+  totpMaxFailures: number;
+  fixedToday: string;
+  totpLockSeconds: number;
+};
 
 const here = dirname(fileURLToPath(import.meta.url));
 
@@ -36,5 +51,11 @@ export function loadConfig(env: Record<string, string | undefined> = process.env
     ...c,
     corsOrigins: c.CORS_ORIGINS.split(',').map((o) => o.trim()).filter(Boolean),
     dataDir: c.SETU_DATA_DIR ?? resolve(here, '../../data'),
+    jwtTtlSeconds: c.JWT_TTL_SECONDS,
+    coolingOffHours: c.COOLING_OFF_HOURS,
+    t2CapCny: c.T2_CAP_CNY,
+    totpMaxFailures: c.TOTP_MAX_FAILURES,
+    fixedToday: c.FIXED_TODAY,
+    totpLockSeconds: c.TOTP_LOCK_SECONDS,
   };
 }
