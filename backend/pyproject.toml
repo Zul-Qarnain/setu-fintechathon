@@ -33,7 +33,7 @@ dev = [
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
-addopts = "-q"
+addopts = "-q -W ignore::DeprecationWarning"
 
 [tool.ruff]
 line-length = 120

@@ -142,6 +142,14 @@ def registry_flags(
             return [s.GuardianFlag(code="PAYEE_UNVERIFIED", severity="warn",
                                    message="Account matches a payee that is not yet verified.")]  # fmt: skip
     for name, _h, verified in registry:
+        if tokenize.name_skeleton(name) == sk and verified and _plain(name) != _plain(payee_name):
+            return [
+                s.GuardianFlag(
+                    code="LOOKALIKE_PAYEE",
+                    severity="block",
+                    message="Payee name differs from a verified payee only by lookalike characters.",
+                )
+            ]
         if tokenize.name_skeleton(name) == sk and verified:
             return [s.GuardianFlag(code="PAYEE_CHANGED", severity="warn",
                                    message="Same payee name but a different account than the verified one.")]  # fmt: skip
@@ -152,6 +160,12 @@ def registry_flags(
                                    message="Payee name closely resembles a verified payee but differs.")]  # fmt: skip
     return [s.GuardianFlag(code="PAYEE_NOT_IN_REGISTRY", severity="warn",
                            message="Account is not in your payee registry.")]  # fmt: skip
+
+
+def _plain(name: str) -> str:
+    s_ = unicodedata.normalize("NFKC", name).casefold()
+    s_ = re.sub(r"\(.*?\)|（.*?）", "", s_)
+    return re.sub(r"[^\w\u4e00-\u9fff]", "", s_)
 
 
 def _near(a: str, b: str) -> bool:

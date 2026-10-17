@@ -13,6 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.config import get_settings
+from app.logging_config import configure_logging, get_logger
 from app.routes import actions, audit, auth, chat, dashboard, demo, documents, evidence, fx, payees
 from app.sandbox_bank import api as sandbox_api
 
@@ -41,6 +42,8 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
 
 def create_app() -> FastAPI:
     settings = get_settings()
+    configure_logging()
+    log = get_logger()
     app = FastAPI(
         lifespan=lifespan,
         title="Setu 桥 API",
@@ -60,6 +63,7 @@ def create_app() -> FastAPI:
         rid = request.headers.get("x-request-id") or f"req_{uuid.uuid4().hex[:12]}"
         request.state.request_id = rid
         resp = await call_next(request)
+        log.info("http", method=request.method, path=request.url.path, status=resp.status_code, request_id=rid)
         resp.headers["x-request-id"] = rid
         return resp
 
