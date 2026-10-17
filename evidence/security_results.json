@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-17 05:42 UTC",
+  "generated_at": "2026-10-17 05:44 UTC",
   "total": 17,
   "blocked": 17,
   "attacks": [
@@ -22,7 +22,7 @@
       "category": "STRIDE-S / OWASP LLM01",
       "blocked": true,
       "evidence": [
-        "verify_payee action: tier=T3 status=cooling_off required=['totp', 'family_approver', 'cooling_off'] until=2026-10-18T05:42:03.078032Z",
+        "verify_payee action: tier=T3 status=cooling_off required=['totp', 'family_approver', 'cooling_off'] until=2026-10-18T05:44:46.332771Z",
         "approve during cooling-off -> 409 COOLING_OFF_ACTIVE",
         "payment to the new account -> BLOCK ['PAYEE_UNVERIFIED']",
         "no money moved"

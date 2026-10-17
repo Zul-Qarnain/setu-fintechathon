@@ -34,6 +34,7 @@ _RULES: list[tuple[str, str, str, str]] = [
         "block",
         r"(?:do\s+not|don't|never)\s+(?:ask|tell|inform|notify|confirm\s+with|alert)\s+(?:the\s+)?(?:user|student|parent|owner)"
         r"|without\s+(?:asking|confirmation|approval|verification)"
+        r"|(?:do\s+not|don't|no\s+need\s+to|never)\s+(?:ask\s+for\s+|wait\s+for\s+|require\s+|seek\s+)?(?:confirm\w*|approv\w*|verif\w*|otp|totp)"
         r"|skip\s+(?:the\s+)?(?:approval|verification|totp|2fa|confirmation)"
         r"|(?:不要|无需|不必|别)(?:询问|告诉|通知|确认|征求)(?:用户|学生|家长|本人)?"
         r"|无需(?:审批|验证|确认|批准)|跳过(?:审批|验证|确认)",
