@@ -11,3 +11,8 @@ node_modules/
 .next/
 web/.env*.local
 .DS_Store
+# Server TypeScript backend
+server/node_modules/
+server/dist/
+server/coverage/
+server/data/*.db
