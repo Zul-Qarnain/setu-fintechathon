@@ -5,7 +5,7 @@ import { loadConfig, type Config } from './config.js';
 import { openDb, type Db } from './db/connection.js';
 import { createSchema } from './db/schema.js';
 import { errorHandler } from './errors.js';
-import { redactPaths } from './logging.js';
+import { redactLog, redactPaths } from './logging.js';
 import { RateLimiter } from './deps.js';
 import { FxService } from './domain/fx.js';
 import { demoRoutes } from './routes/demo.js';
@@ -38,6 +38,8 @@ export interface BuildOptions {
   config?: Config;
   db?: Db;
   logger?: boolean;
+  /** test hook: capture log output (A10 PII-in-logs attack). */
+  logStream?: { write(chunk: string): void };
 }
 
 /** Builds the Fastify app WITHOUT listening (use fastify.inject in tests). */
@@ -59,7 +61,22 @@ export async function buildApp(opts: BuildOptions = {}): Promise<FastifyInstance
   }
 
   const app = Fastify({
-    logger: opts.logger ? { level: 'info', redact: redactPaths } : false,
+    logger: opts.logger
+      ? {
+          level: 'info',
+          redact: redactPaths,
+          ...(opts.logStream ? { stream: opts.logStream } : {}),
+          // defence in depth: free-text PII (account numbers, emails, phones) in any log message/object is masked
+          hooks: {
+            logMethod(args, method) {
+              (method as (...a: unknown[]) => void).apply(
+                this,
+                args.map((a) => redactLog(a))
+              );
+            },
+          },
+        }
+      : false,
     genReqId: (req) => {
       const h = req.headers['x-request-id'];
       return (Array.isArray(h) ? h[0] : h) || `req_${randomBytes(6).toString('hex')}`;

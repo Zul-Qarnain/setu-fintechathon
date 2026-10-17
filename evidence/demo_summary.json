@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-17T22:30:01.827Z",
+  "generated_at": "2026-10-17T23:00:48.303Z",
   "offline": true,
   "synthetic": true,
   "steps": [
@@ -7,7 +7,7 @@
       "step": "seed",
       "users": 7,
       "obligations": 8,
-      "audit_head_hash": "b704a4a0265ad87781bca54f5af3b7cd8b0977bf0a7023a7934bb8f41990180a",
+      "audit_head_hash": "2b79180db0a951306fc4f7824aebf13f8edb3b35465b7f9ded7666bb27b4e1d4",
       "synthetic": true,
       "fx": "SAMPLE fixture (not live)"
     },
@@ -21,7 +21,7 @@
     {
       "step": "confirm_fields",
       "blocked": false,
-      "obligation": "obl_28d35cec5b56",
+      "obligation": "obl_40d348647e5f",
       "payee_verified": true
     },
     {
@@ -45,7 +45,7 @@
     {
       "step": "family_approver_totp",
       "status": "executed",
-      "bank_txn": "sbx_txn_64c5f63d0a63",
+      "bank_txn": "sbx_txn_9f22d15b8995",
       "state": "settled"
     },
     {

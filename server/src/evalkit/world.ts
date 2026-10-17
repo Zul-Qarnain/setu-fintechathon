@@ -51,11 +51,14 @@ export interface World {
 
 let pwHash: string | undefined;
 
-export async function buildWorld(env: Record<string, string> = {}): Promise<World> {
+export async function buildWorld(
+  env: Record<string, string> = {},
+  appOpts: { logger?: boolean; logStream?: { write(chunk: string): void } } = {}
+): Promise<World> {
   pwHash ??= await security.hashPassword(PW);
   const config = loadConfig({ RATE_LIMIT_PER_MINUTE: '100000', FIXED_TODAY: '2026-10-17', ...env });
   const db = openDb(':memory:');
-  const app = await buildApp({ config, db });
+  const app = await buildApp({ config, db, ...appOpts });
   const ctx = app.ctx;
   const mk = async (
     email: string,
