@@ -8,6 +8,7 @@ import { envelope, errorHandler } from './errors.js';
 import { redactPaths } from './logging.js';
 import { RateLimiter } from './deps.js';
 import { FxService } from './domain/fx.js';
+import { actionRoutes } from './routes/actions.js';
 import { auditRoutes } from './routes/audit.js';
 import { evidenceRoutes } from './routes/evidence.js';
 import { sandboxRoutes } from './routes/sandbox.js';
@@ -78,6 +79,7 @@ export async function buildApp(opts: BuildOptions = {}): Promise<FastifyInstance
   await app.register(payeeRoutes, { prefix: '/payees' });
   await app.register(fxRoutes, { prefix: '/fx' });
   await app.register(dashboardRoutes);
+  await app.register(actionRoutes, { prefix: '/actions' });
   await app.register(auditRoutes, { prefix: '/audit' });
   await app.register(evidenceRoutes, { prefix: '/evidence' });
   await app.register(sandboxRoutes, { prefix: '/sandbox' });

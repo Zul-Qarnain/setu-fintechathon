@@ -18,3 +18,24 @@ export const PayeeCreate = z.object({
   bank: z.string().min(1).max(200),
   source: z.enum(['manual', 'document', 'sms']).default('manual'),
 });
+
+export const ApproveRequest = z.object({ totp_code: z.string().length(6) });
+export const RejectRequest = z.object({ reason: z.string().default('') });
+export const ChatRequest = z.object({
+  message: z.string().min(1).max(4000),
+  document_id: z.string().nullish(),
+  locale: z.enum(['en', 'zh-CN']).default('en'),
+});
+
+export const DocumentCreate = z.object({
+  filename: z.string().default('notice.txt'),
+  text: z.string().max(20000),
+  synthetic: z.boolean().default(true),
+});
+export const DocumentConfirm = z.object({
+  amount_cny: z.union([z.string(), z.number()]).transform((v) => String(v)),
+  due_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  payee_name: z.string(),
+  account_number: z.string().nullish(),
+  reference: z.string().nullish(),
+});
