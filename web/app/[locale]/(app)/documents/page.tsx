@@ -11,15 +11,8 @@ import { button, input, label } from "@/components/ui";
 import { api, ApiError } from "@/lib/api";
 import { formatDate, shortHash } from "@/lib/format";
 import { addSessionDoc, updateSessionDoc } from "@/lib/session-docs";
+import { GROUPS, noticeGroup, type Group } from "@/lib/notice-group";
 import type { ConfirmResponse, DemoNotice, DocumentOut } from "@/lib/types";
-
-const GROUPS = ["clean", "injection", "payee_change", "homoglyph", "amount_mismatch", "scam_urgency", "other"] as const;
-type Group = (typeof GROUPS)[number];
-export function noticeGroup(n: DemoNotice): Group {
-  const m = /\(([a-z_]+),/i.exec(n.label);
-  const g = m?.[1].toLowerCase() as Group | undefined;
-  return g && (GROUPS as readonly string[]).includes(g) ? g : "other";
-}
 
 const FALLBACK_NOTICES: DemoNotice[] = [
   { id: "en_tuition_fallback.txt", label: "Spring tuition, EN (clean, SYNTHETIC)", text: "SYNTHETIC SAMPLE - Shenzhen Example University Finance Office\nSpring 2027 tuition: CNY 18,500.00. Due: 2027-03-01.\nPayee: Shenzhen Example University  Account: 6222 0000 0000 4821\nReference: 2027-SPRING-TUITION-0042" },
