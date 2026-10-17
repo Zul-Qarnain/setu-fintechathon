@@ -14,7 +14,7 @@ router = APIRouter(prefix="/fx", tags=["fx"], dependencies=[Depends(rate_limit)]
 
 
 @router.get("/quote", response_model=s.FxQuote)
-def quote(amount_cny: Decimal = Query(Decimal("1000"), gt=0, lt=Decimal("100000000")),
+def quote(amount_cny: Decimal = Query(Decimal("1000"), gt=0, lt=100000000),
           to: str = Query("BDT", min_length=3, max_length=3),
           _user: User = Depends(current_user)) -> s.FxQuote:  # fmt: skip
     try:

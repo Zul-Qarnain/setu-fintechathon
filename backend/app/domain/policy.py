@@ -134,7 +134,10 @@ def _decide_money(action: Action, ctx: Context) -> Decision:
     if action.document_amount_cny is not None and action.document_amount_cny != amount:
         return _block(["AMOUNT_MISMATCH"], "Amount differs from the confirmed obligation: blocked.")
     if not payee.verified:
-        return _block(["PAYEE_UNVERIFIED"], "Payee is unverified: blocked until a family approver verifies it.")
+        return _block(
+            ["PAYEE_UNVERIFIED"],
+            "Payee is unverified: blocked until a family approver verifies it.",
+        )
 
     reasons: list[str] = ["PAYEE_VERIFIED"]
     required: list[str] = ["totp"]

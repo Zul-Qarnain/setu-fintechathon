@@ -44,7 +44,7 @@ def require_roles(*roles: str) -> Callable[[User], User]:
     return dep
 
 
-def verify_user_totp(db: Session, user: User, code: str) -> None:
+def verify_user_totp(db: Session, user: User, code: str, enrolling: bool = False) -> None:
     """Check a TOTP for `user` with replay protection and brute-force lockout. Raises on failure."""
     st = get_settings()
     now = datetime.now(UTC)
@@ -52,7 +52,7 @@ def verify_user_totp(db: Session, user: User, code: str) -> None:
     if locked and locked > now:
         raise api_error(429, "TOTP_LOCKED", "Too many failed TOTP attempts; try again later",
                         {"retry_after_seconds": int((locked - now).total_seconds())})  # fmt: skip
-    if not user.totp_enabled or not user.totp_secret_enc:
+    if (not user.totp_enabled and not enrolling) or not user.totp_secret_enc:
         raise api_error(403, "TOTP_NOT_ENABLED", "TOTP is not enabled for this user")
     secret = security.decrypt_secret(user.totp_secret_enc, user.id)
     step = security.check_totp(secret, code, user.totp_last_step)

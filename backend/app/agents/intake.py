@@ -131,4 +131,4 @@ def parse_notice(text: str) -> ParsedFields:
 def wrap_untrusted(text: str) -> str:
     """Wrap DATA so downstream prompts can never confuse it with instructions."""
     safe = text.replace("</untrusted>", "[/untrusted]")
-    return f"<untrusted source=\"document\">\n{safe}\n</untrusted>"
+    return f'<untrusted source="document">\n{safe}\n</untrusted>'

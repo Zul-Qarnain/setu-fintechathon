@@ -45,6 +45,9 @@ async def upload(
 
 @router.post("/{doc_id}/confirm", response_model=s.DocumentConfirmResponse)
 def confirm(
-    doc_id: str, body: s.DocumentConfirm, user: User = Depends(current_user), db: Session = Depends(get_session)
+    doc_id: str,
+    body: s.DocumentConfirm,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_session),
 ) -> s.DocumentConfirmResponse:
     return doc_service.confirm(db, user, doc_id, body)

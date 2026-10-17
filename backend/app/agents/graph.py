@@ -4,6 +4,7 @@ executor | await_approval -> validator. Every step is traced and audited."""
 from __future__ import annotations
 
 import json
+import re
 import time
 import uuid
 from datetime import UTC, date, datetime
@@ -54,12 +55,9 @@ def run_chat(
 
     # ---------------- intake ----------------
     t0 = time.perf_counter()
-    masked, token_map_masked = tokenize.tokenize_text(req.message)
+    masked, _ = tokenize.tokenize_text(req.message)
     raw_tokens: dict[str, str] = {}
-    for tok in token_map_masked:  # re-derive raw numbers server-side (never sent to the LLM)
-        pass
-    import re
-
+    # raw numbers are re-derived server-side only (never sent to the LLM)
     for m in re.finditer(r"(?<![\w])(?:\d[ \-]?){12,19}(?![\w])", req.message):
         raw_tokens[tokenize.account_token(m.group(0))] = tokenize.normalize_account(m.group(0))
     msg_verdict = guardian.check_message(req.message)
@@ -67,12 +65,29 @@ def run_chat(
     if req.document_id:
         doc = db.get(Document, req.document_id)
         if doc is None or doc.owner_id != user.id:
-            steps.append(s.TraceStep(step="intake", status="rejected", duration_ms=_ms(t0), detail={"error": "document not found"}))
+            steps.append(
+                s.TraceStep(
+                    step="intake",
+                    status="rejected",
+                    duration_ms=_ms(t0),
+                    detail={"error": "document not found"},
+                )
+            )
             raise_not_found()
-    ctx = llm_adapters.PlanContext(today=_today(), document_id=doc.id if doc else None,
-                                   document_status=doc.status if doc else None, locale=locale)
-    audit("chat.received", {"message_len": len(req.message), "document_id": req.document_id,
-                            "message_guardian": msg_verdict.verdict})  # no raw text in audit
+    ctx = llm_adapters.PlanContext(
+        today=_today(),
+        document_id=doc.id if doc else None,
+        document_status=doc.status if doc else None,
+        locale=locale,
+    )
+    audit(
+        "chat.received",
+        {
+            "message_len": len(req.message),
+            "document_id": req.document_id,
+            "message_guardian": msg_verdict.verdict,
+        },
+    )  # no raw text in audit
     steps.append(s.TraceStep(step="intake", status="ok", duration_ms=_ms(t0), detail={
         "tokenised_accounts": len(raw_tokens), "document_id": req.document_id,
         "document_status": doc.status if doc else None, "untrusted_wrapped": bool(doc),
@@ -87,8 +102,10 @@ def run_chat(
         plan_rejected = e.reason
         out = planner.validate_plan(llm_adapters.ScriptedAdapter().plan(masked, ctx))
     if msg_verdict.verdict == "blocked" and out.intent != "unsafe_request":
-        out = planner.PlannerOutput(intent="unsafe_request", tool_calls=[planner.ToolCall(
-            tool="propose_payment", args={"origin": "message", "payee_account": None})])
+        out = planner.PlannerOutput(
+            intent="unsafe_request",
+            tool_calls=[planner.ToolCall(tool="propose_payment", args={"origin": "message", "payee_account": None})],
+        )
     steps.append(s.TraceStep(step="planner", status="rejected" if plan_rejected else "ok", duration_ms=_ms(t0), detail={
         "intent": out.intent, "tool_calls": [t.tool for t in out.tool_calls], "adapter": adapter.name,
         "rejected_reason": plan_rejected}))  # fmt: skip
@@ -98,9 +115,18 @@ def run_chat(
     state = tools.ToolState(db=db, user=user, fx=fx, today=ctx.today, token_map=raw_tokens)
     for tc in out.tool_calls:
         args = dict(tc.args)
-        missing = [k for k, v in args.items() if isinstance(v, str) and v.startswith("$") and tools._resolve(v, state) is None]
+        missing = [
+            k for k, v in args.items() if isinstance(v, str) and v.startswith("$") and tools._resolve(v, state) is None
+        ]
         if missing:
-            tool_trace.append(s.ToolCallTrace(tool=tc.tool, args=args, output={"skipped": "dependency missing", "args": missing}, ok=False))
+            tool_trace.append(
+                s.ToolCallTrace(
+                    tool=tc.tool,
+                    args=args,
+                    output={"skipped": "dependency missing", "args": missing},
+                    ok=False,
+                )
+            )
             continue
         try:
             result = tools.TOOLS[tc.tool](state, args)
@@ -168,20 +194,31 @@ def run_chat(
     # ---------------- reply + validator ----------------
     t0 = time.perf_counter()
     reply = replies.compose(out.intent, state.outputs, [a.model_dump(mode="json") for a in actions_out], locale, codes)
-    vr = validator.validate_reply(reply, [t.output for t in tool_trace] + [a.model_dump(mode="json") for a in actions_out],
-                                  req.message)
+    vr = validator.validate_reply(
+        reply,
+        [t.output for t in tool_trace] + [a.model_dump(mode="json") for a in actions_out],
+        req.message,
+    )
     if not vr.ok:
         audit("reply.rejected", {"unsupported_numbers": vr.unsupported})
         reply = SAFE_FALLBACK["zh-CN" if locale == "zh-CN" else "en"]
     steps.append(s.TraceStep(step="validator", status="ok" if vr.ok else "rejected", duration_ms=_ms(t0),
                              detail={"unsupported_numbers": vr.unsupported}))  # fmt: skip
-    audit("chat.reply", {"intent": out.intent, "tier": top["tier"] if top else "T0", "validated": vr.ok})
+    audit(
+        "chat.reply",
+        {"intent": out.intent, "tier": top["tier"] if top else "T0", "validated": vr.ok},
+    )
 
     plan_out = _plan_out(state, ctx.today) if state.last_plan else None
     trace = s.Trace(
-        trace_id="trc_" + uuid.uuid4().hex[:12], llm_mode=adapter.mode,  # type: ignore[arg-type]
-        steps=steps, tool_calls=tool_trace, tier=(top["tier"] if top else "T0"),  # type: ignore[arg-type]
-        decision=(top["outcome"] if top else "ALLOW"), reply_validated=vr.ok, audit_seqs=audit_seqs,  # type: ignore[arg-type]
+        trace_id="trc_" + uuid.uuid4().hex[:12],
+        llm_mode=adapter.mode,  # type: ignore[arg-type]
+        steps=steps,
+        tool_calls=tool_trace,
+        tier=(top["tier"] if top else "T0"),  # type: ignore[arg-type]
+        decision=(top["outcome"] if top else "ALLOW"),
+        reply_validated=vr.ok,
+        audit_seqs=audit_seqs,  # type: ignore[arg-type]
     )
     return s.ChatResponse(reply=reply, intent=out.intent, plan=plan_out, proposed_actions=actions_out, trace=trace)
 

@@ -44,21 +44,15 @@ def totp_setup(user: User = Depends(current_user), db: Session = Depends(get_ses
 
 @router.post("/totp/verify", response_model=s.TotpVerifyResponse)
 def totp_verify(
-    body: s.TotpVerifyRequest, user: User = Depends(current_user), db: Session = Depends(get_session)
+    body: s.TotpVerifyRequest,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_session),
 ) -> s.TotpVerifyResponse:
     if not user.totp_secret_enc:
         raise api_error(409, "TOTP_NOT_STARTED", "Call /auth/totp/setup first")
-    # enrolment confirmation: accepts the first valid code, then enables
-    if user.totp_enabled:
-        verify_user_totp(db, user, body.code)
-        return s.TotpVerifyResponse(verified=True, totp_enabled=True)
-    secret = security.decrypt_secret(user.totp_secret_enc, user.id)
-    step = security.check_totp(secret, body.code, user.totp_last_step)
-    if step is None:
-        append_audit(db, user.id, "totp.enrol_failed", {})
-        db.commit()
-        raise api_error(403, "TOTP_INVALID", "Invalid or expired TOTP code")
-    user.totp_enabled = True
-    user.totp_last_step = step
-    append_audit(db, user.id, "totp.enabled", {})
+    # enrolment confirmation: first valid code enables TOTP (lockout + replay protection apply)
+    verify_user_totp(db, user, body.code, enrolling=not user.totp_enabled)
+    if not user.totp_enabled:
+        user.totp_enabled = True
+        append_audit(db, user.id, "totp.enabled", {})
     return s.TotpVerifyResponse(verified=True, totp_enabled=True)

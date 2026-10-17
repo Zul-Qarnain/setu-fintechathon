@@ -83,7 +83,9 @@ def world() -> Iterator[World]:
         ledger.open_account(db, "6222000100000001", "Aisha", Decimal("200000"), owner_id=st.id)
         ledger.open_account(db, "6222000100000002", "Rafi", Decimal("50000"), owner_id=ot.id)
         ledger.open_account(db, UNIV_ACCT, UNIV_NAME, Decimal("0"))
-        pay, _ = services.create_payee(db, st, UNIV_NAME, UNIV_ACCT, "Sandbox Bank of China", verified=True, cooling_hours=0)
+        pay, _ = services.create_payee(
+            db, st, UNIV_NAME, UNIV_ACCT, "Sandbox Bank of China", verified=True, cooling_hours=0
+        )
         big = Obligation(user_id=st.id, title="Spring 2027 tuition", amount_cny=Decimal("18500.00"),
                          due_date=__import__("datetime").date(2027, 3, 1), payee_id=pay.id, reference="2027-SPRING-TUITION-0042")  # fmt: skip
         small = Obligation(user_id=st.id, title="Dorm fee", amount_cny=Decimal("1350.00"),

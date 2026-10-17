@@ -57,12 +57,21 @@ _PAYEE_CHANGE = re.compile(
     re.I,
 )
 _PAY = re.compile(r"\b(?:pay|transfer|send|settle)\b|tuition|缴费|支付|付款|转账|交(?:学费|费)|学费", re.I)
-_HOWMUCH = re.compile(r"how\s+much|need(?:ed)?\s+(?:in\s+)?(?:bdt|taka)|bdt\b.*\b(?:by|before)|多少|需要.*(?:塔卡|BDT)", re.I)
+_HOWMUCH = re.compile(
+    r"how\s+much|need(?:ed)?\s+(?:in\s+)?(?:bdt|taka)|bdt\b.*\b(?:by|before)|多少|需要.*(?:塔卡|BDT)",
+    re.I,
+)
 _FX = re.compile(r"\b(?:rate|exchange|convert|quote)\b|汇率|兑换|换算", re.I)
 _FEES = re.compile(r"\b(?:fees?|cost|charges?|cheapest)\b|费用|手续费|成本", re.I)
 _BUDGET = re.compile(r"\bbudget\b|预算", re.I)
-_AMOUNT = re.compile(r"(?:cny|rmb|¥|￥|人民币)\s*([\d,]+(?:\.\d{1,2})?)|([\d,]+(?:\.\d{1,2})?)\s*(?:cny|rmb|元|yuan)", re.I)
-_BY = re.compile(r"(?:by|before|until|到|在)\s*(\d{1,2}\s+[A-Za-z]+(?:\s+\d{4})?|\d{4}[-/年]\d{1,2}[-/月]\d{1,2}日?|\d{1,2}月\d{1,2}日)", re.I)
+_AMOUNT = re.compile(
+    r"(?:cny|rmb|¥|￥|人民币)\s*([\d,]+(?:\.\d{1,2})?)|([\d,]+(?:\.\d{1,2})?)\s*(?:cny|rmb|元|yuan)",
+    re.I,
+)
+_BY = re.compile(
+    r"(?:by|before|until|到|在)\s*(\d{1,2}\s+[A-Za-z]+(?:\s+\d{4})?|\d{4}[-/年]\d{1,2}[-/月]\d{1,2}日?|\d{1,2}月\d{1,2}日)",
+    re.I,
+)
 _MONTHS = ["january", "february", "march", "april", "may", "june", "july", "august", "september",
            "october", "november", "december"]  # fmt: skip
 
@@ -110,45 +119,105 @@ class ScriptedAdapter:
     def plan(self, masked_message: str, ctx: PlanContext) -> dict[str, Any]:
         msg = masked_message
         if _UNSAFE.search(msg):
-            return {"intent": "unsafe_request", "tool_calls": [
-                {"tool": "propose_payment", "args": {"origin": "model", "payee_account": _first_token(msg),
-                                                     "amount_cny": extract_amount(msg)}}]}
+            return {
+                "intent": "unsafe_request",
+                "tool_calls": [
+                    {
+                        "tool": "propose_payment",
+                        "args": {
+                            "origin": "model",
+                            "payee_account": _first_token(msg),
+                            "amount_cny": extract_amount(msg),
+                        },
+                    }
+                ],
+            }
         if _PAYEE_CHANGE.search(msg):
             tok = _first_token(msg)
-            return {"intent": "payee_change", "tool_calls": [
-                {"tool": "propose_verify_payee", "args": {"account_number": tok}},
-                {"tool": "draft_message", "args": {"to": "university", "purpose": "confirm_account"}}]}
+            return {
+                "intent": "payee_change",
+                "tool_calls": [
+                    {"tool": "propose_verify_payee", "args": {"account_number": tok}},
+                    {
+                        "tool": "draft_message",
+                        "args": {"to": "university", "purpose": "confirm_account"},
+                    },
+                ],
+            }
         if _HOWMUCH.search(msg):
             by = parse_by_date(msg, ctx.today)
             amt = extract_amount(msg)
             if amt and not by:
-                return {"intent": "how_much_needed", "tool_calls": [
-                    {"tool": "compute_costs", "args": {"amount_cny": amt}}]}
-            return {"intent": "how_much_needed", "tool_calls": [
-                {"tool": "list_obligations_due", "args": {"by": by.isoformat() if by else None}},
-                {"tool": "compute_costs", "args": {"amount_cny": "$list_obligations_due.total_cny"}}]}
+                return {
+                    "intent": "how_much_needed",
+                    "tool_calls": [{"tool": "compute_costs", "args": {"amount_cny": amt}}],
+                }
+            return {
+                "intent": "how_much_needed",
+                "tool_calls": [
+                    {
+                        "tool": "list_obligations_due",
+                        "args": {"by": by.isoformat() if by else None},
+                    },
+                    {
+                        "tool": "compute_costs",
+                        "args": {"amount_cny": "$list_obligations_due.total_cny"},
+                    },
+                ],
+            }
         if _PAY.search(msg):
             if ctx.document_id:
                 if ctx.document_status == "blocked":
-                    return {"intent": "pay_obligation", "tool_calls": [
-                        {"tool": "propose_payment", "args": {"document_id": ctx.document_id, "origin": "document"}}]}
-                return {"intent": "pay_obligation", "tool_calls": [
-                    {"tool": "get_obligation", "args": {"document_id": ctx.document_id}},
-                    {"tool": "compute_costs", "args": {"amount_cny": "$get_obligation.amount_cny"}},
-                    {"tool": "propose_payment", "args": {"obligation_id": "$get_obligation.obligation_id"}}]}
+                    return {
+                        "intent": "pay_obligation",
+                        "tool_calls": [
+                            {
+                                "tool": "propose_payment",
+                                "args": {"document_id": ctx.document_id, "origin": "document"},
+                            }
+                        ],
+                    }
+                return {
+                    "intent": "pay_obligation",
+                    "tool_calls": [
+                        {"tool": "get_obligation", "args": {"document_id": ctx.document_id}},
+                        {
+                            "tool": "compute_costs",
+                            "args": {"amount_cny": "$get_obligation.amount_cny"},
+                        },
+                        {
+                            "tool": "propose_payment",
+                            "args": {"obligation_id": "$get_obligation.obligation_id"},
+                        },
+                    ],
+                }
             kw = "tuition" if re.search(r"tuition|学费", msg, re.I) else None
-            return {"intent": "pay_obligation", "tool_calls": [
-                {"tool": "get_obligation", "args": {"keyword": kw}},
-                {"tool": "compute_costs", "args": {"amount_cny": "$get_obligation.amount_cny"}},
-                {"tool": "propose_payment", "args": {"obligation_id": "$get_obligation.obligation_id"}}]}
+            return {
+                "intent": "pay_obligation",
+                "tool_calls": [
+                    {"tool": "get_obligation", "args": {"keyword": kw}},
+                    {"tool": "compute_costs", "args": {"amount_cny": "$get_obligation.amount_cny"}},
+                    {
+                        "tool": "propose_payment",
+                        "args": {"obligation_id": "$get_obligation.obligation_id"},
+                    },
+                ],
+            }
         if _FX.search(msg):
-            return {"intent": "quote_fx", "tool_calls": [
-                {"tool": "fx_quote", "args": {"amount_cny": extract_amount(msg) or "1000"}}]}
+            return {
+                "intent": "quote_fx",
+                "tool_calls": [{"tool": "fx_quote", "args": {"amount_cny": extract_amount(msg) or "1000"}}],
+            }
         if _FEES.search(msg):
-            return {"intent": "explain_fees", "tool_calls": [
-                {"tool": "compute_costs", "args": {"amount_cny": extract_amount(msg) or "1000"}}]}
+            return {
+                "intent": "explain_fees",
+                "tool_calls": [{"tool": "compute_costs", "args": {"amount_cny": extract_amount(msg) or "1000"}}],
+            }
         if _BUDGET.search(msg):
-            return {"intent": "explain_fees", "tool_calls": [{"tool": "budget_summary", "args": {}}]}
+            return {
+                "intent": "explain_fees",
+                "tool_calls": [{"tool": "budget_summary", "args": {}}],
+            }
         return {"intent": "unknown", "tool_calls": []}
 
 

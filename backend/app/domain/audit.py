@@ -26,9 +26,7 @@ def ts_str(ts: datetime) -> str:
     return ts.astimezone(UTC).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
 
 
-def compute_hash(
-    seq: int, ts: datetime, actor: str, event: str, p_hash: str, prev_hash: str
-) -> str:
+def compute_hash(seq: int, ts: datetime, actor: str, event: str, p_hash: str, prev_hash: str) -> str:
     material = "|".join([str(seq), ts_str(ts), actor, event, p_hash, prev_hash])
     return hashlib.sha256(material.encode("utf-8")).hexdigest()
 

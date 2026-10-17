@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-
 from decimal import Decimal
 
 from sqlalchemy import select
@@ -38,7 +37,8 @@ def ingest(db: Session, user: User, filename: str, text: str, synthetic: bool = 
     parsed = intake.parse_notice(text)
     verdict = guardian.scan_text(text, parsed)
     verdict = guardian.merge(
-        verdict, guardian.registry_flags(parsed.payee_name, parsed.account_number, registry(db, user.id))
+        verdict,
+        guardian.registry_flags(parsed.payee_name, parsed.account_number, registry(db, user.id)),
     )
     doc_hash = "sha256:" + hashlib.sha256(text.encode("utf-8")).hexdigest()
     parsed_json = {
@@ -133,5 +133,3 @@ def _last_seq(db: Session) -> int | None:
 
     r = db.execute(select(AuditRow.seq).order_by(AuditRow.seq.desc()).limit(1)).scalar_one_or_none()
     return r
-
-

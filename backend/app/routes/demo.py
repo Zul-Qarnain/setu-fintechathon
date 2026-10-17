@@ -68,7 +68,10 @@ def tamper_audit(seq: int = 2, _: None = Depends(_guard), db: Session = Depends(
     if row is None:
         raise api_error(404, "NOT_FOUND", "No such audit row")
     row.event = row.event + ".TAMPERED"
-    return {"tampered_seq": seq, "note": "row edited out-of-band; GET /audit?verify=true will report broken_at_seq"}
+    return {
+        "tampered_seq": seq,
+        "note": "row edited out-of-band; GET /audit?verify=true will report broken_at_seq",
+    }
 
 
 @router.post("/reset")

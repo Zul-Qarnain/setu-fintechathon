@@ -79,7 +79,11 @@ def create_payee(
     """Create a payee in the registry. Returns (payee, warnings). New payees start UNVERIFIED."""
     warnings: list[str] = []
     if not tokenize.is_valid_account(account_number):
-        raise api_error(422, "INVALID_ACCOUNT", "Account number must be 8-24 ASCII digits (no lookalike characters)")
+        raise api_error(
+            422,
+            "INVALID_ACCOUNT",
+            "Account number must be 8-24 ASCII digits (no lookalike characters)",
+        )
     existing = find_payee_by_account(db, owner.id, account_number)
     if existing is not None:
         return existing, ["ALREADY_EXISTS"]

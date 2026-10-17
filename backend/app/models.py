@@ -18,7 +18,6 @@ def utcnow() -> datetime:
     return datetime.now(UTC)
 
 
-
 def aware(dt: datetime | None) -> datetime | None:
     if dt is None:
         return None
@@ -160,5 +159,3 @@ class BankTxn(Base):
     state: Mapped[str] = mapped_column(String(16))  # settled | failed | held
     failure_code: Mapped[str | None] = mapped_column(String(32), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
-
-

@@ -10,8 +10,10 @@ def test_health() -> None:
 
 
 def test_cors_for_web_origin() -> None:
-    r = c.options("/health", headers={"Origin": "http://localhost:3000",
-                                      "Access-Control-Request-Method": "GET"})
+    r = c.options(
+        "/health",
+        headers={"Origin": "http://localhost:3000", "Access-Control-Request-Method": "GET"},
+    )
     assert r.headers["access-control-allow-origin"] == "http://localhost:3000"
 
 

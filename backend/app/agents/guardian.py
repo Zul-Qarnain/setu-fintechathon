@@ -15,42 +15,60 @@ from app.domain import tokenize
 
 # (code, severity, regex, message)
 _RULES: list[tuple[str, str, str, str]] = [
-    ("INJECTION_PHRASE", "block",
-     r"ignore\s+(?:all\s+|any\s+|the\s+)?(?:previous|prior|above|earlier)\s+(?:instructions?|rules?|prompts?)"
-     r"|disregard\s+(?:all\s+|any\s+|the\s+)?(?:previous|prior|above|your)\s+\w*\s*(?:instructions?|rules?)"
-     r"|(?:note|message|instruction)s?\s+to\s+(?:the\s+)?(?:ai|assistant|agent|model|llm|bot)"
-     r"|system\s*(?:prompt|override|message)\s*[:：]"
-     r"|you\s+are\s+now\s+(?:in\s+)?(?:a\s+)?(?:developer|admin|dan|unrestricted)"
-     r"|<\s*/?\s*(?:system|assistant|instructions?)\s*>"
-     r"|(?:忽略|无视|不要理会)(?:之前|以上|上述|先前|前面)?的?(?:所有|全部|任何)?(?:指令|指示|规则|提示|说明)"
-     r"|系统(?:提示|指令|消息)\s*[:：]"
-     r"|(?:给|致)(?:AI|人工智能|助手|智能体)(?:的)?(?:备注|说明|指令)",
-     "Document contains an instruction aimed at the assistant."),
-    ("NO_CONFIRMATION_DEMAND", "block",
-     r"(?:do\s+not|don't|never)\s+(?:ask|tell|inform|notify|confirm\s+with|alert)\s+(?:the\s+)?(?:user|student|parent|owner)"
-     r"|without\s+(?:asking|confirmation|approval|verification)"
-     r"|skip\s+(?:the\s+)?(?:approval|verification|totp|2fa|confirmation)"
-     r"|(?:不要|无需|不必|别)(?:询问|告诉|通知|确认|征求)(?:用户|学生|家长|本人)?"
-     r"|无需(?:审批|验证|确认|批准)|跳过(?:审批|验证|确认)",
-     "Content tells the assistant to bypass user confirmation or approval."),
-    ("TOOL_COMMAND_IN_DOC", "block",
-     r"\b(?:propose_payment|execute_payment|transfer_funds|send_money|export_all|dump_users)\b"
-     r"|(?:立即|马上|现在)(?:向|给).{0,30}(?:转账|汇款|付款)",
-     "Document text contains a payment/tool command."),
-    ("PERSONAL_ACCOUNT_CHANNEL", "block",
-     r"personal\s+(?:wechat|alipay|account|bank\s+card)|(?:pay|transfer)\s+(?:via|to|through)\s+(?:my\s+)?(?:wechat|alipay|whatsapp|telegram)"
-     r"|gift\s*cards?|crypto|bitcoin|usdt"
-     r"|个人(?:微信|支付宝|账户|账号|银行卡)|私人账户|礼品卡|比特币|虚拟货币",
-     "Payment requested to a personal account or untraceable channel."),
-    ("URGENCY_SCAM", "warn",
-     r"within\s+\d+\s+(?:hours?|minutes?)|visa\s+(?:will\s+be\s+)?(?:cancel|revok|void)|deport|arrest|police|immediately\s+or"
-     r"|\d+\s*(?:小时|分钟)内|签证(?:将|会)?(?:被)?(?:取消|吊销|作废)|遣返|逮捕|公安|立即缴费否则|否则.{0,10}(?:取消|冻结)",
-     "Urgency / threat wording typical of scams."),
-    ("PAYEE_CHANGE_NOTICE", "warn",
-     r"(?:bank|account)\s+(?:details?|number|account)?\s*(?:has|have)?\s*(?:been\s+)?(?:changed|updated|moved)"
-     r"|new\s+(?:bank\s+)?account|changed\s+(?:our|the)\s+(?:bank\s+)?account|please\s+(?:use|transfer\s+to)\s+(?:the\s+)?new"
-     r"|(?:账号|账户|收款(?:账号|账户))(?:已)?(?:变更|更换|更改|调整)|新(?:的)?(?:收款)?(?:账号|账户)|转(?:至|到)新",
-     "Notice claims the payee account has changed."),
+    (
+        "INJECTION_PHRASE",
+        "block",
+        r"ignore\s+(?:all\s+|any\s+|the\s+)?(?:previous|prior|above|earlier)\s+(?:instructions?|rules?|prompts?)"
+        r"|disregard\s+(?:all\s+|any\s+|the\s+)?(?:previous|prior|above|your)\s+\w*\s*(?:instructions?|rules?)"
+        r"|(?:note|message|instruction)s?\s+to\s+(?:the\s+)?(?:ai|assistant|agent|model|llm|bot)"
+        r"|system\s*(?:prompt|override|message)\s*[:：]"
+        r"|you\s+are\s+now\s+(?:in\s+)?(?:a\s+)?(?:developer|admin|dan|unrestricted)"
+        r"|<\s*/?\s*(?:system|assistant|instructions?)\s*>"
+        r"|(?:忽略|无视|不要理会)(?:之前|以上|上述|先前|前面)?的?(?:所有|全部|任何)?(?:指令|指示|规则|提示|说明)"
+        r"|系统(?:提示|指令|消息)\s*[:：]"
+        r"|(?:给|致)(?:AI|人工智能|助手|智能体)(?:的)?(?:备注|说明|指令)",
+        "Document contains an instruction aimed at the assistant.",
+    ),
+    (
+        "NO_CONFIRMATION_DEMAND",
+        "block",
+        r"(?:do\s+not|don't|never)\s+(?:ask|tell|inform|notify|confirm\s+with|alert)\s+(?:the\s+)?(?:user|student|parent|owner)"
+        r"|without\s+(?:asking|confirmation|approval|verification)"
+        r"|skip\s+(?:the\s+)?(?:approval|verification|totp|2fa|confirmation)"
+        r"|(?:不要|无需|不必|别)(?:询问|告诉|通知|确认|征求)(?:用户|学生|家长|本人)?"
+        r"|无需(?:审批|验证|确认|批准)|跳过(?:审批|验证|确认)",
+        "Content tells the assistant to bypass user confirmation or approval.",
+    ),
+    (
+        "TOOL_COMMAND_IN_DOC",
+        "block",
+        r"\b(?:propose_payment|execute_payment|transfer_funds|send_money|export_all|dump_users)\b"
+        r"|(?:立即|马上|现在)(?:向|给).{0,30}(?:转账|汇款|付款)",
+        "Document text contains a payment/tool command.",
+    ),
+    (
+        "PERSONAL_ACCOUNT_CHANNEL",
+        "block",
+        r"personal\s+(?:wechat|alipay|account|bank\s+card)|(?:pay|transfer)\s+(?:via|to|through)\s+(?:my\s+)?(?:wechat|alipay|whatsapp|telegram)"
+        r"|gift\s*cards?|crypto|bitcoin|usdt"
+        r"|个人(?:微信|支付宝|账户|账号|银行卡)|私人账户|礼品卡|比特币|虚拟货币",
+        "Payment requested to a personal account or untraceable channel.",
+    ),
+    (
+        "URGENCY_SCAM",
+        "warn",
+        r"within\s+\d+\s+(?:hours?|minutes?)|visa\s+(?:will\s+be\s+)?(?:cancel|revok|void)|deport|arrest|police|immediately\s+or"
+        r"|\d+\s*(?:小时|分钟)内|签证(?:将|会)?(?:被)?(?:取消|吊销|作废)|遣返|逮捕|公安|立即缴费否则|否则.{0,10}(?:取消|冻结)",
+        "Urgency / threat wording typical of scams.",
+    ),
+    (
+        "PAYEE_CHANGE_NOTICE",
+        "warn",
+        r"(?:bank|account)\s+(?:details?|number|account)?\s*(?:has|have)?\s*(?:been\s+)?(?:changed|updated|moved)"
+        r"|new\s+(?:bank\s+)?account|changed\s+(?:our|the)\s+(?:bank\s+)?account|please\s+(?:use|transfer\s+to)\s+(?:the\s+)?new"
+        r"|(?:账号|账户|收款(?:账号|账户))(?:已)?(?:变更|更换|更改|调整)|新(?:的)?(?:收款)?(?:账号|账户)|转(?:至|到)新",
+        "Notice claims the payee account has changed.",
+    ),
 ]
 _COMPILED = [(c, sev, re.compile(rx, re.I), msg) for c, sev, rx, msg in _RULES]
 _SUMMARY_LINE = re.compile(
@@ -117,7 +135,7 @@ def registry_flags(
         return []
     h = tokenize.account_hash(account_number)
     sk = tokenize.name_skeleton(payee_name)
-    for name, acct_hash, verified in registry:
+    for _name, acct_hash, verified in registry:
         if acct_hash == h:
             if verified:
                 return []
@@ -157,5 +175,3 @@ def merge(verdict: s.GuardianVerdict, extra: list[s.GuardianFlag]) -> s.Guardian
 def check_message(text: str) -> s.GuardianVerdict:
     """Guardian pass for chat/SMS text (no parsed fields)."""
     return scan_text(text, None)
-
-

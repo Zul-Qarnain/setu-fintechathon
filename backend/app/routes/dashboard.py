@@ -31,8 +31,12 @@ def obligations(user: User = Depends(current_user), db: Session = Depends(get_se
 
 @router.get("/dashboard", response_model=s.DashboardOut)
 def dashboard(user: User = Depends(current_user), db: Session = Depends(get_session)) -> s.DashboardOut:
-    obs = [services.obligation_out(db, o) for o in db.execute(
-        select(Obligation).where(Obligation.user_id == user.id).order_by(Obligation.due_date)).scalars()]
+    obs = [
+        services.obligation_out(db, o)
+        for o in db.execute(
+            select(Obligation).where(Obligation.user_id == user.id).order_by(Obligation.due_date)
+        ).scalars()
+    ]
     open_obs = [o for o in obs if o.status == "open"]
     nxt = open_obs[0] if open_obs else None
     fx = get_fx_service()

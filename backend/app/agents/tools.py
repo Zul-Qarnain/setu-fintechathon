@@ -80,7 +80,11 @@ def get_obligation(state: ToolState, a: dict[str, Any]) -> dict[str, Any]:
         o2 = db.execute(q.where(Obligation.doc_hash == d.doc_hash, Obligation.status != "cancelled")).scalars().first()
         if o2:
             return _obligation_dict(db, o2)
-        return {"found": False, "document_status": d.status, "needs_confirmation": d.status == "pending_confirmation"}
+        return {
+            "found": False,
+            "document_status": d.status,
+            "needs_confirmation": d.status == "pending_confirmation",
+        }
     rows = list(db.execute(q.where(Obligation.status == "open").order_by(Obligation.due_date)).scalars())
     if kw:
         k = str(kw).lower()
@@ -92,8 +96,13 @@ def get_obligation(state: ToolState, a: dict[str, Any]) -> dict[str, Any]:
 def list_obligations_due(state: ToolState, a: dict[str, Any]) -> dict[str, Any]:
     by_s = a.get("by")
     by = date.fromisoformat(by_s) if by_s else date.max
-    rows = list(state.db.execute(select(Obligation).where(
-        Obligation.user_id == state.user.id, Obligation.status == "open").order_by(Obligation.due_date)).scalars())
+    rows = list(
+        state.db.execute(
+            select(Obligation)
+            .where(Obligation.user_id == state.user.id, Obligation.status == "open")
+            .order_by(Obligation.due_date)
+        ).scalars()
+    )
     sel = [o for o in rows if o.due_date <= by]
     total = budget.total_due_by([budget.Obl(o.amount_cny, o.due_date) for o in rows], by)
     return {
@@ -131,9 +140,13 @@ def budget_summary(state: ToolState, a: dict[str, Any]) -> dict[str, Any]:
 
     spent = Decimal("0")
     month = state.today.strftime("%Y-%m")
-    for r in state.db.execute(select(ActionRow).where(ActionRow.owner_id == state.user.id,
-                                                      ActionRow.type == "payment",
-                                                      ActionRow.status == "executed")).scalars():
+    for r in state.db.execute(
+        select(ActionRow).where(
+            ActionRow.owner_id == state.user.id,
+            ActionRow.type == "payment",
+            ActionRow.status == "executed",
+        )
+    ).scalars():
         if aware(r.created_at) and aware(r.created_at).strftime("%Y-%m") == month:  # type: ignore[union-attr]
             spent += Decimal(json.loads(r.params_json)["amount_cny"])
     b = budget.summarize(state.user.monthly_budget_cny, spent)
@@ -162,27 +175,41 @@ def propose_payment(state: ToolState, a: dict[str, Any]) -> dict[str, Any]:
         o = db.get(Obligation, oid)
         if o is None or o.user_id != user.id:
             return {"proposed": False, "reason": "obligation not found"}
-        costs_out = state.last_plan if state.last_plan and state.last_plan.get("amount_cny") == str(o.amount_cny) else None
+        costs_out = (
+            state.last_plan if state.last_plan and state.last_plan.get("amount_cny") == str(o.amount_cny) else None
+        )
         state.proposals.append(Proposal("payment", {
             "obligation_id": o.id, "amount_cny": str(o.amount_cny), "payee_id": o.payee_id,
             "payee_name": (db.get(Payee, o.payee_id).name if o.payee_id else None),  # type: ignore[union-attr]
             "reference": o.reference, "document_amount_cny": str(o.amount_cny)},
             "confirmed_obligation", costs_out))  # fmt: skip
-        return {"proposed": True, "amount_cny": str(o.amount_cny), "source": "confirmed_obligation", **cap}
+        return {
+            "proposed": True,
+            "amount_cny": str(o.amount_cny),
+            "source": "confirmed_obligation",
+            **cap,
+        }
     if did:
         d = db.get(Document, did)
         if d is None or d.owner_id != user.id:
             return {"proposed": False, "reason": "document not found"}
         parsed = json.loads(d.parsed_json)
         plain = doc_service.doc_plain(d)
-        payee = _registry_payee_by_token(state, plain.get("account_number"))
+        doc_acct = plain.get("account_number")
+        payee = _registry_payee_by_token(state, doc_acct)
         state.proposals.append(Proposal("payment", {
             "amount_cny": parsed.get("amount_cny"), "payee_id": payee.id if payee else None,
             "payee_name": parsed.get("payee_name"), "document_id": d.id,
-            "payee_account_token": tokenize.account_token(plain["account_number"]) if plain.get("account_number") else None},
+            "payee_account_token": tokenize.account_token(doc_acct) if doc_acct else None},
             "document_text"))  # fmt: skip
-        state.guardian_blocked_docs.add(d.id) if d.status == "blocked" else None
-        return {"proposed": True, "amount_cny": parsed.get("amount_cny"), "source": "document_text", **cap}
+        if d.status == "blocked":
+            state.guardian_blocked_docs.add(d.id)
+        return {
+            "proposed": True,
+            "amount_cny": parsed.get("amount_cny"),
+            "source": "document_text",
+            **cap,
+        }
     # free-form (model/user text): payee must resolve in registry or it is blocked by policy
     payee = _registry_payee_by_token(state, a.get("payee_account"))
     amt = _dec(a.get("amount_cny"))
@@ -203,8 +230,15 @@ def propose_verify_payee(state: ToolState, a: dict[str, Any]) -> dict[str, Any]:
     if not name:
         # name unknown from an SMS: reuse the single verified payee name if the user has exactly one
         # recent obligation payee; else a generic placeholder (needs human completion)
-        o = state.db.execute(select(Obligation).where(Obligation.user_id == state.user.id,
-                                                      Obligation.status == "open").order_by(Obligation.due_date)).scalars().first()
+        o = (
+            state.db.execute(
+                select(Obligation)
+                .where(Obligation.user_id == state.user.id, Obligation.status == "open")
+                .order_by(Obligation.due_date)
+            )
+            .scalars()
+            .first()
+        )
         p0 = state.db.get(Payee, o.payee_id) if o and o.payee_id else None
         name = p0.name if p0 else "Unknown payee (from message)"
     payee, warnings = services.create_payee(state.db, state.user, name, raw, "(unverified, from message)", source="sms")
@@ -233,4 +267,3 @@ TOOLS = {
     "compute_costs": compute_costs, "budget_summary": budget_summary, "propose_payment": propose_payment,
     "propose_verify_payee": propose_verify_payee, "draft_message": draft_message,
 }  # fmt: skip
-
