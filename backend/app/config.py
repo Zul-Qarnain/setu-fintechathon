@@ -30,6 +30,7 @@ class Settings(BaseSettings):
     t2_cap_cny: str = "2000"
     setu_data_dir: str = ""  # defaults to <repo>/data
     totp_max_failures: int = 5
+    fixed_today: str = ""  # ISO date override for deterministic eval/demo
     totp_lock_seconds: int = 300
 
     @property

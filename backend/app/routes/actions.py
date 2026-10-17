@@ -1,34 +1,35 @@
 from __future__ import annotations
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 
+from app import actions_service as svc
 from app import schemas as s
-from app import stubs
+from app.db import get_session
+from app.deps import current_user, rate_limit
+from app.models import User
 
-router = APIRouter(prefix="/actions", tags=["actions"])
+router = APIRouter(prefix="/actions", tags=["actions"], dependencies=[Depends(rate_limit)])
 
 
 @router.get("", response_model=list[s.ActionOut])
-def list_actions(status: str | None = None) -> list[s.ActionOut]:
-    return [stubs.action("T3"), stubs.action("COOL", "cooling_off")]
+def list_actions(status: str | None = None, user: User = Depends(current_user),
+                 db: Session = Depends(get_session)) -> list[s.ActionOut]:  # fmt: skip
+    return [svc.action_out(db, r) for r in svc.visible_actions(db, user, status)]
 
 
 @router.get("/{action_id}", response_model=s.ActionOut)
-def get_action(action_id: str) -> s.ActionOut:
-    return stubs.action("T3")
+def get_action(action_id: str, user: User = Depends(current_user), db: Session = Depends(get_session)) -> s.ActionOut:
+    return svc.action_out(db, svc.get_visible(db, user, action_id))
 
 
 @router.post("/{action_id}/approve", response_model=s.ActionOut)
-def approve(action_id: str, body: s.ApproveRequest) -> s.ActionOut:
-    a = stubs.action("T3", "executed")
-    a.approvals = [s.ApprovalRecord(approver_id=stubs.USER.id, role="student", at=stubs.NOW,
-                                    kind="totp"),
-                   s.ApprovalRecord(approver_id=stubs.APPROVER.id, role="family_approver",
-                                    at=stubs.NOW, kind="family_approver")]
-    a.result = {"bank_txn_id": "sbx_txn_000123", "state": "settled", "sandbox": True}
-    return a
+def approve(action_id: str, body: s.ApproveRequest, user: User = Depends(current_user),
+            db: Session = Depends(get_session)) -> s.ActionOut:  # fmt: skip
+    return svc.action_out(db, svc.approve(db, user, action_id, body.totp_code))
 
 
 @router.post("/{action_id}/reject", response_model=s.ActionOut)
-def reject(action_id: str, body: s.RejectRequest) -> s.ActionOut:
-    return stubs.action("T3", "rejected")
+def reject(action_id: str, body: s.RejectRequest, user: User = Depends(current_user),
+           db: Session = Depends(get_session)) -> s.ActionOut:  # fmt: skip
+    return svc.action_out(db, svc.reject(db, user, action_id, body.reason))

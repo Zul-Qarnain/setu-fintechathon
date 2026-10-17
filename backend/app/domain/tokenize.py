@@ -43,7 +43,7 @@ def has_homoglyphs(raw: str) -> bool:
     if any(ch in _CONFUSABLES for ch in raw):
         return True
     # fullwidth digits/letters are folded by NFKC but are still a spoofing signal
-    return any(0xFF10 <= ord(ch) <= 0xFF5A for ch in raw)
+    return any(0xFF10 <= ord(ch) <= 0xFF19 or 0xFF21 <= ord(ch) <= 0xFF3A or 0xFF41 <= ord(ch) <= 0xFF5A for ch in raw)
 
 
 def is_valid_account(raw: str) -> bool:

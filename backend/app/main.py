@@ -11,6 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.config import get_settings
+from app.sandbox_bank import api as sandbox_api
 from app.routes import actions, audit, auth, chat, dashboard, demo, documents, evidence, fx, payees
 
 
@@ -60,8 +61,22 @@ def create_app() -> FastAPI:
                 "llm_provider": settings.llm_provider, "fx_mode": settings.fx_mode,
                 "synthetic_data": True, "version": "0.1.0"}
 
-    for r in (auth, documents, chat, fx, actions, payees, audit, evidence, dashboard, demo):
+    routers = [auth, documents, chat, fx, actions, payees, audit, evidence, dashboard]
+    for r in routers:
         app.include_router(r.router)
+    app.include_router(sandbox_api.router)
+    if settings.demo_mode:
+        app.include_router(demo.router)
+
+    @app.on_event("startup")
+    def _startup() -> None:
+        from app import db as dbm
+        from app.seed import seed_if_empty
+
+        dbm.init_db()
+        with dbm.session_factory()() as s:
+            seed_if_empty(s)
+            s.commit()
     return app
 
 

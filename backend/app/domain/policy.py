@@ -111,9 +111,15 @@ def decide(action: Action, ctx: Context) -> Decision:
 def _decide_money(action: Action, ctx: Context) -> Decision:
     if ctx.guardian_blocked:
         return _block(["INJECTION_DETECTED"], "Guardian flagged the source content: blocked.")
-    if action.source not in TRUSTED_SOURCES:
-        return _block(["DOC_ONLY_SOURCE"], "Action sourced only from document/message/model text: blocked.")
     payee = action.payee
+    if action.source not in TRUSTED_SOURCES:
+        code = "MODEL_SUGGESTION" if action.source == "model_suggestion" else "DOC_ONLY_SOURCE"
+        why = [code]
+        if payee is None:
+            why.append("PAYEE_UNREGISTERED")
+        elif not payee.verified:
+            why.append("PAYEE_UNVERIFIED")
+        return _block(why, "Action sourced only from document/message/model text: blocked.")
     if payee is None:
         return _block(["PAYEE_UNREGISTERED"], "Payee is not in the registry: blocked.")
     if payee.owner_id != action.owner_id:
