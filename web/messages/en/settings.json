@@ -1,1 +1,49 @@
-{}
+{
+  "title": "Settings",
+  "subtitle": "Two-factor (TOTP), language, consent and your data.",
+  "totp": {
+    "title": "Authenticator (TOTP)",
+    "enabled": "TOTP is enabled for this account.",
+    "alreadyEnabled": "TOTP is already enabled for this account, so no new QR code is shown.",
+    "notEnabled": "TOTP is not set up yet. Payments of any size need it.",
+    "start": "Set up TOTP",
+    "starting": "Preparing…",
+    "scan": "Scan this QR code with an authenticator app (Google Authenticator, Authy, 1Password…).",
+    "orSecret": "Or enter this secret manually",
+    "code": "Enter the 6-digit code from the app to finish",
+    "verify": "Verify and enable",
+    "verifying": "Verifying…",
+    "success": "TOTP enabled ✓",
+    "qrAlt": "QR code for the authenticator secret"
+  },
+  "language": {
+    "title": "Language",
+    "help": "English is the official language. Chinese (简体中文) covers the dashboard, agent, approvals and audit log; other screens stay in English."
+  },
+  "consent": {
+    "title": "Consent (PIPL-style)",
+    "help": "Stored on this device only in this demo. You can change these at any time.",
+    "sensitive": "I consent to processing my fee notices (may contain sensitive personal information) to plan payments.",
+    "crossBorder": "I acknowledge the cross-border data transfer notice: data stays in the sandbox/offline demo and is never sent abroad here.",
+    "llm": "Allow the optional LLM adapter to see tokenised, synthetic data (default off).",
+    "saved": "Saved on this device."
+  },
+  "data": {
+    "title": "Your data",
+    "export": "Export evidence (JSON)",
+    "exportHelp": "Downloads your audit events with hash-chain verification.",
+    "erase": "Erase my data",
+    "eraseHelp": "Erases your account data (PIPL erasure). Audit entries keep hashes only.",
+    "eraseConfirmTitle": "Erase all your data?",
+    "eraseConfirmBody": "This deletes your account and cannot be undone. You will be signed out.",
+    "eraseConfirm": "Yes, erase",
+    "erased": "Your data was erased."
+  },
+  "demo": {
+    "title": "Demo controls (mock mode only)",
+    "help": "Shorten the 24-hour cooling-off so the approval can be shown in the demo.",
+    "seconds": "Cooling-off seconds (0 = real 24h)",
+    "set": "Apply"
+  },
+  "notice": "All data is synthetic. Bank is a sandbox. Setu never holds funds."
+}

@@ -1,1 +1,35 @@
-{}
+{
+  "title": "Payees",
+  "subtitle": "Accounts you can pay. New or changed payees start unverified with a 24-hour cooling-off, and must be verified by your family approver.",
+  "verified": "Verified",
+  "unverified": "Unverified",
+  "coolingOff": "Cooling-off",
+  "cooling": "Cooling-off ends in",
+  "coolingDone": "Cooling-off complete — ready to verify",
+  "account": "Account",
+  "token": "Account token",
+  "bank": "Bank",
+  "verifiedAt": "Verified {date}",
+  "createdAt": "Added {date}",
+  "empty": "No payees yet.",
+  "add": "Add payee",
+  "addHelp": "A payee you add is treated as NEW: tier T3, 24-hour cooling-off, then TOTP and your family approver.",
+  "name": "Payee name",
+  "accountNumber": "Account number",
+  "bankName": "Bank",
+  "addSubmit": "Add payee",
+  "adding": "Adding…",
+  "added": "Payee added (unverified, 24h cooling-off).",
+  "verifyBtn": "Verify payee",
+  "verifying": "Verifying…",
+  "needsApprover": "Needs your family approver to verify.",
+  "verifyDone": "Payee verified.",
+  "col": {
+    "name": "Payee",
+    "status": "Status",
+    "account": "Account",
+    "bank": "Bank",
+    "action": "Action"
+  },
+  "syntheticNote": "Accounts shown are SYNTHETIC sandbox accounts."
+}
