@@ -13,7 +13,7 @@ import * as security from './security.js';
 import { createPayee } from './services.js';
 import type { UserRow } from './db/schema.js';
 
-interface Persona {
+export interface Persona {
   email: string;
   password: string;
   role: string;

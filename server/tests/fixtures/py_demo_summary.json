@@ -1,0 +1,142 @@
+{
+  "generated_at": "2026-10-17T05:49:28.825475+00:00",
+  "offline": true,
+  "synthetic": true,
+  "steps": [
+    {
+      "step": "seed",
+      "users": 7,
+      "obligations": 8,
+      "synthetic": true,
+      "fx": "SAMPLE fixture (not live)"
+    },
+    {
+      "step": "upload_notice",
+      "file": "en_tuition_aisha.txt",
+      "status": "pending_confirmation",
+      "guardian": "clean",
+      "amount": "18500.00"
+    },
+    {
+      "step": "confirm_fields",
+      "blocked": false,
+      "obligation": "obl_b244cd932458",
+      "payee_verified": true
+    },
+    {
+      "step": "chat_pay",
+      "intent": "pay_obligation",
+      "tier": "T3",
+      "status": "awaiting_approval",
+      "required": [
+        "totp",
+        "family_approver"
+      ],
+      "reply_validated": true
+    },
+    {
+      "step": "student_totp",
+      "status": "awaiting_approval",
+      "still_required": [
+        "family_approver"
+      ]
+    },
+    {
+      "step": "family_approver_totp",
+      "status": "executed",
+      "bank_txn": "sbx_txn_e413da615412",
+      "state": "settled"
+    },
+    {
+      "step": "injected_notice",
+      "file": "atk_injection_en_01.txt",
+      "doc_status": "blocked",
+      "flags": [
+        "INJECTION_PHRASE",
+        "NO_CONFIRMATION_DEMAND"
+      ],
+      "tier": "T4",
+      "status": "blocked"
+    },
+    {
+      "step": "sms_payee_change",
+      "intent": "payee_change",
+      "tier": "T3",
+      "status": "cooling_off",
+      "approve_attempt": [
+        409,
+        "COOLING_OFF_ACTIVE"
+      ]
+    },
+    {
+      "step": "t2_payment",
+      "tier": "T2",
+      "required": [
+        "totp"
+      ],
+      "status": "executed",
+      "amount": "1350.00"
+    },
+    {
+      "step": "sandbox_showcase",
+      "key": "idem-demo-1",
+      "why": "dest ends 0013 -> ACCOUNT_CLOSED",
+      "state": "failed",
+      "failure": "ACCOUNT_CLOSED",
+      "replay": false
+    },
+    {
+      "step": "sandbox_showcase",
+      "key": "idem-demo-2",
+      "why": "cents .99 -> RISK_HOLD",
+      "state": "held",
+      "failure": "RISK_HOLD",
+      "replay": false
+    },
+    {
+      "step": "sandbox_showcase",
+      "key": "idem-demo-3",
+      "why": "over per-txn limit -> LIMIT_EXCEEDED",
+      "state": "failed",
+      "failure": "LIMIT_EXCEEDED",
+      "replay": false
+    },
+    {
+      "step": "sandbox_showcase",
+      "key": "idem-demo-4",
+      "why": "ok -> settled",
+      "state": "settled",
+      "failure": null,
+      "replay": false
+    },
+    {
+      "step": "sandbox_showcase",
+      "key": "idem-demo-4",
+      "why": "same idempotency key -> replay, no double spend",
+      "state": "settled",
+      "failure": null,
+      "replay": true
+    },
+    {
+      "step": "sandbox_showcase",
+      "key": "idem-demo-4",
+      "why": "same key, different amount -> rejected",
+      "state": "rejected",
+      "failure": "idempotency key reused with different parameters"
+    },
+    {
+      "step": "audit_verify",
+      "ok": true,
+      "checked": 54,
+      "broken_at_seq": null,
+      "reason": null
+    },
+    {
+      "step": "audit_after_tamper",
+      "ok": false,
+      "checked": 2,
+      "broken_at_seq": 3,
+      "reason": "hash mismatch"
+    }
+  ]
+}
