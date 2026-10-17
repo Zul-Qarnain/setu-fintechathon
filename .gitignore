@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+*.db
+*.sqlite
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+node_modules/
+.next/
+web/.env*.local
+.DS_Store
