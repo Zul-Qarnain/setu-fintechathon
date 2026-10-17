@@ -144,6 +144,11 @@ class ScriptedAdapter:
                     }
                 ],
             }
+        if _FX.search(msg):
+            return {
+                "intent": "quote_fx",
+                "tool_calls": [{"tool": "fx_quote", "args": {"amount_cny": extract_amount(msg) or "1000"}}],
+            }
         if _HOWMUCH.search(msg):
             by = parse_by_date(msg, ctx.today)
             amt = extract_amount(msg)
@@ -202,11 +207,6 @@ class ScriptedAdapter:
                         "args": {"obligation_id": "$get_obligation.obligation_id"},
                     },
                 ],
-            }
-        if _FX.search(msg):
-            return {
-                "intent": "quote_fx",
-                "tool_calls": [{"tool": "fx_quote", "args": {"amount_cny": extract_amount(msg) or "1000"}}],
             }
         if _FEES.search(msg):
             return {
