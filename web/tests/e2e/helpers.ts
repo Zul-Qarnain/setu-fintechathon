@@ -15,6 +15,8 @@ export async function login(page: Page, who: keyof typeof EMAIL, locale = "en") 
 }
 
 export async function resetMock(page: Page) {
+  // Real-backend runs (E2E_RESET_API=http://localhost:8000, backend started with DEMO_MODE=true): re-seed the demo DB so tests don't see earlier tampering.
+  if (process.env.E2E_RESET_API) await page.request.post(`${process.env.E2E_RESET_API}/demo/reset`);
   await page.goto("/en/login");
   await page.evaluate(() => { window.localStorage.clear(); window.sessionStorage.clear(); });
 }

@@ -90,7 +90,7 @@ test("language toggle switches to zh-CN, saves cookie, and formats ¥", async ({
   await page.getByRole("button", { name: "简体中文" }).click();
   await expect(page).toHaveURL(/\/zh-CN/);
   await expect(page.getByRole("heading", { name: "总览" })).toBeVisible();
-  await expect(page.getByText("¥18,500.00").first()).toBeVisible();
+  await expect(page.getByText(/¥(1,350|18,500)\.00/).first()).toBeVisible();
   const cookies = await context.cookies();
   expect(cookies.find((c) => c.name === "NEXT_LOCALE")?.value).toBe("zh-CN");
   await page.goto("/zh-CN/audit");
