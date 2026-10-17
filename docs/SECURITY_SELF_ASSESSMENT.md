@@ -1,6 +1,6 @@
 # Security self-assessment
 
-Scope: the Setu 桥 backend in this repository (FastAPI, SQLite, scripted offline agent, sandbox bank). **This is a self-assessment written by the builders. It has not been independently reviewed or penetration-tested.** All results quoted come from `evidence/` and were produced by real runs (`make evidence`).
+Scope: the Setu 桥 backend in this repository (Fastify/TypeScript, SQLite, scripted offline agent, sandbox bank). **This is a self-assessment written by the builders. It has not been independently reviewed or penetration-tested.** All results quoted come from `evidence/` and were produced by real runs (`make evidence`).
 
 ## 1. Tier table (what the system will and will not do on its own)
 
@@ -23,7 +23,7 @@ Admins cannot approve payments. A family approver can only act for students link
 | Adversarial scenarios (17) | see `evidence/security_report.md` | `evidence/security_report.md` |
 | Sandbox ledger log from the scripted demo | settled, `ACCOUNT_CLOSED`, `RISK_HOLD`, `LIMIT_EXCEEDED`, idempotent replay | `evidence/sandbox_logs.jsonl` |
 | Hash-chained audit export + tamper detection | `verify.ok` true, then false with `broken_at_seq` after a simulated DB edit | `evidence/audit_export.json`, `demo_summary.json` |
-| Automated tests | `make test` (unit, API, golden, security) | `backend/tests/` |
+| Automated tests | `make test` (unit, API, golden, security) | `server/tests/` |
 
 Caveat: the notice corpus and the attack scenarios were written by the same team that wrote the guardian rules. Passing them shows that known patterns are covered; it does **not** show generalisation to attacks we did not think of.
 

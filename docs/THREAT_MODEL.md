@@ -51,7 +51,7 @@ Actors: student (legitimate), family approver (legitimate, higher authority), ad
 | LLM06 | Excessive agency | mitigated | no tool moves money; propose-then-approve; server policy; executor accepts `ALLOW` only (A04, A13) |
 | LLM07 | System prompt leakage | low impact | scripted default has no secret prompt; adapters hold no secrets in prompts; planner output cannot reveal config (A14) |
 | LLM08 | Vector and embedding weaknesses | not applicable | no RAG / embeddings |
-| LLM09 | Misinformation | mitigated | all numbers computed in Python; reply validator rejects ungrounded numbers; FX labelled SAMPLE vs live (A15) |
+| LLM09 | Misinformation | mitigated | all numbers computed by deterministic code; reply validator rejects ungrounded numbers; FX labelled SAMPLE vs live (A15) |
 | LLM10 | Unbounded consumption | partial | rate limit, size caps, max 6 tool calls per plan; no token budget (adapters untested live) |
 
 ## 5. PIPL / Data Security Law mapping

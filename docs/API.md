@@ -20,7 +20,7 @@ Every non-2xx response:
   "request_id": "req_3fa91c2e0b17"
 }
 ```
-Codes in use: `UNAUTHORIZED` (401), `FORBIDDEN` (403), `NOT_FOUND` (404), `validation_error` (422), `UNSUPPORTED_DOCUMENT` (422, e.g. malformed/blank PDF), `UNSUPPORTED_PAIR` (422), `TOO_LARGE` (413), `TOTP_INVALID` (403), `TOTP_NOT_ENABLED` (403), `TOTP_NOT_STARTED` / `TOTP_ALREADY_ENABLED` (409), `TOTP_LOCKED` (429, 5 failures → 300 s), `COOLING_OFF_ACTIVE` (409), `INVALID_STATE` (409, e.g. approving a terminal action), `ALREADY_APPROVED` / `ALREADY_CONFIRMED` (409), `AMOUNT_MISMATCH` (409), `EMAIL_EXISTS` (409), `POLICY_BLOCKED` (403), `RATE_LIMITED` (429).
+Codes in use: `UNAUTHORIZED` (401), `FORBIDDEN` (403), `NOT_FOUND` (404), `validation_error` (422), `UNSUPPORTED_DOCUMENT` (422, e.g. any PDF in the TS build, which accepts text only), `UNSUPPORTED_PAIR` (422), `TOO_LARGE` (413), `TOTP_INVALID` (403), `TOTP_NOT_ENABLED` (403), `TOTP_NOT_STARTED` / `TOTP_ALREADY_ENABLED` (409), `TOTP_LOCKED` (429, 5 failures → 300 s), `COOLING_OFF_ACTIVE` (409), `INVALID_STATE` (409, e.g. approving a terminal action), `ALREADY_APPROVED` / `ALREADY_CONFIRMED` (409), `AMOUNT_MISMATCH` (409), `EMAIL_EXISTS` (409), `POLICY_BLOCKED` (403), `RATE_LIMITED` (429).
 (Cross-user resource access returns `NOT_FOUND`, never `FORBIDDEN`, to avoid leaking existence.)
 
 ## Tier labels
@@ -40,7 +40,7 @@ Codes in use: `UNAUTHORIZED` (401), `FORBIDDEN` (403), `NOT_FOUND` (404), `valid
 ## The `trace` object (agent live view)
 `POST /chat` returns `trace` so the UI can render **intent → plan → tools → guardian → policy → tier**:
 - `steps[]`: ordered, `step` ∈ `intake|planner|tools|guardian|policy|executor|validator`, `status` ∈ `ok|blocked|skipped|rejected`, `duration_ms`, free-form `detail`.
-- `tool_calls[]`: `{tool, args, output, ok}` — outputs are deterministic Python results (the only source of numbers in `reply`).
+- `tool_calls[]`: `{tool, args, output, ok}` — outputs are deterministic tool results (the only source of numbers in `reply`).
 - `tier`, `decision` (final), `reply_validated` (reply-validator passed: every digit in the reply appears in tool outputs), `audit_seqs` (audit rows written during this turn).
 - `llm_mode`: `scripted-offline` by default.
 

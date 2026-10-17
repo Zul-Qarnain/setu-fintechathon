@@ -1,3 +1,18 @@
+# Setu TS backend — AS BUILT (read this first; the plan below is the pre-build design)
+
+Deviations from the plan below, all deliberate (GLM architecture review + time):
+- **Layout:** single package `server/` (no `packages/shared`, no monorepo). ESM, Node 20, TypeScript strict, Vitest.
+- **DB:** raw `better-sqlite3@12.4.1` with typed row mappers (no Drizzle); money stored as TEXT; timestamps TEXT in the Python format.
+- **TOTP:** hand-written RFC 6238 on `node:crypto` (injectable clock, ±1 step, replay protection, 5-failure/300 s lockout) instead of `otplib`; verified against `pyotp` vectors.
+- **Agents:** intake/guardian/planner/replies/policy/executor/graph hand-ported line-by-line. Guardian rule regexes are verbatim, with Unicode-aware stand-ins for Python's `\w`/`\b`; 555 differential vectors generated from the real Python code pass. `policy.decide` has 290 Python-generated vectors; audit chain and AES-GCM envelope have pinned cross-language vectors.
+- **LLM:** interface + deterministic scripted planner only. Gemini/Groq network adapters were **not** ported (any `LLM_PROVIDER` resolves to scripted).
+- **PDF:** not supported (text upload/paste only; PDF upload returns 422 UNSUPPORTED_DOCUMENT). No refresh tokens. No `gen_api_md` (docs/API.md is hand-maintained).
+- **Parity:** shape-parity, not byte-parity. `server/scripts/contract_diff.ts` runs 29 requests against both backends on fresh DBs and compares status + JSON shape (29/29 identical). `tests/parity/demo_replay.test.ts` replays the Python demo transcript. One intentional visible difference: unknown routes return FastAPI-style `{"detail":"Not Found"}` exactly like Python.
+- **Security defaults changed vs Python:** `DEMO_MODE` defaults to **false** (`/demo/*` is 404 unless `DEMO_MODE=true` or a valid `X-Admin-Token`); fresh random 12-byte AES-GCM IV per encryption; `timingSafeEqual` for secret comparisons; dev default keys rejected outside dev; audit `head_hash` printed at seed and demo end.
+- **Run:** `cd server && npm ci && npm test && npm run demo && npm run evidence`; API: `DEMO_MODE=true npm start` (port 8000).
+
+---
+
 # Setu 桥 — TypeScript Backend Architecture (v1)
 
 **Setu 桥 is a guarded agent for cross-border student finance.** All data is **SYNTHETIC**, the bank is a **SANDBOX**, FX defaults to labelled SAMPLE rates, and Setu never holds funds.

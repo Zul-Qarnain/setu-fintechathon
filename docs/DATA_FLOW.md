@@ -7,7 +7,7 @@ All data in this repository is **SYNTHETIC** (personas, notices, SMS, accounts).
 ```mermaid
 sequenceDiagram
   participant S as Student (browser)
-  participant API as FastAPI
+  participant API as Fastify API
   participant G as Guardian + registry
   participant P as policy.decide
   participant F as Family approver
