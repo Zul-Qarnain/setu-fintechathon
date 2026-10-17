@@ -5,8 +5,6 @@
 
 import { parseAmount } from './intake.js';
 import { normalizeAccount, hasHomoglyphs as tokenizeHasHomoglyphs } from '../domain/tokenize.js';
-import { Decimal } from '../domain/money.js';
-import type { ParsedFields } from './intake.js';
 
 export interface GuardianFlag {
   code: string;
@@ -20,24 +18,34 @@ export interface GuardianVerdict {
   flags: GuardianFlag[];
 }
 
-// Compile patterns once with case-insensitive flag
-const _COMPILED = [
-  ["INJECTION_PHRASE", "block", /(?:ignore\s+(?:all\s+|any\s+|the\s+)?(?:previous|prior|above|earlier)\s+(?:instructions?|rules?|prompts?)|disregard\s+(?:all\s+|any\s+|the\s+)?(?:previous|prior|above|your)\s+\w*\s*(?:instructions?|rules?)|(?:note|message|instruction)s?\s+to\s+(?:the\s+)?(?:ai|assistant|agent|model|llm|bot)|system\s*(?:prompt|override|message)\s*[:：]|you\s+are\s+now\s+(?:in\s+)?(?:a\s+)?(?:developer|admin|dan|unrestricted)|<\s*\/?\s*(?:system|assistant|instructions?)\s*>|(?:忽略 | 无视 | 不要理会)(?:之前 | 以上 | 上述 | 先前 | 前面)?的？(?:所有 | 全部 | 任何)?(?:指令 | 指示 | 规则 | 提示 | 说明 )|系统(?:提示 | 指令 | 消息)\s*[:：]|(?:给 | 致)(?:AI|人工智能 | 助手 | 智能体)(?:的)?(?:备注 | 说明 | 指令))/i],
-  ["NO_CONFIRMATION_DEMAND", "block", /(?:do\s+not|don't|never)\s+(?:ask|tell|inform|notify|confirm\s+with|alert)\s+(?:the\s+)?(?:user|student|parent|owner)|without\s+(?:asking|confirmation|approval|verification)|(?:do\s+not|don't|no\s+need\s+to|never)\s+(?:ask\s+for\s+|wait\s+for\s+|require\s+|seek\s+)?(?:confirm\w*|approv\w*|verif\w*|otp|totp)|skip\s+(?:the\s+)?(?:approval|verification|totp|2fa|confirmation)|(?:不要 | 无需 | 不必 | 别)(?:询问 | 告诉 | 通知 | 确认 | 征求)(?:用户 | 学生 | 家长 | 本人)?|无需(?:审批 | 验证 | 确认 | 批准 )|跳过(?:审批 | 验证 | 确认))/i],
-  ["TOOL_COMMAND_IN_DOC", "block", /\b(?:propose_payment|execute_payment|transfer_funds|send_money|export_all|dump_users)\b|(?:立即 | 马上 | 现在)(?:向 | 给).{0,30}(?:转账 | 汇款 | 付款)/i],
-  ["PERSONAL_ACCOUNT_CHANNEL", "block", /personal\s+(?:wechat|alipay|account|bank\s+card)|(?:pay|transfer)\s+(?:via|to|through)\s+(?:my\s+)?(?:wechat|alipay|whatsapp|telegram)|gift\s*cards?|crypto|bitcoin|usdt|个人(?:微信 | 支付宝 | 账户 | 账号 | 银行卡 )|私人账户 | 礼品卡 | 比特币 | 虚拟货币/i],
-  ["URGENCY_SCAM", "warn", /within\s+\d+\s+(?:hours?|minutes?|hour|minute)|visa\s+(?:will\s+be\s+)?(?:cancel|revok|void)|deport|arrest|police|immediately\s+or|\d+\s*(?:小时 | 分钟) 内 | 签证(?:将 | 会)?(?:被)?(?:取消 | 吊销 | 作废 )|遣返 | 逮捕 | 公安 | 立即缴费否则 | 否则.{0,10}(?:取消 | 冻结)/i],
-  ["PAYEE_CHANGE_NOTICE", "warn", /(?:bank|account)\s+(?:details?|number|account)?\s*(?:has|have)?\s*(?:been\s+)?(?:changed|updated|moved)|new\s+(?:bank\s+)?account|changed\s+(?:our|the)\s+(?:bank\s+)?account|please\s+(?:use|transfer\s+to)\s+(?:the\s+)?new|(?:账号 | 账户 | 收款(?:账号 | 账户 ))(?:已)?(?:变更 | 更换 | 更改 | 调整 )|新(?:的)?(?:收款)?(?:账号 | 账户 )|转(?:至 | 到新)/i],
+export interface ParsedFields {
+  amount_cny: any;
+  due_date: any;
+  payee_name: string | null;
+  account_number: string | null;
+  account_raw: string | null;
+  reference: string | null;
+  item: string | null;
+  issuer: string | null;
+  language: string;
+}
+
+// Pre-compiled patterns with case-insensitive flag
+const _PATTERNS: Array<[string, string, RegExp, string]> = [
+  ["INJECTION_PHRASE", "block", /(?:ignore\s+(?:all\s+|any\s+|the\s+)?(?:previous|prior|above|earlier)\s+(?:instructions?|rules?|prompts?)|disregard\s+(?:all\s+|any\s+|the\s+)?(?:previous|prior|above|your)\s+\w*\s*(?:instructions?|rules?)|(?:note|message|instruction)s?\s+to\s+(?:the\s+)?(?:ai|assistant|agent|model|llm|bot)|system\s*(?:prompt|override|message)\s*[:：]|you\s+are\s+now\s+(?:in\s+)?(?:a\s+)?(?:developer|admin|dan|unrestricted)|<\s*\/?\s*(?:system|assistant|instructions?)\s*>|(?:忽略 | 无视 | 不要理会)(?:之前 | 以上 | 上述 | 先前 | 前面)?的？(?:所有 | 全部 | 任何)?(?:指令 | 指示 | 规则 | 提示 | 说明 )|系统(?:提示 | 指令 | 消息)\s*[:：]|(?:给 | 致)(?:AI|人工智能 | 助手 | 智能体)(?:的)?(?:备注 | 说明 | 指令))/i, "Document contains an instruction aimed at the assistant."],
+  ["NO_CONFIRMATION_DEMAND", "block", /(?:do\s+not|don't|never)\s+(?:ask|tell|inform|notify|confirm\s+with|alert)\s+(?:the\s+)?(?:user|student|parent|owner)|without\s+(?:asking|confirmation|approval|verification)|(?:do\s+not|don't|no\s+need\s+to|never)\s+(?:ask\s+for\s+|wait\s+for\s+|require\s+|seek\s+)?(?:confirm\w*|approv\w*|verif\w*|otp|totp)|skip\s+(?:the\s+)?(?:approval|verification|totp|2fa|confirmation)|(?:不要 | 无需 | 不必 | 别)(?:询问 | 告诉 | 通知 | 确认 | 征求)(?:用户 | 学生 | 家长 | 本人)?|无需(?:审批 | 验证 | 确认 | 批准 )|跳过(?:审批 | 验证 | 确认))/i, "Content tells the assistant to bypass user confirmation or approval."],
+  ["TOOL_COMMAND_IN_DOC", "block", /\b(?:propose_payment|execute_payment|transfer_funds|send_money|export_all|dump_users)\b|(?:立即 | 马上 | 现在)(?:向 | 给).{0,30}(?:转账 | 汇款 | 付款)/i, "Document text contains a payment/tool command."],
+  ["PERSONAL_ACCOUNT_CHANNEL", "block", /personal\s+(?:wechat|alipay|account|bank\s+card)|(?:pay|transfer)\s+(?:via|to|through)\s+(?:my\s+)?(?:wechat|alipay|whatsapp|telegram)|gift\s*cards?|crypto|bitcoin|usdt|个人(?:微信 | 支付宝 | 账户 | 账号 | 银行卡 )|私人账户 | 礼品卡 | 比特币 | 虚拟货币/i, "Payment requested to a personal account or untraceable channel."],
+  ["URGENCY_SCAM", "warn", /within\s+\d+\s+(?:hours?|minutes?|hour|minute)|visa\s+(?:will\s+be\s+)?(?:cancel|revok|void)|deport|arrest|police|immediately\s+or|\d+\s*(?:小时 | 分钟) 内 | 签证(?:将 | 会)?(?:被)?(?:取消 | 吊销 | 作废 )|遣返 | 逮捕 | 公安 | 立即缴费否则 | 否则.{0,10}(?:取消 | 冻结)/i, "Urgency / threat wording typical of scams."],
+  ["PAYEE_CHANGE_NOTICE", "warn", /(?:bank|account)\s+(?:details?|number|account)?\s*(?:has|have)?\s*(?:been\s+)?(?:changed|updated|moved)|new\s+(?:bank\s+)?account|changed\s+(?:our|the)\s+(?:bank\s+)?account|please\s+(?:use|transfer\s+to)\s+(?:the\s+)?new|(?:账号 | 账户 | 收款(?:账号 | 账户 ))(?:已)?(?:变更 | 更换 | 更改 | 调整 )|新(?:的)?(?:收款)?(?:账号 | 账户 )|转(?:至 | 到新)/i, "Notice claims the payee account has changed."],
 ];
 
 function _verdict(flags: GuardianFlag[]): GuardianVerdict {
   let score = 0.0;
   for (const f of flags) {
-    switch (f.severity) {
-      case "block": score += 0.6; break;
-      case "warn": score += 0.25; break;
-      case "info": score += 0.05; break;
-    }
+    if (f.severity === "block") score += 0.6;
+    else if (f.severity === "warn") score += 0.25;
+    else if (f.severity === "info") score += 0.05;
   }
   score = Math.min(score, 0.99);
   score = parseFloat(score.toFixed(2));
@@ -45,9 +53,8 @@ function _verdict(flags: GuardianFlag[]): GuardianVerdict {
     return { verdict: "blocked", score: Math.max(score, 0.9), flags };
   } else if (flags.some(f => f.severity === "warn")) {
     return { verdict: "suspicious", score, flags };
-  } else {
-    return { verdict: "clean", score, flags };
   }
+  return { verdict: "clean", score, flags };
 }
 
 export function scanText(text: string, parsed: ParsedFields | null = null): GuardianVerdict {
@@ -55,19 +62,10 @@ export function scanText(text: string, parsed: ParsedFields | null = null): Guar
   const seen = new Set<string>();
   const norm = text.normalize('NFKC');
   
-  for (const rule of _COMPILED) {
-    const [code, sev, rx] = rule;
+  for (const [code, sev, rx, msg] of _PATTERNS) {
     if (!seen.has(code) && rx.test(norm)) {
       seen.add(code);
-      const messages: Record<string, string> = {
-        "INJECTION_PHRASE": "Document contains an instruction aimed at the assistant.",
-        "NO_CONFIRMATION_DEMAND": "Content tells the assistant to bypass user confirmation or approval.",
-        "TOOL_COMMAND_IN_DOC": "Document text contains a payment/tool command.",
-        "PERSONAL_ACCOUNT_CHANNEL": "Payment requested to a personal account or untraceable channel.",
-        "URGENCY_SCAM": "Urgency / threat wording typical of scams.",
-        "PAYEE_CHANGE_NOTICE": "Notice claims the payee account has changed.",
-      };
-      flags.push({ code, severity: sev as GuardianFlag['severity'], message: messages[code] || "" });
+      flags.push({ code, severity: sev as GuardianFlag['severity'], message: msg });
     }
   }
   
@@ -82,24 +80,26 @@ export function scanText(text: string, parsed: ParsedFields | null = null): Guar
       }
     }
     
-    if (parsed.amount_cny !== null) {
-      // Check summary line - simplified
+    if (parsed.amount_cny != null) {
+      // Check summary line pattern
       const summaryPattern = /^(?:summary|total payable|total|in words|grand total|合计 | 总计 | 大写 | 摘要)[^:：\n]*[:]:(.+)$/mi;
       const matches = [...norm.matchAll(summaryPattern)];
       for (const m of matches) {
         const other = parseAmount(m[1]);
-        if (other !== null && !other.equals(parsed.amount_cny)) {
-          flags.push({ code: "AMOUNT_MISMATCH", severity: "block", message: "Summary amount differs from the 'Amount due' line." });
-          break;
+        if (other != null && typeof parsed.amount_cny === 'object' && 'toFixed' in parsed.amount_cny) {
+          if (!other.equals(parsed.amount_cny as any)) {
+            flags.push({ code: "AMOUNT_MISMATCH", severity: "block", message: "Summary amount differs from the 'Amount due' line." });
+            break;
+          }
         }
       }
     }
     
     const missing: string[] = [];
-    if (parsed.amount_cny === null) missing.push("amount");
-    if (parsed.due_date === null) missing.push("due_date");
-    if (parsed.payee_name === null) missing.push("payee");
-    if (parsed.account_raw === null) missing.push("account");
+    if (parsed.amount_cny == null) missing.push("amount");
+    if (parsed.due_date == null) missing.push("due_date");
+    if (parsed.payee_name == null) missing.push("payee");
+    if (parsed.account_raw == null) missing.push("account");
     if (missing.length > 0) {
       flags.push({ code: "FIELDS_MISSING", severity: "warn", message: `Could not parse: ${missing.join(', ')}.` });
     }
@@ -122,18 +122,17 @@ export function registryFlags(
   
   for (const [_name, acct_hash, verified] of registry) {
     if (acct_hash === h) {
-      if (verified) {
-        return [];
-      }
+      if (verified) return [];
       return [{ code: "PAYEE_UNVERIFIED", severity: "warn", message: "Account matches a payee that is not yet verified." }];
     }
   }
   
   for (const [name, _h, verified] of registry) {
-    if (nameSkeleton(name) === sk && verified && _plain(name) !== _plain(payee_name)) {
+    const ns = nameSkeleton(name);
+    if (ns === sk && verified && _plain(name) !== _plain(payee_name)) {
       return [{ code: "LOOKALIKE_PAYEE", severity: "block", message: "Payee name differs from a verified payee only by lookalike characters." }];
     }
-    if (nameSkeleton(name) === sk && verified) {
+    if (ns === sk && verified) {
       return [{ code: "PAYEE_CHANGED", severity: "warn", message: "Same payee name but a different account than the verified one." }];
     }
   }
@@ -154,10 +153,7 @@ function _plain(name: string): string {
 }
 
 function _near(a: string, b: string): boolean {
-  if (!a || !b || Math.abs(a.length - b.length) > 2) {
-    return false;
-  }
-  // Levenshtein distance <= 2
+  if (!a || !b || Math.abs(a.length - b.length) > 2) return false;
   let prev = Array.from({ length: b.length + 1 }, (_, i) => i);
   for (let i = 1; i <= a.length; i++) {
     const cur = [i];
@@ -186,7 +182,7 @@ function isValidAccount(raw: string): boolean {
 
 function nameToHash(raw: string): string {
   const normalized = normalizeAccount(raw);
-  return normalized.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0).toString(16);
+  return normalized.split('').reduce((acc: number, c: string) => acc + c.charCodeAt(0), 0).toString(16);
 }
 
 function nameSkeleton(name: string): string {

@@ -3,7 +3,6 @@
 import { z } from 'zod';
 
 export const INTENTS = ["pay_obligation", "quote_fx", "how_much_needed", "payee_change", "explain_fees", "unsafe_request", "unknown"] as const;
-type Intent = typeof INTENTS[number];
 
 // Tool argument schemas matching Python's extra=forbid
 const GetObligationArgs = z.object({
@@ -93,7 +92,8 @@ export function validatePlan(raw: unknown): z.infer<typeof PlannerOutputSchema> 
         model.parse(tc.args);
       } catch (e) {
         if (e instanceof z.ZodError) {
-          throw new PlanRejected(`args for ${tc.tool}: ${e.errors()[0]?.msg || 'validation error'}`);
+          const firstErr = e.errors[0];
+          throw new PlanRejected(`args for ${tc.tool}: ${firstErr?.message || 'validation error'}`);
         }
         throw e;
       }
@@ -101,7 +101,8 @@ export function validatePlan(raw: unknown): z.infer<typeof PlannerOutputSchema> 
     return out;
   } catch (e) {
     if (e instanceof z.ZodError) {
-      throw new PlanRejected(`schema: ${e.errors()[0]?.msg || 'invalid structure'}`);
+      const firstErr = e.errors[0];
+      throw new PlanRejected(`schema: ${firstErr?.message || 'invalid structure'}`);
     }
     throw e;
   }

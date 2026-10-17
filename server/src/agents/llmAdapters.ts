@@ -6,8 +6,6 @@
  * CI (no network/keys); see README.
  */
 
-import { ParsedFields } from './intake.js';
-
 const SYSTEM_PROMPT = (
   "You are the planner of a finance assistant. You ONLY output JSON: " +
   '{"intent": <intent>, "tool_calls": [{"tool": <name>, "args": {...}}]}. ' +
@@ -18,7 +16,7 @@ const SYSTEM_PROMPT = (
   'Account numbers appear only as ACCT_ tokens.'
 );
 
-interface PlanContext {
+export interface PlanContext {
   today: Date;
   document_id?: string | null;
   document_status?: string | null;
@@ -26,7 +24,7 @@ interface PlanContext {
   extra?: Record<string, any>;
 }
 
-interface LLMAdapter {
+export interface LLMAdapter {
   name: string;
   mode: 'scripted-offline' | 'gemini' | 'groq';
   plan(maskedMessage: string, ctx: PlanContext): Record<string, any>;
@@ -50,16 +48,16 @@ const _AMOUNT = /(?:cny|rmb|￥|¥)\s*([\d,]+(?:\.\d{1,2})?)|([\d,]+(?:\.\d{1,2}
 
 const _BY = /(?:by|before|until|到 | 在)\s*(\d{1,2}\s+[A-Za-z]+(?:\s+\d{4})?|\d{4}[-/年]\d{1,2}[-/月]\d{1,2}日 ?|\d{1,2}月\d{1,2}日)/i;
 
-const _MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+const _MONTHS: string[] = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
 
 function parseByDate(message: string, today: Date): Date | null {
-  /** 'by 1 March' -> next 1 March on/after today; accepts ISO, 'D Month YYYY', 'M 月 D 日'. */
   const m = _BY.exec(message);
-  if (!m) {
+  if (!m || !m[1]) {
     return null;
   }
   const frag = m[1];
-  // Try simple patterns
+  
+  // ISO format: YYYY-MM-DD
   const isoMatch = frag.match(/(\d{4})-(\d{2})-(\d{2})/);
   if (isoMatch) {
     try {
@@ -68,23 +66,28 @@ function parseByDate(message: string, today: Date): Date | null {
       return null;
     }
   }
-  // M DD YYYY or MM/DD/YYYY
+  
+  // M DD YYYY or DD Month YYYY
   const mdMy = frag.match(/(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})/);
-  if (mdMy && mdMy[2].toLowerCase() in _MONTHS) {
-    const mo = _MONTHS.indexOf(mdMy[2].toLowerCase()) + 1;
-    const d = parseInt(mdMy[1]);
-    const y = parseInt(mdMy[3]);
-    try {
-      return new Date(y, mo - 1, d);
-    } catch {
-      return null;
+  if (mdMy && mdMy[2]) {
+    const monthIndex = _MONTHS.indexOf(mdMy[2].toLowerCase());
+    if (monthIndex >= 0) {
+      try {
+        const mo = monthIndex + 1;
+        const d = parseInt(mdMy[1], 10);
+        const y = parseInt(mdMy[3], 10);
+        return new Date(y, mo - 1, d);
+      } catch {
+        return null;
+      }
     }
   }
+  
   // Chinese format
   const cnMatch = frag.match(/(\d{1,2}) 月 (\d{1,2}) 日？/);
   if (cnMatch) {
-    const mo = parseInt(cnMatch[1]);
-    const d = parseInt(cnMatch[2]);
+    const mo = parseInt(cnMatch[1], 10);
+    const d = parseInt(cnMatch[2], 10);
     for (const year of [today.getFullYear(), today.getFullYear() + 1]) {
       try {
         const cand = new Date(year, mo - 1, d);
@@ -96,12 +99,13 @@ function parseByDate(message: string, today: Date): Date | null {
       }
     }
   }
+  
   return null;
 }
 
 function extractAmount(message: string): string | null {
   const m = _AMOUNT.exec(message);
-  if (!m) {
+  if (!m || (!m[1] && !m[2])) {
     return null;
   }
   return (m[1] || m[2])?.replace(',', '') || null;
@@ -113,16 +117,18 @@ class ScriptedAdapter implements LLMAdapter {
 
   plan(maskedMessage: string, ctx: PlanContext): Record<string, any> {
     const msg = maskedMessage;
+    
     if (_PAYEE_CHANGE.test(msg)) {
       const tok = _firstToken(msg);
       return {
         intent: "payee_change",
         tool_calls: [
-          { tool: "propose_verify_payee", args: { account_number: tok } },
+          { tool: "propose_verify_payee", args: { account_number: tok || "" } },
           { tool: "draft_message", args: { to: "university", purpose: "confirm_account" } },
         ],
       };
     }
+    
     if (_UNSAFE.test(msg)) {
       return {
         intent: "unsafe_request",
@@ -138,12 +144,14 @@ class ScriptedAdapter implements LLMAdapter {
         ],
       };
     }
+    
     if (_FX.test(msg)) {
       return {
         intent: "quote_fx",
         tool_calls: [{ tool: "fx_quote", args: { amount_cny: extractAmount(msg) || "1000" } }],
       };
     }
+    
     if (_HOWMUCH.test(msg)) {
       const by = parseByDate(msg, ctx.today);
       const amt = extractAmount(msg);
@@ -161,6 +169,7 @@ class ScriptedAdapter implements LLMAdapter {
         ],
       };
     }
+    
     if (_PAY.test(msg)) {
       if (ctx.document_id) {
         if (ctx.document_status === "blocked") {
@@ -180,7 +189,7 @@ class ScriptedAdapter implements LLMAdapter {
           ],
         };
       }
-      const kw = msg.match(/tuition|学费/) ? "tuition" : undefined;
+      const kw = _PAY.test(msg) && (msg.match(/tuition|学费/) ? "tuition" : undefined);
       return {
         intent: "pay_obligation",
         tool_calls: [
@@ -190,18 +199,21 @@ class ScriptedAdapter implements LLMAdapter {
         ],
       };
     }
+    
     if (_FEES.test(msg)) {
       return {
         intent: "explain_fees",
         tool_calls: [{ tool: "compute_costs", args: { amount_cny: extractAmount(msg) || "1000" } }],
       };
     }
+    
     if (_BUDGET.test(msg)) {
       return {
         intent: "explain_fees",
         tool_calls: [{ tool: "budget_summary", args: {} }],
       };
     }
+    
     return { intent: "unknown", tool_calls: [] };
   }
 }
@@ -211,14 +223,15 @@ function _firstToken(msg: string): string | null {
   return m ? m[0] : null;
 }
 
-// Stub adapters behind interface
 abstract class _HttpJsonAdapter implements LLMAdapter {
   abstract name: string;
-  abstract mode: string;
+  abstract mode: 'gemini' | 'groq';
   private fallback: ScriptedAdapter;
+  
   constructor(fallback?: ScriptedAdapter) {
     this.fallback = fallback || new ScriptedAdapter();
   }
+  
   abstract _call(prompt: string): Promise<string>;
   
   async plan(maskedMessage: string, ctx: PlanContext): Promise<Record<string, any>> {
@@ -237,7 +250,7 @@ abstract class _HttpJsonAdapter implements LLMAdapter {
 
 class GeminiAdapter extends _HttpJsonAdapter {
   name = "gemini";
-  mode = "gemini";
+  mode: 'gemini' = 'gemini';
   api_key: string;
   
   constructor(apiKey: string) {
@@ -252,7 +265,7 @@ class GeminiAdapter extends _HttpJsonAdapter {
 
 class GroqAdapter extends _HttpJsonAdapter {
   name = "groq";
-  mode = "groq";
+  mode: 'groq' = 'groq';
   api_key: string;
   
   constructor(apiKey: string) {
@@ -274,5 +287,3 @@ export function getAdapter(provider: string, geminiKey?: string, groqKey?: strin
   }
   return new ScriptedAdapter();
 }
-
-export { LLMAdapter, PlanContext, ScriptedAdapter };
