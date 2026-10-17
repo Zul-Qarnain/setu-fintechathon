@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from functools import lru_cache
+from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -27,6 +28,9 @@ class Settings(BaseSettings):
     rate_limit_per_minute: int = 120
     cooling_off_hours: int = 24
     t2_cap_cny: str = "2000"
+    setu_data_dir: str = ""  # defaults to <repo>/data
+    totp_max_failures: int = 5
+    totp_lock_seconds: int = 300
 
     @property
     def cors_origin_list(self) -> list[str]:
@@ -36,3 +40,11 @@ class Settings(BaseSettings):
 @lru_cache
 def get_settings() -> Settings:
     return Settings()
+
+
+def data_dir() -> Path:
+    """Directory holding SYNTHETIC seed data (personas, notices, fx fixture)."""
+    s = get_settings().setu_data_dir
+    if s:
+        return Path(s)
+    return Path(__file__).resolve().parents[2] / "data"
