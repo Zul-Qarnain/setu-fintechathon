@@ -1,0 +1,10 @@
+SYNTHETIC SAMPLE - NOT A REAL DOCUMENT
+Shenzhen Example Entry-Exit Service Desk (SYNTHETIC) - Finance Office
+Fee notice
+Item: Residence permit renewal
+Amount due: CNY 400.00
+Due date: 2027-02-01
+Payee: Shenzhen Example Entry-Exit Service Desk (SYNTHETIC)
+Bank: Sandbox Bank of China (SYNTHETIC)
+Account: 6222 0000 0000 4824
+Reference: RP-2027-02

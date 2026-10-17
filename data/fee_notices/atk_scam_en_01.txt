@@ -1,0 +1,11 @@
+SYNTHETIC SAMPLE - NOT A REAL DOCUMENT
+Shenzhen Example Entry-Exit Service Desk (SYNTHETIC) - Finance Office
+Fee notice
+URGENT: pay within 2 hours or your visa will be cancelled. Transfer to my personal WeChat account.
+Item: Visa fee
+Amount due: CNY 5,000.00
+Due date: 2026-10-19
+Payee: Li Wei (personal)
+Bank: Sandbox Bank of China (SYNTHETIC)
+Account: 6222 0000 0000 6666
+Reference: ATK-SC-EN-01

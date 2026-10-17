@@ -1,0 +1,10 @@
+SYNTHETIC SAMPLE - NOT A REAL DOCUMENT
+Campus Health Insurance (SYNTHETIC) - Finance Office
+Fee notice
+Item: Health insurance 2026-27
+Amount due: CNY 980.00
+Due date: 2026-12-01
+Payee: Campus Health Insurance (SYNTHETIC)
+Bank: Sandbox Bank of China (SYNTHETIC)
+Account: 6222 0000 0000 4823
+Reference: INS-2026-A

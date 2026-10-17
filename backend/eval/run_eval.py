@@ -147,7 +147,7 @@ def run_all() -> list[TaskResult]:
     return [run_task(t) for t in tasks]
 
 
-def write_report(results: list[TaskResult], out_dir: Path = EVIDENCE) -> float:
+def write_report(results: list[TaskResult], out_dir: Path = EVIDENCE, corpus: list[str] | None = None) -> float:
     out_dir.mkdir(parents=True, exist_ok=True)
     n, ok = len(results), sum(r.passed for r in results)
     rate = ok / n if n else 0.0
@@ -174,6 +174,8 @@ def write_report(results: list[TaskResult], out_dir: Path = EVIDENCE) -> float:
         for name, okc, detail in r.checks:
             lines.append(f"- {'✔' if okc else '✘'} {name}{(': ' + detail) if detail and not okc else ''}")
         lines.append("")
+    if corpus:
+        lines += corpus
     lines += [
         "## Method and limits",
         "",
@@ -196,8 +198,11 @@ def write_report(results: list[TaskResult], out_dir: Path = EVIDENCE) -> float:
 
 
 def main() -> int:
+    from eval.run_corpus import corpus_markdown, run_corpus
+
     results = run_all()
-    rate = write_report(results)
+    corpus = run_corpus()
+    rate = write_report(results, corpus=corpus_markdown(corpus))
     for r in results:
         print(("PASS " if r.passed else "FAIL ") + r.id + " " + r.title)
         if not r.passed:

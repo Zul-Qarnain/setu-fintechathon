@@ -1,0 +1,242 @@
+{
+  "_label": "SYNTHETIC personas for the Setu demo. Fictional people; sandbox accounts only.",
+  "users": [
+    {
+      "email": "father.rahman@demo.setu.test",
+      "password": "demo-password-123",
+      "role": "family_approver",
+      "locale": "en",
+      "display_name": "Mr. Rahman (SYNTHETIC, Aisha's father)",
+      "home_country": "BD",
+      "totp_secret": "NBSWY3DPFQQHO33S",
+      "synthetic": true
+    },
+    {
+      "email": "mother.khan@demo.setu.test",
+      "password": "demo-password-123",
+      "role": "family_approver",
+      "locale": "en",
+      "display_name": "Mrs. Khan (SYNTHETIC, Rafi's mother)",
+      "home_country": "BD",
+      "totp_secret": "ONSWG4TFOQYTEMZU",
+      "synthetic": true
+    },
+    {
+      "email": "uncle.hossain@demo.setu.test",
+      "password": "demo-password-123",
+      "role": "family_approver",
+      "locale": "en",
+      "display_name": "Mr. Hossain (SYNTHETIC, Nusrat's uncle)",
+      "home_country": "BD",
+      "totp_secret": "PFXXK4TTMVZGK3TB",
+      "synthetic": true
+    },
+    {
+      "email": "admin@demo.setu.test",
+      "password": "demo-password-123",
+      "role": "admin",
+      "locale": "en",
+      "display_name": "Setu Admin (SYNTHETIC)",
+      "totp_secret": "GEZDGNBVGY3TQOJQ",
+      "synthetic": true
+    },
+    {
+      "email": "aisha@demo.setu.test",
+      "password": "demo-password-123",
+      "role": "student",
+      "locale": "en",
+      "display_name": "Aisha Rahman (SYNTHETIC)",
+      "home_country": "BD",
+      "city": "Shenzhen",
+      "university": "Shenzhen Example University (SYNTHETIC)",
+      "monthly_budget_cny": "3500",
+      "sandbox_balance_cny": "60000",
+      "approver_email": "father.rahman@demo.setu.test",
+      "totp_secret": "JBSWY3DPEHPK3PXP",
+      "synthetic": true,
+      "verified_payees": [
+        {
+          "name": "Campus Health Insurance (SYNTHETIC)",
+          "account_number": "6222 0000 0000 4823",
+          "bank": "Sandbox Bank of China (SYNTHETIC)"
+        },
+        {
+          "name": "Shenzhen Example Entry-Exit Service Desk (SYNTHETIC)",
+          "account_number": "6222 0000 0000 4824",
+          "bank": "Sandbox Bank of China (SYNTHETIC)"
+        },
+        {
+          "name": "Shenzhen Example University (SYNTHETIC)",
+          "account_number": "6222 0000 0000 4821",
+          "bank": "Sandbox Bank of China (SYNTHETIC)"
+        },
+        {
+          "name": "Sunrise Student Residence (SYNTHETIC)",
+          "account_number": "6222 0000 0000 4822",
+          "bank": "Sandbox Bank of China (SYNTHETIC)"
+        }
+      ],
+      "obligations": [
+        {
+          "title": "Spring 2027 tuition",
+          "amount_cny": "18500.00",
+          "due_date": "2027-03-01",
+          "payee_name": "Shenzhen Example University (SYNTHETIC)",
+          "reference": "2027-SPRING-TUITION-0042",
+          "notice_file": "en_tuition_aisha.txt",
+          "seed": false
+        },
+        {
+          "title": "Dorm fee Nov 2026",
+          "amount_cny": "1350.00",
+          "due_date": "2026-11-15",
+          "payee_name": "Sunrise Student Residence (SYNTHETIC)",
+          "reference": "DORM-2026-11-A",
+          "notice_file": "en_dorm_aisha.txt",
+          "seed": true
+        },
+        {
+          "title": "Health insurance 2026-27",
+          "amount_cny": "980.00",
+          "due_date": "2026-12-01",
+          "payee_name": "Campus Health Insurance (SYNTHETIC)",
+          "reference": "INS-2026-A",
+          "notice_file": "en_insurance_aisha.txt",
+          "seed": true
+        }
+      ]
+    },
+    {
+      "email": "rafi@demo.setu.test",
+      "password": "demo-password-123",
+      "role": "student",
+      "locale": "zh-CN",
+      "display_name": "Rafi Chowdhury (SYNTHETIC)",
+      "home_country": "BD",
+      "city": "Shenzhen",
+      "university": "Shenzhen Example University (SYNTHETIC)",
+      "monthly_budget_cny": "4500",
+      "sandbox_balance_cny": "80000",
+      "approver_email": "mother.khan@demo.setu.test",
+      "totp_secret": "KRSXG5CTMVRXEZLU",
+      "synthetic": true,
+      "verified_payees": [
+        {
+          "name": "Campus Health Insurance (SYNTHETIC)",
+          "account_number": "6222 0000 0000 4823",
+          "bank": "Sandbox Bank of China (SYNTHETIC)"
+        },
+        {
+          "name": "Shenzhen Example Entry-Exit Service Desk (SYNTHETIC)",
+          "account_number": "6222 0000 0000 4824",
+          "bank": "Sandbox Bank of China (SYNTHETIC)"
+        },
+        {
+          "name": "Shenzhen Example University (SYNTHETIC)",
+          "account_number": "6222 0000 0000 4821",
+          "bank": "Sandbox Bank of China (SYNTHETIC)"
+        },
+        {
+          "name": "Sunrise Student Residence (SYNTHETIC)",
+          "account_number": "6222 0000 0000 4822",
+          "bank": "Sandbox Bank of China (SYNTHETIC)"
+        }
+      ],
+      "obligations": [
+        {
+          "title": "Spring 2027 tuition",
+          "amount_cny": "24000.00",
+          "due_date": "2027-02-20",
+          "payee_name": "Shenzhen Example University (SYNTHETIC)",
+          "reference": "2027-SPRING-TUITION-0107",
+          "notice_file": "zh_tuition_rafi.txt",
+          "seed": true
+        },
+        {
+          "title": "Lab fee",
+          "amount_cny": "1800.00",
+          "due_date": "2026-11-30",
+          "payee_name": "Shenzhen Example University (SYNTHETIC)",
+          "reference": "LAB-2026-R",
+          "notice_file": "zh_lab_rafi.txt",
+          "seed": true
+        },
+        {
+          "title": "Residence permit fee",
+          "amount_cny": "400.00",
+          "due_date": "2026-12-20",
+          "payee_name": "Shenzhen Example Entry-Exit Service Desk (SYNTHETIC)",
+          "reference": "RP-2026-R",
+          "notice_file": "zh_permit_rafi.txt",
+          "seed": true
+        }
+      ]
+    },
+    {
+      "email": "nusrat@demo.setu.test",
+      "password": "demo-password-123",
+      "role": "student",
+      "locale": "en",
+      "display_name": "Nusrat Jahan (SYNTHETIC)",
+      "home_country": "BD",
+      "city": "Shenzhen",
+      "university": "Shenzhen Example University (SYNTHETIC)",
+      "monthly_budget_cny": "3000",
+      "sandbox_balance_cny": "45000",
+      "approver_email": "uncle.hossain@demo.setu.test",
+      "totp_secret": "MFRGGZDFMZTWQ2LK",
+      "synthetic": true,
+      "verified_payees": [
+        {
+          "name": "Campus Health Insurance (SYNTHETIC)",
+          "account_number": "6222 0000 0000 4823",
+          "bank": "Sandbox Bank of China (SYNTHETIC)"
+        },
+        {
+          "name": "Shenzhen Example Entry-Exit Service Desk (SYNTHETIC)",
+          "account_number": "6222 0000 0000 4824",
+          "bank": "Sandbox Bank of China (SYNTHETIC)"
+        },
+        {
+          "name": "Shenzhen Example University (SYNTHETIC)",
+          "account_number": "6222 0000 0000 4821",
+          "bank": "Sandbox Bank of China (SYNTHETIC)"
+        },
+        {
+          "name": "Sunrise Student Residence (SYNTHETIC)",
+          "account_number": "6222 0000 0000 4822",
+          "bank": "Sandbox Bank of China (SYNTHETIC)"
+        }
+      ],
+      "obligations": [
+        {
+          "title": "Spring 2027 tuition",
+          "amount_cny": "16800.00",
+          "due_date": "2027-03-10",
+          "payee_name": "Shenzhen Example University (SYNTHETIC)",
+          "reference": "2027-SPRING-TUITION-0231",
+          "notice_file": "en_tuition_nusrat.txt",
+          "seed": true
+        },
+        {
+          "title": "Dorm fee Dec 2026",
+          "amount_cny": "2000.00",
+          "due_date": "2026-12-05",
+          "payee_name": "Sunrise Student Residence (SYNTHETIC)",
+          "reference": "DORM-2026-12-N",
+          "notice_file": "en_dorm_nusrat.txt",
+          "seed": true
+        },
+        {
+          "title": "Health insurance 2026-27",
+          "amount_cny": "980.00",
+          "due_date": "2026-12-01",
+          "payee_name": "Campus Health Insurance (SYNTHETIC)",
+          "reference": "INS-2026-N",
+          "notice_file": "zh_insurance_nusrat.txt",
+          "seed": true
+        }
+      ]
+    }
+  ]
+}

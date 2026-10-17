@@ -1,0 +1,10 @@
+SYNTHETIC SAMPLE - NOT A REAL DOCUMENT
+Shenzhen Example University (SYNTHETIC) - Finance Office
+Fee notice
+Item: Textbook and lab materials 2027
+Amount due: CNY 320.00
+Due date: 2027-01-10
+Payee: Shenzhen Example University (SYNTHETIC)
+Bank: Sandbox Bank of China (SYNTHETIC)
+Account: 6222 0000 0000 4821
+Reference: TB-2027-01

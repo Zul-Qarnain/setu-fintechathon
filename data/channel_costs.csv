@@ -1,0 +1,8 @@
+channel,type,send_cost_pct_200usd,fixed_fee_usd,fx_margin_pct,speed,source,notes
+South Asia average,benchmark,5.30,,,2-4 days,"World Bank Remittance Prices Worldwide (RPW), Q3 2025 - VERIFY before citing",Average total cost of sending USD 200 to South Asia. Reference row only; not offered.
+SmaRT-compliant average,benchmark,3.29,,,1-3 days,"World Bank Remittance Prices Worldwide (RPW), Q3 2025 - VERIFY before citing",Reference row only; not offered.
+SDG 10.c target,target,3.00,,,n/a,UN SDG 10.c (3% target),"Policy target, not a quote. Reference row only."
+Sandbox licensed partner A,sandbox,,3.00,0.40,Same day,ILLUSTRATIVE sandbox parameter,"illustrative, not a quote; default channel used by the agent"
+Sandbox bank wire,sandbox,,15.00,1.50,2-5 days,ILLUSTRATIVE sandbox parameter,"illustrative, not a quote; high-cost comparison"
+Sandbox mobile wallet,sandbox,,2.00,0.60,Instant,ILLUSTRATIVE sandbox parameter,"illustrative, not a quote"
+Informal hundi/hawala (NOT OFFERED),risk_comparison,,0.00,1.20,Instant,ILLUSTRATIVE ONLY,illegal channel shown for risk comparison only; never offered or recommended

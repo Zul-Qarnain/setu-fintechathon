@@ -46,13 +46,15 @@ def seed_all(db: Session) -> dict[str, Any]:
         by_email[u.email] = u
         append_audit(db, u.id, "user.seeded", {"role": u.role, "synthetic": True})
     n_obl = 0
+    idx = 0
     for p in people:
         if p["role"] != "student":
             continue
+        idx += 1
         u = by_email[p["email"].lower()]
         n = 0
         # student's own sandbox account (deterministic synthetic number)
-        n_students = sum(1 for x in by_email.values() if x.role == "student")
+        n_students = idx
         ledger.open_account(db, f"62220001{n_students:08d}", p.get("display_name", u.email),
                             Decimal(p.get("sandbox_balance_cny", "0")), owner_id=u.id)  # fmt: skip
         for vp in p.get("verified_payees", []):
@@ -61,11 +63,13 @@ def seed_all(db: Session) -> dict[str, Any]:
             ledger.open_account(db, normalize_account(vp["account_number"]), vp["name"], Decimal("0"))
             n += 1
         for ob in p.get("obligations", []):
+            if ob.get("seed") is False:
+                continue  # demo uploads this notice live
             pay_row = next((q for q in db.execute(select(Payee).where(Payee.owner_id == u.id)).scalars()
                             if q.name == ob["payee_name"]), None)  # fmt: skip
             db.add(Obligation(user_id=u.id, title=ob["title"], amount_cny=Decimal(ob["amount_cny"]),
                               due_date=date.fromisoformat(ob["due_date"]),
-                              payee_id=pay_row.id if pay_row else None, status="open"))  # fmt: skip
+                              payee_id=pay_row.id if pay_row else None, reference=ob.get("reference"), status="open"))  # fmt: skip
             n_obl += 1
         append_audit(db, u.id, "persona.seeded", {"payees": n, "synthetic": True})
     db.flush()

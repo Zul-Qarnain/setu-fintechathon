@@ -1,4 +1,4 @@
-.PHONY: install test lint demo api web evidence api-docs clean
+.PHONY: install test lint demo api web evidence api-docs seed-data clean
 BACKEND=backend
 UV=cd $(BACKEND) && uv run
 
@@ -26,7 +26,11 @@ demo:
 
 evidence: test demo
 	cd $(BACKEND) && PYTHONPATH=. uv run python -m eval.run_eval
-	@echo "evidence/ regenerated"
+	cd $(BACKEND) && PYTHONPATH=. uv run python -m eval.run_security
+	@echo "evidence/ regenerated (sandbox_logs.jsonl, audit_export.json, eval_report.md, security_report.md)"
+
+seed-data:
+	python3 data/generate_data.py
 
 clean:
 	rm -rf $(BACKEND)/.pytest_cache $(BACKEND)/.mypy_cache $(BACKEND)/.ruff_cache $(BACKEND)/setu.db
