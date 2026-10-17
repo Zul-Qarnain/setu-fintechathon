@@ -6,12 +6,19 @@ import { openDb, type Db } from './db/connection.js';
 import { createSchema } from './db/schema.js';
 import { envelope, errorHandler } from './errors.js';
 import { redactPaths } from './logging.js';
+import { RateLimiter } from './deps.js';
+import { FxService } from './domain/fx.js';
+import { authRoutes } from './routes/auth.js';
+import { dashboardRoutes } from './routes/dashboard.js';
+import { fxRoutes } from './routes/fx.js';
+import { payeeRoutes } from './routes/payees.js';
 import * as keys from './domain/keys.js';
 
 export interface AppContext {
   config: Config;
   db: Db;
-  rateLimitReset: () => void;
+  limiter: RateLimiter;
+  fx: FxService;
 }
 
 declare module 'fastify' {
@@ -50,10 +57,7 @@ export async function buildApp(opts: BuildOptions = {}): Promise<FastifyInstance
     bodyLimit: 12 * 1024 * 1024,
   });
   
-  // Per-app rate limiter instance (tests can call app.ctx.rateLimitReset() to isolate state)
-  const rateLimitReset = (): void => {};
-
-  app.decorate('ctx', { config, db, rateLimitReset });
+  app.decorate('ctx', { config, db, limiter: new RateLimiter(), fx: new FxService({ mode: config.FX_MODE, dataDir: config.dataDir }) } satisfies AppContext);
 
   await app.register(cors, {
     origin: config.corsOrigins,
@@ -67,13 +71,12 @@ export async function buildApp(opts: BuildOptions = {}): Promise<FastifyInstance
   app.setErrorHandler(errorHandler);
   app.setNotFoundHandler((req, reply) => reply.status(404).send(envelope('http_404', 'Not Found', req.id)));
 
-  // Add preHandler to extract TOTP code from header if present
-  app.addHook('preHandler', async (req) => {
-    const totpCode = req.headers['x-totp-code'] as string | undefined;
-    if (totpCode) {
-      (req as any).totp_code = totpCode;
-    }
-  });
+  await app.register(authRoutes, { prefix: '/auth' });
+  await app.register(payeeRoutes, { prefix: '/payees' });
+  await app.register(fxRoutes, { prefix: '/fx' });
+  await app.register(dashboardRoutes);
+
+  app.get('/health', async () => ({
     status: 'ok',
     offline_mode: config.ALLOW_OFFLINE,
     llm_provider: config.LLM_PROVIDER,

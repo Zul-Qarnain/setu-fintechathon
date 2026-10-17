@@ -7,16 +7,16 @@ export interface UserRow {
   role: string;
   locale: string;
   totp_secret_enc: string | null;
-  totp_enabled: boolean;
+  totp_enabled: number;
   totp_last_step: number;
   totp_failures: number;
-  totp_locked_until: Date | null;
+  totp_locked_until: string | null;
   approver_id: string | null;
   display_name: string | null;
   monthly_budget_cny: string;
   consent_json: string | null;
-  erased: boolean;
-  created_at: Date;
+  erased: number;
+  created_at: string;
 }
 
 export interface PayeeRow {
@@ -30,10 +30,10 @@ export interface PayeeRow {
   account_token: string;
   bank: string;
   source: string;
-  verified_at: Date | null;
-  cooling_off_until: Date | null;
+  verified_at: string | null;
+  cooling_off_until: string | null;
   changed_from_id: string | null;
-  created_at: Date;
+  created_at: string;
 }
 
 export interface DocumentRow {
@@ -45,8 +45,8 @@ export interface DocumentRow {
   parsed_json: string;
   guardian_json: string;
   status: string;
-  synthetic: boolean;
-  created_at: Date;
+  synthetic: number;
+  created_at: string;
 }
 
 export interface ObligationRow {
@@ -54,7 +54,7 @@ export interface ObligationRow {
   user_id: string;
   title: string | null;
   amount_cny: string;
-  due_date: Date;
+  due_date: string;
   payee_id: string | null;
   doc_hash: string | null;
   reference: string | null;
@@ -70,7 +70,7 @@ export interface PlanRow {
   fees: string;
   fx_rate: string;
   plan_json: string;
-  created_at: Date;
+  created_at: string;
 }
 
 export interface ActionRow {
@@ -86,12 +86,12 @@ export interface ActionRow {
   result_json: string | null;
   source: string;
   idempotency_key: string;
-  created_at: Date;
+  created_at: string;
 }
 
 export interface AuditRow {
   seq: number;
-  ts: Date;
+  ts: string;
   actor: string;
   event: string;
   payload_hash: string;
@@ -106,7 +106,7 @@ export interface BankAccountRow {
   account_number: string;
   holder: string;
   balance_cny: string;
-  closed: boolean;
+  closed: number;
 }
 
 export interface BankTxnRow {
@@ -119,7 +119,7 @@ export interface BankTxnRow {
   reference: string | null;
   state: string;
   failure_code: string | null;
-  created_at: Date;
+  created_at: string;
 }
 
 export function createSchema(db: Database.Database): void {

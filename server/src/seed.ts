@@ -1,196 +1,94 @@
-/** Seed SYNTHETIC personas from data/personas.json. Port of backend/app/seed.py */
-
-import { readFile } from 'node:fs/promises';
-import { createHash, randomBytes } from 'node:crypto';
-import { resolve } from 'node:path';
-import type { Db } from './db/connection.js';
-import { appendAudit } from './db/auditStore.js';
-import { hashPassword } from './security.js';
-import { openAccount } from './sandboxBank/ledger.js';
+/** Seed SYNTHETIC personas from data/personas.json. Port of backend/app/seed.py. */
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import type { AppContext } from './app.js';
+import { appendAudit, auditHead } from './db/auditStore.js';
+import type { PayeeRow } from './db/schema.js';
+import { nowTs } from './domain/audit.js';
+import { Decimal } from './domain/money.js';
 import { normalizeAccount } from './domain/tokenize.js';
 import { newId } from './ids.js';
-import { encrypt as encryptData } from './domain/crypto.js';
-import { GENESIS_HASH } from './domain/audit.js';
+import { openAccount } from './sandboxBank/ledger.js';
+import * as security from './security.js';
+import { createPayee } from './services.js';
+import type { UserRow } from './db/schema.js';
 
-interface PersonaRaw {
+interface Persona {
   email: string;
   password: string;
   role: string;
-  locale: string;
+  locale?: string;
   display_name?: string;
   monthly_budget_cny?: string;
   sandbox_balance_cny?: string;
   approver_email?: string;
   totp_secret?: string;
-  verified_payees?: Array<{ name: string; account_number: string; bank: string }>;
-  obligations?: Array<{
-    title: string;
-    amount_cny: string;
-    due_date: string;
-    payee_name: string;
-    reference?: string;
-    seed: boolean;
-  }>;
-  synthetic?: boolean;
+  verified_payees?: { name: string; account_number: string; bank?: string }[];
+  obligations?: { title: string; amount_cny: string; due_date: string; payee_name: string; reference?: string; seed?: boolean }[];
 }
 
-const DATA_DIR = process.env.SETU_DATA_DIR ?? resolve(import.meta.dirname, '../../data');
+export function loadPersonas(dataDir: string): Persona[] {
+  const raw = JSON.parse(readFileSync(join(dataDir, 'personas.json'), 'utf-8')) as unknown;
+  if (Array.isArray(raw)) return raw as Persona[];
+  const o = raw as Record<string, Persona[]>;
+  for (const k of ['users', 'personas', 'people']) if (o[k]) return o[k];
+  throw new Error("personas.json: expected a list or a dict with 'users'");
+}
 
-export async function loadPersonas(): Promise<PersonaRaw[]> {
-  const raw = JSON.parse(await readFile(resolve(DATA_DIR, 'personas.json'), 'utf-8'));
-  if (typeof raw === 'object' && !Array.isArray(raw)) {
-    for (const key of ['users', 'personas', 'people'] as const) {
-      if (key in raw && Array.isArray(raw[key])) {
-        return raw[key] as PersonaRaw[];
-      }
-    }
-    throw new Error('personas.json: expected a list or a dict with users');
+export async function seedAll(ctx: AppContext): Promise<{ users: number; obligations: number; auditHead: { head_hash: string; count: number } }> {
+  const { db, config } = ctx;
+  const people = loadPersonas(config.dataDir);
+  const byEmail = new Map<string, UserRow>();
+  const ordered = [...people].sort((a, b) => (a.role !== 'student' ? 0 : 1) - (b.role !== 'student' ? 0 : 1)); // stable: approvers + admin first
+  for (const p of ordered) {
+    const id = newId('usr');
+    const email = p.email.toLowerCase();
+    const approver = p.approver_email ? byEmail.get(p.approver_email.toLowerCase()) : undefined;
+    if (p.approver_email && !approver) throw new Error(`unknown approver ${p.approver_email}`);
+    db.prepare(
+      'INSERT INTO users (id,email,password_hash,role,locale,approver_id,display_name,monthly_budget_cny,totp_secret_enc,totp_enabled,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
+    ).run(
+      id, email, await security.hashPassword(p.password), p.role, p.locale ?? 'en', approver?.id ?? null, p.display_name ?? null,
+      new Decimal(p.monthly_budget_cny ?? '0').toFixed(2), p.totp_secret ? security.encryptSecret(p.totp_secret, id) : null, p.totp_secret ? 1 : 0, nowTs(),
+    );
+    const u = db.prepare('SELECT * FROM users WHERE id = ?').get(id) as UserRow;
+    byEmail.set(email, u);
+    appendAudit(db, id, 'user.seeded', { role: u.role, synthetic: true });
   }
-  return raw as PersonaRaw[];
-}
-
-async function createUser(db: Db, p: PersonaRaw, approverId: string | null): Promise<string> {
-  const userId = newId('usr');
-  db.prepare(
-    'INSERT INTO users (id, email, password_hash, role, locale, approver_id, display_name, monthly_budget_cny, totp_secret_enc, totp_enabled) VALUES (@id,@email,@password_hash,@role,@locale,@approver_id,@display_name,@monthly_budget_cny,@totp_secret_enc,@totp_enabled)',
-  ).run({
-    id: userId,
-    email: p.email.toLowerCase(),
-    password_hash: await hashPassword(p.password),
-    role: p.role,
-    locale: p.locale,
-    approver_id: approverId,
-    display_name: p.display_name ?? null,
-    monthly_budget_cny: (p.monthly_budget_cny ?? '0.00').toString(),
-    totp_secret_enc: p.totp_secret ? encryptData(p.totp_secret, { aad: `totp:${userId}` }) : null,
-    totp_enabled: p.totp_secret ? 1 : 0,
-  });
-  appendAudit(db, userId, 'user.seeded', { role: p.role, synthetic: true });
-  return userId;
-}
-
-export async function seedAll(db: Db): Promise<{ users: number; obligations: number; auditHead: { head_hash: string; count: number } }> {
-  const personas = await loadPersonas();
-  const byEmail: Map<string, string> = new Map();
-
-  // Sort: approvers + admin first, then students
-  const sorted = personas.slice().sort((a, _b) => (a.role === 'student' ? 1 : -1));
-
-  // Create non-students first
-  for (const p of sorted) {
-    if (p.role === 'student') continue;
-    const approverId = p.approver_email ? byEmail.get(p.approver_email.toLowerCase()) ?? null : null;
-    const userId = await createUser(db, p, approverId);
-    byEmail.set(p.email.toLowerCase(), userId);
-  }
-
-  let nObligations = 0;
-  let studentIdx = 0;
-
-  // Create students
-  for (const p of personas) {
+  let nObl = 0;
+  let idx = 0;
+  for (const p of people) {
     if (p.role !== 'student') continue;
-
-    studentIdx += 1;
-    const approverId = p.approver_email ? byEmail.get(p.approver_email.toLowerCase()) ?? null : null;
-    const userId = await createUser(db, p, approverId);
-    byEmail.set(p.email.toLowerCase(), userId);
-
-    // Student's own sandbox account
-    const accountNumber = `62220001${String(studentIdx).padStart(8, '0')}`;
-    openAccount(db, accountNumber, p.display_name ?? p.email, p.sandbox_balance_cny ?? '0', userId);
-
-    // Create verified payees
-    let nPayees = 0;
+    idx += 1;
+    const u = byEmail.get(p.email.toLowerCase()) as UserRow;
+    let n = 0;
+    openAccount(db, `62220001${String(idx).padStart(8, '0')}`, p.display_name ?? u.email, new Decimal(p.sandbox_balance_cny ?? '0').toFixed(2), u.id);
     for (const vp of p.verified_payees ?? []) {
-      createPayeeSync(db, userId, vp.name, vp.account_number, vp.bank, 'manual', true, 0);
-      openAccount(db, normalizeAccount(vp.account_number), vp.name, '0', null);
-      nPayees++;
+      createPayee(ctx, u, vp.name, vp.account_number, vp.bank ?? 'Sandbox Bank', { source: 'manual', verified: true, coolingHours: 0 });
+      openAccount(db, normalizeAccount(vp.account_number), vp.name, '0');
+      n += 1;
     }
-
-    // Create obligations
     for (const ob of p.obligations ?? []) {
-      if (ob.seed === false) continue;
-
-      const payeeId = findPayeeByOwnerAndName(db, userId, ob.payee_name);
-
-      db.prepare(
-        'INSERT INTO obligations (id, user_id, title, amount_cny, due_date, payee_id, reference, status) VALUES (@id,@user_id,@title,@amount_cny,@due_date,@payee_id,@reference,@status)',
-      ).run({
-        id: newId('obl'),
-        user_id: userId,
-        title: ob.title,
-        amount_cny: ob.amount_cny,
-        due_date: ob.due_date,
-        payee_id: payeeId ?? null,
-        reference: ob.reference ?? null,
-        status: 'open',
-      });
-
-      nObligations++;
+      if (ob.seed === false) continue; // demo uploads this notice live
+      const pay = (db.prepare('SELECT * FROM payees WHERE owner_id = ?').all(u.id) as PayeeRow[]).find((q) => q.name === ob.payee_name);
+      db.prepare('INSERT INTO obligations (id,user_id,title,amount_cny,due_date,payee_id,reference,status) VALUES (?,?,?,?,?,?,?,?)').run(
+        newId('obl'), u.id, ob.title, new Decimal(ob.amount_cny).toFixed(2), ob.due_date, pay?.id ?? null, ob.reference ?? null, 'open',
+      );
+      nObl += 1;
     }
-
-    appendAudit(db, userId, 'persona.seeded', { payees: nPayees, synthetic: true });
+    appendAudit(db, u.id, 'persona.seeded', { payees: n, synthetic: true });
   }
-
-  const auditHeadResult = auditHead(db);
-  return { users: byEmail.size, obligations: nObligations, auditHead: auditHeadResult };
+  return { users: byEmail.size, obligations: nObl, auditHead: auditHead(db) };
 }
 
-export async function seedIfEmpty(db: Db): Promise<{ auditHead: { head_hash: string; count: number } } | null> {
-  const stmt = db.prepare('SELECT COUNT(*) c FROM users');
-  const result = stmt.get() as { c: number };
-  if (result.c > 0) return null;
-
+/** Seeds when the users table is empty; returns the audit head (or null when already populated / no data). */
+export async function seedIfEmpty(ctx: AppContext): Promise<{ users: number; obligations: number; auditHead: { head_hash: string; count: number } } | null> {
+  const c = ctx.db.prepare('SELECT COUNT(*) c FROM users').get() as { c: number };
+  if (c.c > 0) return null;
   try {
-    const result = await seedAll(db);
-    return { auditHead: result.auditHead };
-  } catch {
-    return null;
+    return await seedAll(ctx);
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === 'ENOENT') return null; // no seed data available: start empty
+    throw e;
   }
-}
-
-function createPayeeSync(db: Db, ownerId: string, name: string, accountNumber: string, bank: string, source: string, verified: boolean, coolingHours: number): void {
-  const now = new Date().toISOString();
-  const coolingOffUntil = coolingHours > 0 ? new Date(Date.now() + coolingHours * 3600 * 1000).toISOString() : null;
-  const verifiedAt = verified ? now : null;
-
-  const payeeId = newId('pay');
-  const normAcc = normalizeAccount(accountNumber);
-  const skeleton = name.toLowerCase().replace(/\s+/g, '_').replace(/[^\w-]/g, '');
-  const masked = '*'.repeat(8) + accountNumber.replace(/\s/g, '').slice(-4);
-  const token = randomBytes(16).toString('hex');
-
-  db.prepare(
-    'INSERT INTO payees (id, owner_id, name, name_skeleton, account_hash, account_enc, account_masked, account_token, bank, source, verified_at, cooling_off_until, changed_from_id) VALUES (@id,@owner_id,@name,@name_skeleton,@account_hash,@account_enc,@account_masked,@account_token,@bank,@source,@verified_at,@cooling_off_until,@changed_from_id)',
-  ).run({
-    id: payeeId,
-    owner_id: ownerId,
-    name: name.trim(),
-    name_skeleton: skeleton,
-    account_hash: createHash('sha256').update(accountNumber).digest('hex'),
-    account_enc: '',
-    account_masked: masked,
-    account_token: token,
-    bank: bank.trim(),
-    source: source,
-    verified_at: verifiedAt,
-    cooling_off_until: coolingOffUntil,
-    changed_from_id: null,
-  });
-
-  db.prepare('UPDATE payees SET account_enc = ? WHERE id = ?').run(encryptData(normAcc, { aad: `payee:${payeeId}` }), payeeId);
-}
-
-function findPayeeByOwnerAndName(db: Db, ownerId: string, name: string): string | null {
-  const skeleton = name.toLowerCase().replace(/\s+/g, '_').replace(/[^\w-]/g, '');
-  const stmt = db.prepare('SELECT id FROM payees WHERE owner_id = ? AND name_skeleton = ?');
-  const result = stmt.get(ownerId, skeleton) as { id: string } | undefined;
-  return result?.id ?? null;
-}
-
-function auditHead(db: Db): { head_hash: string; count: number } {
-  const rows = db.prepare('SELECT hash FROM audit ORDER BY seq DESC LIMIT 1').get() as { hash: string } | undefined;
-  const c = db.prepare('SELECT COUNT(*) c FROM audit').get() as { c: number };
-  return { head_hash: rows?.hash ?? GENESIS_HASH, count: c.c };
 }

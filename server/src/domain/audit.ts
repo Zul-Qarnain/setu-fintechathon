@@ -55,6 +55,11 @@ export function nowTs(): string {
   return new Date(ms).toISOString().replace(/\.\d{3}Z$/, `.${frac}Z`);
 }
 
+/** Same stamp format for an arbitrary instant (ms precision, zero µs tail). */
+export function tsFromMs(ms: number): string {
+  return new Date(ms).toISOString().replace(/\.(\d{3})Z$/, '.$1000Z');
+}
+
 export function computeHash(seq: number, ts: string, actor: string, event: string, pHash: string, prevHash: string): string {
   return sha256hex([String(seq), ts, actor, event, pHash, prevHash].join('|'));
 }
