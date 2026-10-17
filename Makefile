@@ -1,36 +1,39 @@
-.PHONY: install test lint demo api web evidence api-docs seed-data clean
-BACKEND=backend
-UV=cd $(BACKEND) && uv run
+.PHONY: install test lint demo api web evidence contract seed-data clean legacy-test
+SERVER=server
 
 install:
-	cd $(BACKEND) && uv sync
+	cd $(SERVER) && npm ci
 	@if [ -f web/package.json ]; then cd web && npm install; fi
 
 lint:
-	$(UV) ruff check . && $(UV) ruff format --check . && $(UV) mypy app
+	cd $(SERVER) && npm run lint && npm run typecheck
 
 test:
-	$(UV) pytest
+	cd $(SERVER) && npm test
 
 api:
-	$(UV) uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+	cd $(SERVER) && DEMO_MODE=true npm start
 
 web:
 	cd web && npm run dev
 
-api-docs:
-	cd $(BACKEND) && PYTHONPATH=. uv run python scripts/gen_api_md.py ../docs/API.md
-
 demo:
-	cd $(BACKEND) && PYTHONPATH=. uv run python -m app.demo
+	cd $(SERVER) && npm run demo
 
-evidence: test demo
-	cd $(BACKEND) && PYTHONPATH=. uv run python -m eval.run_eval
-	cd $(BACKEND) && PYTHONPATH=. uv run python -m eval.run_security
-	@echo "evidence/ regenerated (sandbox_logs.jsonl, audit_export.json, eval_report.md, security_report.md)"
+evidence: test
+	cd $(SERVER) && npm run demo && npm run evidence
+	@echo "evidence/ regenerated (sandbox_logs.jsonl, audit_export.json, demo_summary.json, eval_report.md, security_report.md)"
+
+# live status+shape diff against the legacy Python backend (start both on fresh DBs first, see server/scripts/contract_diff.ts)
+contract:
+	cd $(SERVER) && npm run contract
 
 seed-data:
 	python3 data/generate_data.py
 
+# the original Python implementation (kept for reference / differential vectors)
+legacy-test:
+	cd legacy/backend-py && SETU_DATA_DIR=../../data uv run pytest
+
 clean:
-	rm -rf $(BACKEND)/.pytest_cache $(BACKEND)/.mypy_cache $(BACKEND)/.ruff_cache $(BACKEND)/setu.db
+	rm -rf $(SERVER)/dist $(SERVER)/setu.db

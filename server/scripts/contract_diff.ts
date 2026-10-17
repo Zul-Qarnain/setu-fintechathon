@@ -1,5 +1,5 @@
 /** Live contract diff: runs the same request sequence against the Python backend and the TS backend and compares response STATUS + JSON SHAPE (keys/types, not values).
- * Usage: PY=http://localhost:8000 TS=http://localhost:8001 npx tsx scripts/contract_diff.ts   (both started with DEMO_MODE=true) */
+ * Usage: start BOTH backends on FRESH databases (state-dependent shapes otherwise differ): Python `DEMO_MODE=true DATABASE_URL=sqlite:////tmp/py.db uvicorn app.main:app --port 8002`, TS `DEMO_MODE=true PORT=8001 DATABASE_URL=sqlite:////tmp/ts.db npm start`; then `PY=http://localhost:8002 TS=http://localhost:8001 npm run contract`. */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const PY = process.env.PY ?? 'http://localhost:8000';
 const TS = process.env.TS ?? 'http://localhost:8001';

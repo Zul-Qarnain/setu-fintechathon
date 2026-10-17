@@ -15,7 +15,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "demo": "tsx src/demo.ts",
-    "evidence": "tsx src/evidence.ts"
+    "evidence": "tsx src/evidence.ts",
+    "contract": "tsx scripts/contract_diff.ts"
   },
   "dependencies": {
     "@fastify/cors": "^11.3.1",

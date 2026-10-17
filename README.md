@@ -7,7 +7,7 @@ South Asian students in China pay tuition, dorm fees and insurance across border
 > **Honesty box.** All data is **SYNTHETIC** (personas, notices, SMS, accounts). The bank is a **SANDBOX**. Setu **never holds funds**. Offline FX rates are labelled **SAMPLE** (not live). Channel fees are illustrative. Optional LLM adapters are **untested live**; the default planner is a deterministic scripted one. Chinese strings and the glossary are drafts awaiting native review. See [KNOWN RISKS](docs/SECURITY_SELF_ASSESSMENT.md#4-known-risks-and-limitations-read-before-trusting-this).
 
 ## How it is safe (one paragraph)
-The LLM (or the scripted planner) may only emit JSON calls to an allowlist of tools. Every number comes from Python. Fee notices and SMS are *data*: they are wrapped as untrusted, scanned by a rule-based guardian, and can never be the source of a payee or amount. One pure function, `policy.decide`, assigns tiers T0–T4 and is re-run at propose, approve and execute time; the executor accepts only `ALLOW`. Payments over CNY 2,000, or to new/changed payees, need the student's TOTP **and** the family approver's TOTP (plus 24 h cooling-off for new payees). Details: [ARCHITECTURE](docs/ARCHITECTURE.md).
+The LLM (or the scripted planner) may only emit JSON calls to an allowlist of tools. Every number comes from deterministic code, never the model. Fee notices and SMS are *data*: they are wrapped as untrusted, scanned by a rule-based guardian, and can never be the source of a payee or amount. One pure function, `policy.decide`, assigns tiers T0–T4 and is re-run at propose, approve and execute time; the executor accepts only `ALLOW`. Payments over CNY 2,000, or to new/changed payees, need the student's TOTP **and** the family approver's TOTP (plus 24 h cooling-off for new payees). Details: [ARCHITECTURE](docs/ARCHITECTURE.md).
 
 | Tier | What | Needs |
 |---|---|---|
@@ -19,18 +19,20 @@ The LLM (or the scripted planner) may only emit JSON calls to an allowlist of to
 
 ## Run it (one command)
 
-No `make`? Every target is a thin wrapper: e.g. `cd backend && uv sync && PYTHONPATH=. uv run python -m app.demo` and `cd backend && uv run pytest`. (The Makefile was written but `make` is not installed on the box where this was developed; the underlying commands were run directly and pass.)
+> **Backend rewrite.** The backend is now **TypeScript (Node 20 + Fastify)** in `server/`, with the same HTTP contract as before (`docs/API.md`; `web/` is unchanged). The original Python/FastAPI implementation is kept in `legacy/backend-py/` for reference and as the source of the differential test vectors. See [ARCHITECTURE_TS](docs/ARCHITECTURE_TS.md).
 
-Prerequisites: [`uv`](https://docs.astral.sh/uv/) (it installs Python 3.12 for you). No API keys, no network needed.
+Prerequisites: Node 20+ (no Python, no API keys, no network needed). No `make`? Every target is a thin wrapper over `cd server && npm run …`.
 
 ```bash
 make install && make demo        # seeds synthetic personas, runs the scripted end-to-end scenario, writes evidence/
-make test                        # 190+ tests: unit, API, golden tasks, attack scenarios
-make api                         # backend on http://localhost:8000  (Swagger: /docs)
-make web                         # Next.js UI on http://localhost:3000 (needs Node 20+; npm install runs in `make install`)
+make test                        # unit, differential-vs-Python, API, golden (25 tasks), attack scenarios
+make api                         # backend on http://localhost:8000 (DEMO_MODE=true for the web demo helpers)
+make web                         # Next.js UI on http://localhost:3000
 ```
 
-Docker (not available where this was developed, so **the images were written and validated by reading but never built here**; please report any issue):
+`DEMO_MODE` now defaults to **off** (the `/demo/*` helpers return 404 unless `DEMO_MODE=true` or a valid `X-Admin-Token`). Set `DEMO_MODE=true` for the judges' demo (`docker-compose.yml` does).
+
+Docker (not available where this was developed, so **the images were written by reading but never built here**; please report any issue):
 
 ```bash
 docker compose up --build        # api :8000, web :3000, offline, no keys
@@ -38,12 +40,12 @@ docker compose up --build        # api :8000, web :3000, offline, no keys
 
 | Target | What it does |
 |---|---|
-| `make install` | `uv sync` (backend) and `npm install` (web, if present) |
-| `make lint` | ruff check, ruff format --check, mypy |
-| `make test` | pytest (unit + API + golden + security) |
-| `make demo` | `python -m app.demo`: scripted scenario on an in-memory DB → `evidence/sandbox_logs.jsonl`, `audit_export.json`, `demo_summary.json` |
-| `make evidence` | tests + demo + `eval.run_eval` (golden tasks + notice corpus → `eval_report.md`) + `eval.run_security` (attacks → `security_report.md`) |
-| `make api-docs` | regenerates `docs/API.md` from the real app |
+| `make install` | `npm ci` (server) and `npm install` (web) |
+| `make lint` | eslint + `tsc --noEmit` |
+| `make test` | vitest (unit + Python-pinned vectors + API + golden + security) |
+| `make demo` | `npm run demo`: scripted scenario on an in-memory DB → `evidence/sandbox_logs.jsonl`, `audit_export.json`, `demo_summary.json` (prints the audit `head_hash`) |
+| `make evidence` | tests + demo + `npm run evidence` (golden tasks + notice corpus → `eval_report.md`; attacks → `security_report.md`) |
+| `make contract` | live status+shape diff of TS vs the legacy Python backend (start both on fresh DBs) |
 | `make seed-data` | regenerates `data/` (personas, 33 notices, 12 messages, FX sample, channel costs) deterministically |
 
 ## Demo personas (all SYNTHETIC, password `demo-password-123`)
@@ -78,9 +80,10 @@ Honest note: the golden tasks and attacks were authored by the same team as the 
 
 ## Repository map
 ```
-backend/app/        FastAPI app: routes/, domain/ (policy, fx, costs, crypto, audit), agents/, sandbox_bank/
-backend/tests/      unit/, api/, golden/, security/ (pytest + hypothesis)
-backend/eval/       golden tasks (tasks.yaml), attack scenarios, report generators
+server/src/        Fastify app: routes/, domain/ (policy, fx, costs, crypto, audit), agents/, sandboxBank/, evalkit/ (golden + attacks)
+server/tests/      unit/, api/, golden/, security/, parity/ (vitest)
+server/eval/       golden tasks (tasks.yaml)
+legacy/backend-py/ the original Python implementation (reference + differential vectors)
 data/               SYNTHETIC personas, 33 fee notices (EN/ZH/mixed, 13 attack/negative), 12 SMS, FX SAMPLE rates, channel costs
 docs/               API.md, ARCHITECTURE.md, DATA_FLOW.md, THREAT_MODEL.md, SECURITY_SELF_ASSESSMENT.md, GLOSSARY_EN_ZH.md
 evidence/           generated reports and logs
@@ -94,4 +97,4 @@ web/                Next.js front end (EN / 简体中文)
 [API](docs/API.md) · [Architecture](docs/ARCHITECTURE.md) · [Data flow](docs/DATA_FLOW.md) · [Threat model](docs/THREAT_MODEL.md) · [Security self-assessment + known risks](docs/SECURITY_SELF_ASSESSMENT.md) · [EN↔ZH glossary](docs/GLOSSARY_EN_ZH.md)
 
 ## Limitations (short list)
-No OCR (typed text and text-layer PDFs only) · no real payments · scripted planner has narrow EN/ZH coverage and ignores free-form amounts in chat · guardian is rule-based · approver linking has no consent handshake · PIPL consent screens not built · single-process SQLite, in-memory rate limiter · Docker images not built in the dev environment. Full list: [SECURITY_SELF_ASSESSMENT](docs/SECURITY_SELF_ASSESSMENT.md).
+No OCR and no PDF upload in the TypeScript backend (typed/pasted text and .txt only; PDF uploads return 422) · no real payments · scripted planner has narrow EN/ZH coverage and ignores free-form amounts in chat · guardian is rule-based · approver linking has no consent handshake · PIPL consent screens not built · single-process SQLite, in-memory rate limiter · Docker images not built in the dev environment. Full list: [SECURITY_SELF_ASSESSMENT](docs/SECURITY_SELF_ASSESSMENT.md).
