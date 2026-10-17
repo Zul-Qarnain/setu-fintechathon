@@ -22,7 +22,8 @@ export function canonicalJSON(v: unknown): string {
     case 'boolean':
       return v ? 'true' : 'false';
     case 'number':
-      if (!Number.isSafeInteger(v)) throw new Error('canonicalJSON: only safe integers allowed (money is a decimal string)');
+      if (!Number.isSafeInteger(v))
+        throw new Error('canonicalJSON: only safe integers allowed (money is a decimal string)');
       return String(v);
     case 'object': {
       if (Array.isArray(v)) return '[' + v.map(canonicalJSON).join(',') + ']';
@@ -60,7 +61,14 @@ export function tsFromMs(ms: number): string {
   return new Date(ms).toISOString().replace(/\.(\d{3})Z$/, '.$1000Z');
 }
 
-export function computeHash(seq: number, ts: string, actor: string, event: string, pHash: string, prevHash: string): string {
+export function computeHash(
+  seq: number,
+  ts: string,
+  actor: string,
+  event: string,
+  pHash: string,
+  prevHash: string
+): string {
   return sha256hex([String(seq), ts, actor, event, pHash, prevHash].join('|'));
 }
 
@@ -81,15 +89,22 @@ export interface VerifyResult {
   reason: string | null;
 }
 
-const eq = (a: string, b: string): boolean => a.length === b.length && timingSafeEqual(Buffer.from(a), Buffer.from(b));
+const eq = (a: string, b: string): boolean =>
+  a.length === b.length && timingSafeEqual(Buffer.from(a), Buffer.from(b));
 
 export function verifyChain(rows: AuditRowLike[]): VerifyResult {
   let prev = GENESIS_HASH;
   let expectedSeq: number | null = null;
   let checked = 0;
-  const fail = (seq: number, reason: string): VerifyResult => ({ ok: false, checked, broken_at_seq: seq, reason });
+  const fail = (seq: number, reason: string): VerifyResult => ({
+    ok: false,
+    checked,
+    broken_at_seq: seq,
+    reason,
+  });
   for (const row of [...rows].sort((a, b) => a.seq - b.seq)) {
-    if (expectedSeq !== null && row.seq !== expectedSeq) return fail(row.seq, `sequence gap: expected ${expectedSeq}`);
+    if (expectedSeq !== null && row.seq !== expectedSeq)
+      return fail(row.seq, `sequence gap: expected ${expectedSeq}`);
     expectedSeq = row.seq + 1;
     if (row.prev_hash !== prev) return fail(row.seq, 'prev_hash mismatch');
     if (row.payload_json !== null) {
@@ -99,9 +114,16 @@ export function verifyChain(rows: AuditRowLike[]): VerifyResult {
       } catch {
         return fail(row.seq, 'payload not valid JSON');
       }
-      if (!eq(payloadHash(payload), row.payload_hash)) return fail(row.seq, 'payload hash mismatch');
+      if (!eq(payloadHash(payload), row.payload_hash))
+        return fail(row.seq, 'payload hash mismatch');
     }
-    if (!eq(computeHash(row.seq, row.ts, row.actor, row.event, row.payload_hash, row.prev_hash), row.hash)) return fail(row.seq, 'hash mismatch');
+    if (
+      !eq(
+        computeHash(row.seq, row.ts, row.actor, row.event, row.payload_hash, row.prev_hash),
+        row.hash
+      )
+    )
+      return fail(row.seq, 'hash mismatch');
     prev = row.hash;
     checked++;
   }

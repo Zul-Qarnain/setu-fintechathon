@@ -12,7 +12,11 @@ export interface ChannelParams {
 }
 const D = (s: string) => new Decimal(s);
 const BUILTIN: Record<string, ChannelParams> = {
-  'Sandbox licensed partner A': { fixed_fee_usd: D('3.00'), fx_margin_pct: D('0.40'), pct: D('0.00') },
+  'Sandbox licensed partner A': {
+    fixed_fee_usd: D('3.00'),
+    fx_margin_pct: D('0.40'),
+    pct: D('0.00'),
+  },
   'Sandbox bank wire': { fixed_fee_usd: D('15.00'), fx_margin_pct: D('1.50'), pct: D('0.00') },
 };
 
@@ -43,18 +47,27 @@ export function parseCsv(text: string): Record<string, string>[] {
     const c = text[i] as string;
     if (q) {
       if (c === '"') {
-        if (text[i + 1] === '"') { cur += '"'; i++; } else q = false;
+        if (text[i + 1] === '"') {
+          cur += '"';
+          i++;
+        } else q = false;
       } else cur += c;
     } else if (c === '"') q = true;
-    else if (c === ',') { row.push(cur); cur = ''; }
-    else if (c === '\n' || c === '\r') {
+    else if (c === ',') {
+      row.push(cur);
+      cur = '';
+    } else if (c === '\n' || c === '\r') {
       if (c === '\r' && text[i + 1] === '\n') i++;
-      row.push(cur); cur = '';
+      row.push(cur);
+      cur = '';
       if (row.length > 1 || row[0] !== '') rows.push(row);
       row = [];
     } else cur += c;
   }
-  if (cur !== '' || row.length) { row.push(cur); rows.push(row); }
+  if (cur !== '' || row.length) {
+    row.push(cur);
+    rows.push(row);
+  }
   const [head, ...rest] = rows;
   if (!head) return [];
   return rest.map((r) => Object.fromEntries(head.map((h, i) => [h, r[i] ?? ''])));
@@ -67,17 +80,25 @@ export function loadChannels(dataDir: string): Record<string, ChannelParams> {
       const name = row['channel'] ?? '';
       if (!name.startsWith('Sandbox')) continue; // only sandbox channels are offered
       try {
-        out[name] = { fixed_fee_usd: D(row['fixed_fee_usd'] || '0'), fx_margin_pct: D(row['fx_margin_pct'] || '0'), pct: D('0') };
-      } catch { /* skip malformed row */ }
+        out[name] = {
+          fixed_fee_usd: D(row['fixed_fee_usd'] || '0'),
+          fx_margin_pct: D(row['fx_margin_pct'] || '0'),
+          pct: D('0'),
+        };
+      } catch {
+        /* skip malformed row */
+      }
     }
-  } catch { /* missing file -> builtin */ }
+  } catch {
+    /* missing file -> builtin */
+  }
   return Object.keys(out).length ? out : { ...BUILTIN };
 }
 
 export async function computeCosts(
   amountCny: Decimal,
   fx: FxService,
-  opts: { channel?: string; toCurrency?: string; channels?: Record<string, ChannelParams> } = {},
+  opts: { channel?: string; toCurrency?: string; channels?: Record<string, ChannelParams> } = {}
 ): Promise<CostBreakdown> {
   const channel = opts.channel ?? DEFAULT_CHANNEL;
   if (amountCny.lte(0)) throw new Error('amount must be positive');
@@ -97,7 +118,10 @@ export async function computeCosts(
     amount_cny: quantizeMoney(amountCny),
     fx_rate: rate.rate,
     fx_source: rate.source,
-    fees: [{ label: 'Partner transfer fee', amount_cny: fixed }, { label: 'FX margin (est.)', amount_cny: margin }],
+    fees: [
+      { label: 'Partner transfer fee', amount_cny: fixed },
+      { label: 'FX margin (est.)', amount_cny: margin },
+    ],
     total_fees_cny: totalFees,
     fee_pct: totalFees.div(amountCny).mul(100).toDecimalPlaces(2, Decimal.ROUND_HALF_EVEN),
     total_cny: quantizeMoney(total),
@@ -107,4 +131,5 @@ export async function computeCosts(
 }
 
 /** Whole days between two ISO dates (YYYY-MM-DD). */
-export const daysUntil = (due: string, today: string): number => Math.round((Date.parse(due + 'T00:00:00Z') - Date.parse(today + 'T00:00:00Z')) / 86400000);
+export const daysUntil = (due: string, today: string): number =>
+  Math.round((Date.parse(due + 'T00:00:00Z') - Date.parse(today + 'T00:00:00Z')) / 86400000);

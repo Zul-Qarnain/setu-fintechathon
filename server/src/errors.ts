@@ -55,13 +55,11 @@ export function errorHandler(err: FastifyError | Error, req: FastifyRequest, rep
     fe.code === 'FST_ERR_CTP_EMPTY_JSON_BODY' ||
     fe.code === 'FST_ERR_CTP_INVALID_MEDIA_TYPE'
   ) {
-    return reply
-      .status(422)
-      .send(
-        envelope('validation_error', 'Request validation failed', rid, {
-          errors: [{ loc: ['body'], msg: 'JSON decode error' }],
-        })
-      );
+    return reply.status(422).send(
+      envelope('validation_error', 'Request validation failed', rid, {
+        errors: [{ loc: ['body'], msg: 'JSON decode error' }],
+      })
+    );
   }
   if (status >= 400 && status < 500) {
     return reply.status(status).send(envelope(`http_${status}`, fe.message, rid));

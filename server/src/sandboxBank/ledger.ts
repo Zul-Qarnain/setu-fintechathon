@@ -58,15 +58,29 @@ export function transferResultDict(r: TransferResult) {
 }
 
 /** `amount` must already be quantized (HALF_EVEN, 2dp) so the hash matches Python's f"{amount:.2f}". */
-const reqHash = (from: string, to: string, amount: Decimal, reference: string | null | undefined): string =>
-  createHash('sha256').update(`${from}|${to}|${amount.toFixed(2)}|${reference ?? ''}`, 'utf8').digest('hex');
+const reqHash = (
+  from: string,
+  to: string,
+  amount: Decimal,
+  reference: string | null | undefined
+): string =>
+  createHash('sha256')
+    .update(`${from}|${to}|${amount.toFixed(2)}|${reference ?? ''}`, 'utf8')
+    .digest('hex');
 
 const toDecimal = (v: string | Decimal): Decimal => {
-  if (typeof v === 'number') throw new TypeError('money must be a decimal string or Decimal, never a JS number');
+  if (typeof v === 'number')
+    throw new TypeError('money must be a decimal string or Decimal, never a JS number');
   return new Decimal(v);
 };
 
-export function openAccount(db: Db, accountNumber: string, holder: string, balance: string | Decimal = '0', ownerId: string | null = null): AccountRow {
+export function openAccount(
+  db: Db,
+  accountNumber: string,
+  holder: string,
+  balance: string | Decimal = '0',
+  ownerId: string | null = null
+): AccountRow {
   const n = normalizeAccount(accountNumber);
   const existing = getAccount(db, n);
   if (existing) return existing;
@@ -78,16 +92,22 @@ export function openAccount(db: Db, accountNumber: string, holder: string, balan
     balance_cny: toDecimal(balance).toFixed(2),
     closed: 0,
   };
-  db.prepare('INSERT INTO sbx_accounts (id, owner_id, account_number, holder, balance_cny, closed) VALUES (@id,@owner_id,@account_number,@holder,@balance_cny,@closed)').run(row);
+  db.prepare(
+    'INSERT INTO sbx_accounts (id, owner_id, account_number, holder, balance_cny, closed) VALUES (@id,@owner_id,@account_number,@holder,@balance_cny,@closed)'
+  ).run(row);
   return row;
 }
 
 export function getAccount(db: Db, accountNumber: string): AccountRow | undefined {
-  return db.prepare('SELECT * FROM sbx_accounts WHERE account_number = ?').get(normalizeAccount(accountNumber)) as AccountRow | undefined;
+  return db
+    .prepare('SELECT * FROM sbx_accounts WHERE account_number = ?')
+    .get(normalizeAccount(accountNumber)) as AccountRow | undefined;
 }
 
 export function getAccountByOwner(db: Db, ownerId: string): AccountRow | undefined {
-  return db.prepare('SELECT * FROM sbx_accounts WHERE owner_id = ? ORDER BY rowid LIMIT 1').get(ownerId) as AccountRow | undefined;
+  return db
+    .prepare('SELECT * FROM sbx_accounts WHERE owner_id = ? ORDER BY rowid LIMIT 1')
+    .get(ownerId) as AccountRow | undefined;
 }
 
 /** Atomic (single sqlite transaction). Same idempotency key + same params => stored result. */
@@ -97,52 +117,86 @@ export function transfer(
   fromAccountNumber: string,
   toAccountNumber: string,
   amountCny: string | Decimal,
-  reference: string | null = null,
+  reference: string | null = null
 ): TransferResult {
-  return db.transaction((): TransferResult => {
-    const srcN = normalizeAccount(fromAccountNumber);
-    const dstN = normalizeAccount(toAccountNumber);
-    const amount = toDecimal(amountCny).toDecimalPlaces(2, HALF_EVEN); // Python quantize default
-    const rh = reqHash(srcN, dstN, amount, reference);
-    const prior = db.prepare('SELECT * FROM sbx_txns WHERE idempotency_key = ?').get(idempotencyKey) as TxnRow | undefined;
-    if (prior) {
-      if (prior.request_hash !== rh) throw new IdempotencyMismatch('idempotency key reused with different parameters');
-      return { txn_id: prior.id, state: prior.state, failure_code: prior.failure_code, amount_cny: prior.amount_cny, from_account: prior.from_account, to_account_number: prior.to_account_number, idempotent_replay: true };
-    }
-    const src = getAccount(db, srcN);
-    if (!src) throw new UnknownAccount('source account not found');
-    const dst = getAccount(db, dstN);
-    let state: TxnRow['state'] = 'settled';
-    let code: string | null = null;
-    if (amount.lte(0)) [state, code] = ['failed', 'INVALID_AMOUNT'];
-    else if (dstN.endsWith('0013') || (dst && dst.closed)) [state, code] = ['failed', 'ACCOUNT_CLOSED'];
-    else if (amount.gt(PER_TXN_LIMIT)) [state, code] = ['failed', 'LIMIT_EXCEEDED'];
-    else if (amount.mod(1).eq('0.99')) [state, code] = ['held', 'RISK_HOLD'];
-    else if (new Decimal(src.balance_cny).lt(amount)) [state, code] = ['failed', 'INSUFFICIENT_FUNDS'];
-    if (state === 'settled') {
-      db.prepare('UPDATE sbx_accounts SET balance_cny = ? WHERE account_number = ?').run(new Decimal(src.balance_cny).minus(amount).toFixed(2), srcN);
-      if (dst) db.prepare('UPDATE sbx_accounts SET balance_cny = ? WHERE account_number = ?').run(new Decimal(dst.balance_cny).plus(amount).toFixed(2), dstN);
-    }
-    const txn: TxnRow = {
-      id: newId('sbx_txn'),
-      idempotency_key: idempotencyKey,
-      request_hash: rh,
-      from_account: srcN,
-      to_account_number: dstN,
-      amount_cny: amount.toFixed(2),
-      reference,
-      state,
-      failure_code: code,
-      created_at: nowTs(),
-    };
-    db.prepare(
-      'INSERT INTO sbx_txns (id, idempotency_key, request_hash, from_account, to_account_number, amount_cny, reference, state, failure_code, created_at) VALUES (@id,@idempotency_key,@request_hash,@from_account,@to_account_number,@amount_cny,@reference,@state,@failure_code,@created_at)',
-    ).run(txn);
-    return { txn_id: txn.id, state, failure_code: code, amount_cny: txn.amount_cny, from_account: srcN, to_account_number: dstN, idempotent_replay: false };
-  }).immediate();
+  return db
+    .transaction((): TransferResult => {
+      const srcN = normalizeAccount(fromAccountNumber);
+      const dstN = normalizeAccount(toAccountNumber);
+      const amount = toDecimal(amountCny).toDecimalPlaces(2, HALF_EVEN); // Python quantize default
+      const rh = reqHash(srcN, dstN, amount, reference);
+      const prior = db
+        .prepare('SELECT * FROM sbx_txns WHERE idempotency_key = ?')
+        .get(idempotencyKey) as TxnRow | undefined;
+      if (prior) {
+        if (prior.request_hash !== rh)
+          throw new IdempotencyMismatch('idempotency key reused with different parameters');
+        return {
+          txn_id: prior.id,
+          state: prior.state,
+          failure_code: prior.failure_code,
+          amount_cny: prior.amount_cny,
+          from_account: prior.from_account,
+          to_account_number: prior.to_account_number,
+          idempotent_replay: true,
+        };
+      }
+      const src = getAccount(db, srcN);
+      if (!src) throw new UnknownAccount('source account not found');
+      const dst = getAccount(db, dstN);
+      let state: TxnRow['state'] = 'settled';
+      let code: string | null = null;
+      if (amount.lte(0)) [state, code] = ['failed', 'INVALID_AMOUNT'];
+      else if (dstN.endsWith('0013') || (dst && dst.closed))
+        [state, code] = ['failed', 'ACCOUNT_CLOSED'];
+      else if (amount.gt(PER_TXN_LIMIT)) [state, code] = ['failed', 'LIMIT_EXCEEDED'];
+      else if (amount.mod(1).eq('0.99')) [state, code] = ['held', 'RISK_HOLD'];
+      else if (new Decimal(src.balance_cny).lt(amount))
+        [state, code] = ['failed', 'INSUFFICIENT_FUNDS'];
+      if (state === 'settled') {
+        db.prepare('UPDATE sbx_accounts SET balance_cny = ? WHERE account_number = ?').run(
+          new Decimal(src.balance_cny).minus(amount).toFixed(2),
+          srcN
+        );
+        if (dst)
+          db.prepare('UPDATE sbx_accounts SET balance_cny = ? WHERE account_number = ?').run(
+            new Decimal(dst.balance_cny).plus(amount).toFixed(2),
+            dstN
+          );
+      }
+      const txn: TxnRow = {
+        id: newId('sbx_txn'),
+        idempotency_key: idempotencyKey,
+        request_hash: rh,
+        from_account: srcN,
+        to_account_number: dstN,
+        amount_cny: amount.toFixed(2),
+        reference,
+        state,
+        failure_code: code,
+        created_at: nowTs(),
+      };
+      db.prepare(
+        'INSERT INTO sbx_txns (id, idempotency_key, request_hash, from_account, to_account_number, amount_cny, reference, state, failure_code, created_at) VALUES (@id,@idempotency_key,@request_hash,@from_account,@to_account_number,@amount_cny,@reference,@state,@failure_code,@created_at)'
+      ).run(txn);
+      return {
+        txn_id: txn.id,
+        state,
+        failure_code: code,
+        amount_cny: txn.amount_cny,
+        from_account: srcN,
+        to_account_number: dstN,
+        idempotent_replay: false,
+      };
+    })
+    .immediate();
 }
 
 export function listTransactions(db: Db, accountNumber: string): TxnRow[] {
   const n = normalizeAccount(accountNumber);
-  return db.prepare('SELECT * FROM sbx_txns WHERE from_account = ? OR to_account_number = ? ORDER BY created_at, rowid').all(n, n) as TxnRow[];
+  return db
+    .prepare(
+      'SELECT * FROM sbx_txns WHERE from_account = ? OR to_account_number = ? ORDER BY created_at, rowid'
+    )
+    .all(n, n) as TxnRow[];
 }

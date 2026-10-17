@@ -36,6 +36,7 @@ export const dashboardRoutes: FastifyPluginAsync = async (app) => {
       : null;
     const b = budgetSummary(newToolState(ctx, user, todayIso(ctx)));
     return {
+      synthetic: true,
       user: userOut(user),
       obligations: obs,
       next_due: nxt,

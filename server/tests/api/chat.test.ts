@@ -144,6 +144,7 @@ describe('chat + audit/evidence/dashboard (fresh world)', () => {
       'obligations',
       'pending_actions',
       'spent_this_month_cny',
+      'synthetic',
       'user',
     ]);
     expect((await x.del('/me', x.student)).json.erased).toBe(true);

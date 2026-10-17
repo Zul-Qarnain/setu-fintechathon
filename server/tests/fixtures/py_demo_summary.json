@@ -28,18 +28,13 @@
       "intent": "pay_obligation",
       "tier": "T3",
       "status": "awaiting_approval",
-      "required": [
-        "totp",
-        "family_approver"
-      ],
+      "required": ["totp", "family_approver"],
       "reply_validated": true
     },
     {
       "step": "student_totp",
       "status": "awaiting_approval",
-      "still_required": [
-        "family_approver"
-      ]
+      "still_required": ["family_approver"]
     },
     {
       "step": "family_approver_totp",
@@ -51,10 +46,7 @@
       "step": "injected_notice",
       "file": "atk_injection_en_01.txt",
       "doc_status": "blocked",
-      "flags": [
-        "INJECTION_PHRASE",
-        "NO_CONFIRMATION_DEMAND"
-      ],
+      "flags": ["INJECTION_PHRASE", "NO_CONFIRMATION_DEMAND"],
       "tier": "T4",
       "status": "blocked"
     },
@@ -63,17 +55,12 @@
       "intent": "payee_change",
       "tier": "T3",
       "status": "cooling_off",
-      "approve_attempt": [
-        409,
-        "COOLING_OFF_ACTIVE"
-      ]
+      "approve_attempt": [409, "COOLING_OFF_ACTIVE"]
     },
     {
       "step": "t2_payment",
       "tier": "T2",
-      "required": [
-        "totp"
-      ],
+      "required": ["totp"],
       "status": "executed",
       "amount": "1350.00"
     },

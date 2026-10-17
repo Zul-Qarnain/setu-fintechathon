@@ -14,11 +14,17 @@ export interface BudgetSummary {
 
 export function summarize(monthlyBudget: Decimal, spent: Decimal): BudgetSummary {
   const remaining = monthlyBudget.minus(spent);
-  return { monthly_budget_cny: monthlyBudget, spent_this_month_cny: spent, remaining_cny: remaining, over_budget: remaining.lt(0) };
+  return {
+    monthly_budget_cny: monthlyBudget,
+    spent_this_month_cny: spent,
+    remaining_cny: remaining,
+    over_budget: remaining.lt(0),
+  };
 }
 
 /** Sum of open obligations due on/before `by` (ISO dates compare lexicographically). */
-export const totalDueBy = (obls: Obl[], by: string): Decimal => obls.filter((o) => o.due_date <= by).reduce((a, o) => a.plus(o.amount_cny), new Decimal(0));
+export const totalDueBy = (obls: Obl[], by: string): Decimal =>
+  obls.filter((o) => o.due_date <= by).reduce((a, o) => a.plus(o.amount_cny), new Decimal(0));
 
 export function monthlySavingNeeded(target: Decimal, today: string, due: string): Decimal {
   const y = (s: string) => Number(s.slice(0, 4));

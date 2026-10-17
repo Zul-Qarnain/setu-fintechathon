@@ -123,7 +123,6 @@ export interface BankTxnRow {
 }
 
 export function createSchema(db: Database.Database): void {
-
   db.exec(`
     CREATE TABLE IF NOT EXISTS users (
       id TEXT PRIMARY KEY,

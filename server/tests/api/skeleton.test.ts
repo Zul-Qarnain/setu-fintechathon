@@ -44,10 +44,10 @@ describe('skeleton', () => {
     expect(r.headers['access-control-allow-origin']).toBe('http://localhost:3000');
   });
 
-  it('404 uses the error envelope', async () => {
+  it('unknown routes return FastAPI-style {detail} (Python parity)', async () => {
     const r = await app.inject({ method: 'GET', url: '/nope' });
     expect(r.statusCode).toBe(404);
-    expect(r.json().error.code).toBe('http_404');
-    expect(r.json().request_id).toBeTruthy();
+    expect(r.json()).toEqual({ detail: 'Not Found' });
+    expect(r.headers['x-request-id']).toMatch(/^req_[0-9a-f]{12}$/);
   });
 });

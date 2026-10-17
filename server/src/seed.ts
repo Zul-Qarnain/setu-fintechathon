@@ -42,9 +42,7 @@ export function loadPersonas(dataDir: string): Persona[] {
   throw new Error("personas.json: expected a list or a dict with 'users'");
 }
 
-export async function seedAll(
-  ctx: AppContext
-): Promise<{
+export async function seedAll(ctx: AppContext): Promise<{
   users: number;
   obligations: number;
   auditHead: { head_hash: string; count: number };
@@ -127,9 +125,7 @@ export async function seedAll(
 }
 
 /** Seeds when the users table is empty; returns the audit head (or null when already populated / no data). */
-export async function seedIfEmpty(
-  ctx: AppContext
-): Promise<{
+export async function seedIfEmpty(ctx: AppContext): Promise<{
   users: number;
   obligations: number;
   auditHead: { head_hash: string; count: number };

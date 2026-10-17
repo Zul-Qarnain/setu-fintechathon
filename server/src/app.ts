@@ -4,7 +4,7 @@ import cors from '@fastify/cors';
 import { loadConfig, type Config } from './config.js';
 import { openDb, type Db } from './db/connection.js';
 import { createSchema } from './db/schema.js';
-import { envelope, errorHandler } from './errors.js';
+import { errorHandler } from './errors.js';
 import { redactPaths } from './logging.js';
 import { RateLimiter } from './deps.js';
 import { FxService } from './domain/fx.js';
@@ -85,9 +85,8 @@ export async function buildApp(opts: BuildOptions = {}): Promise<FastifyInstance
     reply.header('x-request-id', req.id);
   });
   app.setErrorHandler(errorHandler);
-  app.setNotFoundHandler((req, reply) =>
-    reply.status(404).send(envelope('http_404', 'Not Found', req.id))
-  );
+  // Parity with the Python backend: unknown routes bypass the error envelope (FastAPI's default {"detail":"Not Found"}).
+  app.setNotFoundHandler((_req, reply) => reply.status(404).send({ detail: 'Not Found' }));
 
   await app.register(authRoutes, { prefix: '/auth' });
   await app.register(payeeRoutes, { prefix: '/payees' });

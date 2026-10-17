@@ -17,7 +17,15 @@ export interface Fixture {
 const BUILTIN_SAMPLE: Fixture = {
   as_of: '2026-10-01T00:00:00Z',
   base: 'CNY',
-  rates: { BDT: '17.2000', USD: '0.1400', INR: '11.6000', PKR: '39.5000', LKR: '42.0000', NPR: '19.5000', EUR: '0.1200' },
+  rates: {
+    BDT: '17.2000',
+    USD: '0.1400',
+    INR: '11.6000',
+    PKR: '39.5000',
+    LKR: '42.0000',
+    NPR: '19.5000',
+    EUR: '0.1200',
+  },
 };
 
 export class FxError extends Error {}
@@ -32,8 +40,20 @@ export interface Rate {
   is_live: boolean;
   disclaimer: string;
 }
-const mkRate = (base: string, quote: string, rate: Decimal, source: string, as_of: Date, cached = false): Rate => ({
-  base, quote, rate, source, as_of, cached,
+const mkRate = (
+  base: string,
+  quote: string,
+  rate: Decimal,
+  source: string,
+  as_of: Date,
+  cached = false
+): Rate => ({
+  base,
+  quote,
+  rate,
+  source,
+  as_of,
+  cached,
   is_live: source === LIVE_SOURCE,
   disclaimer: source === LIVE_SOURCE ? DISCLAIMER_LIVE : DISCLAIMER_SAMPLE,
 });
@@ -87,7 +107,9 @@ export class FxService {
 
   private fromFixture(base: string, quote: string): Rate {
     const fx = this.fix();
-    const rates: Record<string, Decimal> = Object.fromEntries(Object.entries(fx.rates).map(([k, v]) => [k, new Decimal(v)]));
+    const rates: Record<string, Decimal> = Object.fromEntries(
+      Object.entries(fx.rates).map(([k, v]) => [k, new Decimal(v)])
+    );
     rates[fx.base] = new Decimal(1);
     const b = rates[base];
     const q = rates[quote];
