@@ -31,7 +31,11 @@ export interface ValidationResult {
   unsupported: string[];
 }
 
-export function validateReply(reply: string, toolOutputs: unknown[], userMessage = ''): ValidationResult {
+export function validateReply(
+  reply: string,
+  toolOutputs: unknown[],
+  userMessage = ''
+): ValidationResult {
   const allowed = allowedNumbers(toolOutputs, userMessage);
   const bad = [...numbersIn(reply)].filter((n) => !allowed.has(n)).sort();
   return { ok: bad.length === 0, unsupported: bad };

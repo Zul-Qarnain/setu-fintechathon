@@ -2,7 +2,12 @@ import { describe, expect, it } from 'vitest';
 import { openDb } from '../../src/db/connection.js';
 import { createSchema } from '../../src/db/schema.js';
 import { nowTs } from '../../src/domain/audit.js';
-import { assertNonDefaultKeys, DEV_AES_KEY_B64, DEV_HMAC_KEY, DEV_JWT_SECRET } from '../../src/domain/keys.js';
+import {
+  assertNonDefaultKeys,
+  DEV_AES_KEY_B64,
+  DEV_HMAC_KEY,
+  DEV_JWT_SECRET,
+} from '../../src/domain/keys.js';
 import { nameSkeleton } from '../../src/domain/tokenize.js';
 import { openAccount, transfer } from '../../src/sandboxBank/ledger.js';
 import { hashPassword } from '../../src/security.js';
@@ -26,20 +31,41 @@ describe('GLM review fixes', () => {
     const db = openDb(':memory:');
     createSchema(db);
     openAccount(db, '6222000000000001', 'S', '100');
-    expect(() => transfer(db, 'k', '6222000000000001', '6222000000004821', 100.155 as unknown as string)).toThrow(TypeError);
+    expect(() =>
+      transfer(db, 'k', '6222000000000001', '6222000000004821', 100.155 as unknown as string)
+    ).toThrow(TypeError);
   });
   it('nameSkeleton casefold vectors (Python)', () => {
-    expect(['Straße University', 'STRASSE University', 'İstanbul Uni'].map(nameSkeleton)).toEqual(['strasseuniversity', 'strasseuniversity', 'istanbuluni']);
+    expect(['Straße University', 'STRASSE University', 'İstanbul Uni'].map(nameSkeleton)).toEqual([
+      'strasseuniversity',
+      'strasseuniversity',
+      'istanbuluni',
+    ]);
   });
   it('nowTs is strictly increasing with 6-digit micros', () => {
     const xs = Array.from({ length: 2000 }, nowTs);
-    for (let i = 1; i < xs.length; i++) expect((xs[i] as string) > (xs[i - 1] as string)).toBe(true);
+    for (let i = 1; i < xs.length; i++)
+      expect((xs[i] as string) > (xs[i - 1] as string)).toBe(true);
     expect(xs[0]).toMatch(/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d\.\d{6}Z$/);
   });
   it('dev keys refused in production only', () => {
-    const dev = { HMAC_KEY: DEV_HMAC_KEY, JWT_SECRET: DEV_JWT_SECRET, AES_KEY_B64: DEV_AES_KEY_B64 };
+    const dev = {
+      HMAC_KEY: DEV_HMAC_KEY,
+      JWT_SECRET: DEV_JWT_SECRET,
+      AES_KEY_B64: DEV_AES_KEY_B64,
+    };
     expect(() => assertNonDefaultKeys(dev, 'production')).toThrow();
     expect(() => assertNonDefaultKeys(dev, 'development')).not.toThrow();
-    expect(() => assertNonDefaultKeys({ ...dev, HMAC_KEY: 'x'.repeat(40), JWT_SECRET: 'y'.repeat(40), AES_KEY_B64: 'QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVowMTIzNDU=' }, 'production')).not.toThrow();
+    expect(() =>
+      assertNonDefaultKeys(
+        {
+          ...dev,
+          HMAC_KEY: 'x'.repeat(40),
+          JWT_SECRET: 'y'.repeat(40),
+          AES_KEY_B64: 'QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVowMTIzNDU=',
+        },
+        'production'
+      )
+    ).not.toThrow();
   });
 });

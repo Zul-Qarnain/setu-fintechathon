@@ -9,7 +9,15 @@ export const sandboxRoutes: FastifyPluginAsync = async (app) => {
     const user = await currentUser(ctx, req);
     const a = getAccountByOwner(ctx.db, user.id);
     if (!a) return { account: null, synthetic: true };
-    return { account: { account_masked: `****${a.account_number.slice(-4)}`, holder: a.holder, balance_cny: a.balance_cny }, synthetic: true, sandbox: true };
+    return {
+      account: {
+        account_masked: `****${a.account_number.slice(-4)}`,
+        holder: a.holder,
+        balance_cny: a.balance_cny,
+      },
+      synthetic: true,
+      sandbox: true,
+    };
   });
   app.get('/transactions', async (req) => {
     const user = await currentUser(ctx, req);
@@ -17,8 +25,13 @@ export const sandboxRoutes: FastifyPluginAsync = async (app) => {
     if (!a) return { transactions: [], synthetic: true };
     return {
       transactions: listTransactions(ctx.db, a.account_number).map((t) => ({
-        id: t.id, state: t.state, failure_code: t.failure_code, amount_cny: t.amount_cny, reference: t.reference,
-        to_masked: `****${t.to_account_number.slice(-4)}`, created_at: t.created_at,
+        id: t.id,
+        state: t.state,
+        failure_code: t.failure_code,
+        amount_cny: t.amount_cny,
+        reference: t.reference,
+        to_masked: `****${t.to_account_number.slice(-4)}`,
+        created_at: t.created_at,
       })),
       synthetic: true,
     };

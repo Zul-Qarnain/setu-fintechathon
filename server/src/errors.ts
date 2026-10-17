@@ -7,7 +7,7 @@ export class AppError extends Error {
     public readonly code: string,
     message: string,
     public readonly status: number,
-    public readonly details: Record<string, unknown> = {},
+    public readonly details: Record<string, unknown> = {}
   ) {
     super(message);
     this.name = 'AppError';
@@ -44,14 +44,24 @@ export function errorHandler(err: FastifyError | Error, req: FastifyRequest, rep
     return reply.status(err.status).send(envelope(err.code, err.message, rid, err.details));
   }
   if (err instanceof ZodError) {
-    return reply.status(422).send(envelope('validation_error', 'Request validation failed', rid, zodDetails(err)));
+    return reply
+      .status(422)
+      .send(envelope('validation_error', 'Request validation failed', rid, zodDetails(err)));
   }
   const fe = err as FastifyError;
   const status = fe.statusCode ?? 500;
-  if (fe.code === 'FST_ERR_CTP_INVALID_JSON_BODY' || fe.code === 'FST_ERR_CTP_EMPTY_JSON_BODY' || fe.code === 'FST_ERR_CTP_INVALID_MEDIA_TYPE') {
+  if (
+    fe.code === 'FST_ERR_CTP_INVALID_JSON_BODY' ||
+    fe.code === 'FST_ERR_CTP_EMPTY_JSON_BODY' ||
+    fe.code === 'FST_ERR_CTP_INVALID_MEDIA_TYPE'
+  ) {
     return reply
       .status(422)
-      .send(envelope('validation_error', 'Request validation failed', rid, { errors: [{ loc: ['body'], msg: 'JSON decode error' }] }));
+      .send(
+        envelope('validation_error', 'Request validation failed', rid, {
+          errors: [{ loc: ['body'], msg: 'JSON decode error' }],
+        })
+      );
   }
   if (status >= 400 && status < 500) {
     return reply.status(status).send(envelope(`http_${status}`, fe.message, rid));

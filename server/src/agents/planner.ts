@@ -1,112 +1,74 @@
-/** Planner contract: the model may emit ONLY ToolCall JSON from an allowlist, schema-validated. */
-
+/** Planner contract: the model may emit ONLY ToolCall JSON from an allowlist, schema-validated (extra keys forbidden, like Python's extra="forbid"). Port of planner.py. */
 import { z } from 'zod';
 
-export const INTENTS = ["pay_obligation", "quote_fx", "how_much_needed", "payee_change", "explain_fees", "unsafe_request", "unknown"] as const;
+export const INTENTS = [
+  'pay_obligation',
+  'quote_fx',
+  'how_much_needed',
+  'payee_change',
+  'explain_fees',
+  'unsafe_request',
+  'unknown',
+] as const;
 
-// Tool argument schemas matching Python's extra=forbid
-const GetObligationArgs = z.object({
-  obligation_id: z.string().nullish(),
-  document_id: z.string().nullish(),
-  keyword: z.string().nullish(),
-});
-
-const ListDueArgs = z.object({
-  by: z.string().nullish(), // ISO date
-});
-
-const FxQuoteArgs = z.object({
-  amount_cny: z.string().nullish(),
-  quote: z.literal('BDT').default('BDT'),
-});
-
-const ComputeCostsArgs = z.object({
-  amount_cny: z.string(),
-  channel: z.string().nullish(),
-});
-
-const BudgetArgs = z.object({}).passthrough();
-
-const ProposePaymentArgs = z.object({
-  obligation_id: z.string().nullish(),
-  document_id: z.string().nullish(),
-  amount_cny: z.string().nullish(),
-  payee_account: z.string().nullish(),
-  origin: z.enum(['user', 'document', 'message', 'model']).default('user'),
-});
-
-const ProposeVerifyPayeeArgs = z.object({
-  name: z.string().nullish(),
-  account_number: z.string().nullish(),
-  payee_id: z.string().nullish(),
-});
-
-const DraftMessageArgs = z.object({
-  to: z.literal('university').default('university'),
-  purpose: z.literal('confirm_account'),
-});
-
-const ARG_MODELS: Record<string, z.ZodTypeAny> = {
-  get_obligation: GetObligationArgs,
-  list_obligations_due: ListDueArgs,
-  fx_quote: FxQuoteArgs,
-  compute_costs: ComputeCostsArgs,
-  budget_summary: BudgetArgs,
-  propose_payment: ProposePaymentArgs,
-  propose_verify_payee: ProposeVerifyPayeeArgs,
-  draft_message: DraftMessageArgs,
+const s = z.string().nullish();
+const ARG_MODELS: Record<string, z.ZodType> = {
+  get_obligation: z.strictObject({ obligation_id: s, document_id: s, keyword: s }),
+  list_obligations_due: z.strictObject({ by: s }),
+  fx_quote: z.strictObject({ amount_cny: s, quote: z.string().default('BDT') }),
+  compute_costs: z.strictObject({ amount_cny: z.string(), channel: s }),
+  budget_summary: z.strictObject({}),
+  propose_payment: z.strictObject({
+    obligation_id: s,
+    document_id: s,
+    amount_cny: s,
+    payee_account: s,
+    origin: z.enum(['user', 'document', 'message', 'model']).default('user'),
+  }),
+  propose_verify_payee: z.strictObject({ name: s, account_number: s, payee_id: s }),
+  draft_message: z.strictObject({
+    to: z.enum(['university', 'family']).default('university'),
+    purpose: z.enum(['confirm_account', 'request_extension']).default('confirm_account'),
+  }),
 };
+/** The ONLY tools that may create actions are propose_*; none of them executes anything. */
+export const READ_TOOLS = new Set([
+  'get_obligation',
+  'list_obligations_due',
+  'fx_quote',
+  'compute_costs',
+  'budget_summary',
+]);
 
-// The ONLY tools that may create actions are propose_*; none of them executes anything.
-export const READ_TOOLS = new Set(["get_obligation", "list_obligations_due", "fx_quote", "compute_costs", "budget_summary"]);
-
-const ToolCallSchema = z.object({
-  tool: z.string(),
-  args: z.record(z.any()).default({}),
-});
-
-const PlannerOutputSchema = z.object({
+const PlannerOutputSchema = z.strictObject({
   intent: z.enum(INTENTS),
-  tool_calls: z.array(ToolCallSchema).max(6),
+  tool_calls: z
+    .array(
+      z.strictObject({ tool: z.string(), args: z.record(z.string(), z.unknown()).default({}) })
+    )
+    .max(6)
+    .default([]),
 });
+export type ToolCall = z.infer<typeof PlannerOutputSchema>['tool_calls'][number];
+export type PlannerOutput = z.infer<typeof PlannerOutputSchema>;
 
 export class PlanRejected extends Error {
-  reason: string;
-  constructor(reason: string) {
+  constructor(readonly reason: string) {
     super(reason);
-    this.reason = reason;
-    Object.setPrototypeOf(this, PlanRejected.prototype);
+    this.name = 'PlanRejected';
   }
 }
 
-export function validatePlan(raw: unknown): z.infer<typeof PlannerOutputSchema> {
-  /** Validate model output: JSON schema, tool allowlist, per-tool arg schema. Raises PlanRejected. */
-  try {
-    const out = PlannerOutputSchema.parse(raw);
-    for (const tc of out.tool_calls) {
-      const model = ARG_MODELS[tc.tool];
-      if (!model) {
-        throw new PlanRejected(`tool not in allowlist: ${tc.tool}`);
-      }
-      try {
-        model.parse(tc.args);
-      } catch (e) {
-        if (e instanceof z.ZodError) {
-          const firstErr = e.errors[0];
-          throw new PlanRejected(`args for ${tc.tool}: ${firstErr?.message || 'validation error'}`);
-        }
-        throw e;
-      }
-    }
-    return out;
-  } catch (e) {
-    if (e instanceof z.ZodError) {
-      const firstErr = e.errors[0];
-      throw new PlanRejected(`schema: ${firstErr?.message || 'invalid structure'}`);
-    }
-    throw e;
+/** Validate model output: JSON schema, tool allowlist, per-tool arg schema. Throws PlanRejected. */
+export function validatePlan(raw: unknown): PlannerOutput {
+  const p = PlannerOutputSchema.safeParse(raw);
+  if (!p.success) throw new PlanRejected(`schema: ${p.error.issues[0]?.message ?? 'invalid'}`);
+  for (const tc of p.data.tool_calls) {
+    const model = ARG_MODELS[tc.tool];
+    if (!model) throw new PlanRejected(`tool not in allowlist: ${tc.tool}`);
+    const a = model.safeParse(tc.args);
+    if (!a.success)
+      throw new PlanRejected(`args for ${tc.tool}: ${a.error.issues[0]?.message ?? 'invalid'}`);
   }
+  return p.data;
 }
-
-export type ToolCall = z.infer<typeof ToolCallSchema>;
-export type PlannerOutput = z.infer<typeof PlannerOutputSchema>;

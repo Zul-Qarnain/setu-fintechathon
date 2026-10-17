@@ -51,7 +51,11 @@ export async function buildApp(opts: BuildOptions = {}): Promise<FastifyInstance
 
   // Assert non-default keys in production
   if (process.env.NODE_ENV === 'production') {
-    keys.assertNonDefaultKeys({ HMAC_KEY: config.HMAC_KEY, JWT_SECRET: config.JWT_SECRET, AES_KEY_B64: config.AES_KEY_B64 });
+    keys.assertNonDefaultKeys({
+      HMAC_KEY: config.HMAC_KEY,
+      JWT_SECRET: config.JWT_SECRET,
+      AES_KEY_B64: config.AES_KEY_B64,
+    });
   }
 
   const app = Fastify({
@@ -63,8 +67,13 @@ export async function buildApp(opts: BuildOptions = {}): Promise<FastifyInstance
     requestIdHeader: false,
     bodyLimit: 12 * 1024 * 1024,
   });
-  
-  app.decorate('ctx', { config, db, limiter: new RateLimiter(), fx: new FxService({ mode: config.FX_MODE, dataDir: config.dataDir }) } satisfies AppContext);
+
+  app.decorate('ctx', {
+    config,
+    db,
+    limiter: new RateLimiter(),
+    fx: new FxService({ mode: config.FX_MODE, dataDir: config.dataDir }),
+  } satisfies AppContext);
 
   await app.register(cors, {
     origin: config.corsOrigins,
@@ -76,7 +85,9 @@ export async function buildApp(opts: BuildOptions = {}): Promise<FastifyInstance
     reply.header('x-request-id', req.id);
   });
   app.setErrorHandler(errorHandler);
-  app.setNotFoundHandler((req, reply) => reply.status(404).send(envelope('http_404', 'Not Found', req.id)));
+  app.setNotFoundHandler((req, reply) =>
+    reply.status(404).send(envelope('http_404', 'Not Found', req.id))
+  );
 
   await app.register(authRoutes, { prefix: '/auth' });
   await app.register(payeeRoutes, { prefix: '/payees' });

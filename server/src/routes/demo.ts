@@ -24,7 +24,14 @@ export const demoRoutes: FastifyPluginAsync = async (app) => {
 
   app.get('/personas', async () => {
     try {
-      return loadPersonas(config.dataDir).map((u) => ({ email: u.email, password: u.password, role: u.role, name: u.display_name ?? null, locale: u.locale ?? 'en', synthetic: true }));
+      return loadPersonas(config.dataDir).map((u) => ({
+        email: u.email,
+        password: u.password,
+        role: u.role,
+        name: u.display_name ?? null,
+        locale: u.locale ?? 'en',
+        synthetic: true,
+      }));
     } catch {
       return [];
     }
@@ -38,12 +45,21 @@ export const demoRoutes: FastifyPluginAsync = async (app) => {
     } catch {
       return [];
     }
-    const items = (Array.isArray(manifest) ? manifest : (manifest as { notices: unknown[] }).notices) as { file: string; label: string; language: string; category: string }[];
+    const items = (
+      Array.isArray(manifest) ? manifest : (manifest as { notices: unknown[] }).notices
+    ) as { file: string; label: string; language: string; category: string }[];
     const out: Record<string, unknown>[] = [];
     for (const m of items) {
       try {
         const text = readFileSync(join(dir, m.file), 'utf-8');
-        out.push({ id: m.file, label: `${m.file} (${m.label}, SYNTHETIC)`, language: m.language, category: m.category, expected_label: m.label, text });
+        out.push({
+          id: m.file,
+          label: `${m.file} (${m.label}, SYNTHETIC)`,
+          language: m.language,
+          category: m.category,
+          expected_label: m.label,
+          text,
+        });
       } catch {
         /* missing file: skip */
       }
@@ -53,22 +69,40 @@ export const demoRoutes: FastifyPluginAsync = async (app) => {
 
   app.get<{ Params: { email: string } }>('/totp/:email', async (req) => {
     const email = req.params.email;
-    const u = db.prepare('SELECT * FROM users WHERE email = ?').get(email.toLowerCase()) as UserRow | undefined;
+    const u = db.prepare('SELECT * FROM users WHERE email = ?').get(email.toLowerCase()) as
+      UserRow | undefined;
     if (!u || !u.totp_secret_enc) throw apiError(404, 'NOT_FOUND', 'No TOTP for that user');
-    return { email, code: security.totpNow(security.decryptSecret(u.totp_secret_enc, u.id)), valid_for_seconds: String(30 - (Math.floor(Date.now() / 1000) % 30)) };
+    return {
+      email,
+      code: security.totpNow(security.decryptSecret(u.totp_secret_enc, u.id)),
+      valid_for_seconds: String(30 - (Math.floor(Date.now() / 1000) % 30)),
+    };
   });
 
   app.post('/tamper-audit', async (req) => {
     const seq = Number.parseInt((req.query as { seq?: string }).seq ?? '2', 10);
-    const row = db.prepare('SELECT event FROM audit WHERE seq = ?').get(seq) as { event: string } | undefined;
+    const row = db.prepare('SELECT event FROM audit WHERE seq = ?').get(seq) as
+      { event: string } | undefined;
     if (!row) throw apiError(404, 'NOT_FOUND', 'No such audit row');
     db.prepare('UPDATE audit SET event = ? WHERE seq = ?').run(row.event + '.TAMPERED', seq);
-    return { tampered_seq: seq, note: 'row edited out-of-band; GET /audit?verify=true will report broken_at_seq' };
+    return {
+      tampered_seq: seq,
+      note: 'row edited out-of-band; GET /audit?verify=true will report broken_at_seq',
+    };
   });
 
   app.post('/reset', async () => {
     db.transaction(() => {
-      for (const t of ['sbx_txns', 'sbx_accounts', 'actions', 'plans', 'obligations', 'documents', 'payees']) db.prepare(`DELETE FROM ${t}`).run();
+      for (const t of [
+        'sbx_txns',
+        'sbx_accounts',
+        'actions',
+        'plans',
+        'obligations',
+        'documents',
+        'payees',
+      ])
+        db.prepare(`DELETE FROM ${t}`).run();
       db.prepare('UPDATE users SET approver_id = NULL').run();
       db.prepare('DELETE FROM users').run();
       db.prepare('DELETE FROM audit').run();

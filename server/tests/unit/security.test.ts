@@ -1,12 +1,27 @@
 import { describe, expect, it } from 'vitest';
 import { SignJWT } from 'jose';
-import { base32Decode, base32Encode, checkTotp, createToken, decodeToken, hashPassword, newTotpSecret, totpAt, verifyPassword } from '../../src/security.js';
+import {
+  base32Decode,
+  base32Encode,
+  checkTotp,
+  createToken,
+  decodeToken,
+  hashPassword,
+  newTotpSecret,
+  totpAt,
+  verifyPassword,
+} from '../../src/security.js';
 
 const S = 'JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP';
 
 describe('TOTP (vectors from pyotp)', () => {
   it('matches pyotp', () => {
-    expect([0, 59, 1700000000, 1760000000].map((t) => totpAt(S, t))).toEqual(['702218', '503347', '406058', '325812']);
+    expect([0, 59, 1700000000, 1760000000].map((t) => totpAt(S, t))).toEqual([
+      '702218',
+      '503347',
+      '406058',
+      '325812',
+    ]);
   });
   it('base32 roundtrip and secret shape', () => {
     const s = newTotpSecret();
@@ -40,9 +55,18 @@ describe('passwords and JWT', () => {
     await expect(decodeToken(token, 'other-secret-0123456789abcdef0123456')).rejects.toThrow();
     const old = await createToken('usr_1', 'student', secret, 60, 1000);
     await expect(decodeToken(old.token, secret)).rejects.toThrow();
-    const none = Buffer.from('{"alg":"none","typ":"JWT"}').toString('base64url') + '.' + Buffer.from('{"sub":"usr_1","exp":9999999999,"iat":1}').toString('base64url') + '.';
+    const none =
+      Buffer.from('{"alg":"none","typ":"JWT"}').toString('base64url') +
+      '.' +
+      Buffer.from('{"sub":"usr_1","exp":9999999999,"iat":1}').toString('base64url') +
+      '.';
     await expect(decodeToken(none, secret)).rejects.toThrow();
-    const hs512 = await new SignJWT({}).setProtectedHeader({ alg: 'HS512' }).setSubject('u').setIssuedAt().setExpirationTime('1h').sign(new TextEncoder().encode(secret));
+    const hs512 = await new SignJWT({})
+      .setProtectedHeader({ alg: 'HS512' })
+      .setSubject('u')
+      .setIssuedAt()
+      .setExpirationTime('1h')
+      .sign(new TextEncoder().encode(secret));
     await expect(decodeToken(hs512, secret)).rejects.toThrow();
   });
 });

@@ -11,7 +11,11 @@ class Clock {
   t = new Date('2026-10-17T00:00:00Z');
   now = () => this.t;
 }
-const svc = (mode: 'fixture' | 'live' = 'fixture', clock = new Clock(), liveFetcher?: (b: string) => Promise<{ rates: Record<string, unknown> }>) =>
+const svc = (
+  mode: 'fixture' | 'live' = 'fixture',
+  clock = new Clock(),
+  liveFetcher?: (b: string) => Promise<{ rates: Record<string, unknown> }>
+) =>
   new FxService({ mode, clock: clock.now, dataDir: DATA, ...(liveFetcher ? { liveFetcher } : {}) });
 
 describe('fx', () => {
@@ -33,7 +37,9 @@ describe('fx', () => {
     const s = svc('live', c, async (b) => (calls.push(b), { rates: { BDT: 18.5 } }));
     const r1 = await s.getRate('CNY', 'BDT');
     const r2 = await s.getRate('CNY', 'BDT');
-    expect(r1.is_live && r1.rate.toFixed(4) === '18.5000' && !r1.cached && r2.cached && calls).toEqual(['CNY']);
+    expect(
+      r1.is_live && r1.rate.toFixed(4) === '18.5000' && !r1.cached && r2.cached && calls
+    ).toEqual(['CNY']);
     c.t = new Date(c.t.getTime() + (23 * 60 + 59) * 60000);
     expect((await s.getRate('CNY', 'BDT')).cached).toBe(true);
     c.t = new Date(c.t.getTime() + 2 * 60000);
@@ -41,7 +47,9 @@ describe('fx', () => {
     expect(calls).toHaveLength(2);
   });
   it('live failure falls back to labelled fixture', async () => {
-    const r = await svc('live', new Clock(), async () => { throw new Error('network down'); }).getRate('CNY', 'BDT');
+    const r = await svc('live', new Clock(), async () => {
+      throw new Error('network down');
+    }).getRate('CNY', 'BDT');
     expect(r.source).toBe('fixture-sample');
     expect(r.is_live).toBe(false);
   });
@@ -64,12 +72,17 @@ describe('costs', () => {
     expect(c.notes.some((n) => n.includes('SAMPLE'))).toBe(true);
   });
   it('rejects non-positive', async () => {
-    for (const bad of ['0', '-5']) await expect(computeCosts(D(bad), svc(), { channels })).rejects.toThrow();
+    for (const bad of ['0', '-5'])
+      await expect(computeCosts(D(bad), svc(), { channels })).rejects.toThrow();
   });
   it('other channel costs more; unknown channel defaults', async () => {
     const wire = await computeCosts(D('1000'), svc(), { channel: 'Sandbox bank wire', channels });
-    expect(wire.total_fees_cny.gt((await computeCosts(D('1000'), svc(), { channels })).total_fees_cny)).toBe(true);
-    expect((await computeCosts(D('1000'), svc(), { channel: 'Nonexistent', channels })).channel).toBe(DEFAULT_CHANNEL);
+    expect(
+      wire.total_fees_cny.gt((await computeCosts(D('1000'), svc(), { channels })).total_fees_cny)
+    ).toBe(true);
+    expect(
+      (await computeCosts(D('1000'), svc(), { channel: 'Nonexistent', channels })).channel
+    ).toBe(DEFAULT_CHANNEL);
   });
   it('load_channels only sandbox rows', () => {
     expect(Object.keys(channels).length).toBeGreaterThan(0);
@@ -84,7 +97,10 @@ describe('budget', () => {
     expect(b.remaining_cny.toFixed(2)).toBe('2259.50');
     expect(b.over_budget).toBe(false);
     expect(summarize(D('100'), D('150')).over_budget).toBe(true);
-    const obs = [{ amount_cny: D('10'), due_date: '2026-11-01' }, { amount_cny: D('20'), due_date: '2027-01-01' }];
+    const obs = [
+      { amount_cny: D('10'), due_date: '2026-11-01' },
+      { amount_cny: D('20'), due_date: '2027-01-01' },
+    ];
     expect(totalDueBy(obs, '2026-12-31').toFixed(2)).toBe('10.00');
     expect(totalDueBy(obs, '2027-01-01').toFixed(2)).toBe('30.00');
   });

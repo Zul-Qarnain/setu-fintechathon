@@ -3,7 +3,14 @@ import fc from 'fast-check';
 import { Decimal } from 'decimal.js';
 import { openDb, type Db } from '../../src/db/connection.js';
 import { createSchema } from '../../src/db/schema.js';
-import { IdempotencyMismatch, UnknownAccount, getAccount, listTransactions, openAccount, transfer } from '../../src/sandboxBank/ledger.js';
+import {
+  IdempotencyMismatch,
+  UnknownAccount,
+  getAccount,
+  listTransactions,
+  openAccount,
+  transfer,
+} from '../../src/sandboxBank/ledger.js';
 
 const SRC = '6222000000000001';
 const DST = '6222000000004821';
@@ -14,7 +21,8 @@ beforeEach(() => {
   openAccount(db, SRC, 'Student', '30000');
   openAccount(db, DST, 'Univ');
 });
-const tr = (key: string, to = DST, amt = '100.00', ref = 'r') => transfer(db, key, SRC, to, amt, ref);
+const tr = (key: string, to = DST, amt = '100.00', ref = 'r') =>
+  transfer(db, key, SRC, to, amt, ref);
 const bal = (n: string) => getAccount(db, n)?.balance_cny;
 
 describe('sandbox ledger', () => {
@@ -64,22 +72,27 @@ describe('sandbox ledger', () => {
 
   it('property: total balance is conserved and never negative', () => {
     fc.assert(
-      fc.property(fc.array(fc.tuple(fc.integer({ min: -100, max: 6_000_000 }), fc.boolean()), { maxLength: 15 }), (ops) => {
-        const d = openDb(':memory:');
-        createSchema(d);
-        openAccount(d, SRC, 'S', '30000');
-        openAccount(d, DST, 'U');
-        ops.forEach(([cents, replay], i) => {
-          const amt = new Decimal(cents).div(100).toFixed(2);
-          transfer(d, `k${i}`, SRC, DST, amt);
-          if (replay) transfer(d, `k${i}`, SRC, DST, amt);
-        });
-        const a = new Decimal(getAccount(d, SRC)?.balance_cny ?? 'NaN');
-        const b = new Decimal(getAccount(d, DST)?.balance_cny ?? 'NaN');
-        expect(a.plus(b).toFixed(2)).toBe('30000.00');
-        expect(a.gte(0)).toBe(true);
-      }),
-      { numRuns: 60 },
+      fc.property(
+        fc.array(fc.tuple(fc.integer({ min: -100, max: 6_000_000 }), fc.boolean()), {
+          maxLength: 15,
+        }),
+        (ops) => {
+          const d = openDb(':memory:');
+          createSchema(d);
+          openAccount(d, SRC, 'S', '30000');
+          openAccount(d, DST, 'U');
+          ops.forEach(([cents, replay], i) => {
+            const amt = new Decimal(cents).div(100).toFixed(2);
+            transfer(d, `k${i}`, SRC, DST, amt);
+            if (replay) transfer(d, `k${i}`, SRC, DST, amt);
+          });
+          const a = new Decimal(getAccount(d, SRC)?.balance_cny ?? 'NaN');
+          const b = new Decimal(getAccount(d, DST)?.balance_cny ?? 'NaN');
+          expect(a.plus(b).toFixed(2)).toBe('30000.00');
+          expect(a.gte(0)).toBe(true);
+        }
+      ),
+      { numRuns: 60 }
     );
   });
 });

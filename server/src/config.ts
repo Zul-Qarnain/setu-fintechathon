@@ -32,8 +32,8 @@ const envSchema = z.object({
   TOTP_LOCK_SECONDS: z.coerce.number().int().default(300),
 });
 
-export type Config = z.infer<typeof envSchema> & { 
-  corsOrigins: string[]; 
+export type Config = z.infer<typeof envSchema> & {
+  corsOrigins: string[];
   dataDir: string;
   jwtTtlSeconds: number;
   coolingOffHours: number;
@@ -49,7 +49,9 @@ export function loadConfig(env: Record<string, string | undefined> = process.env
   const c = envSchema.parse(env);
   return {
     ...c,
-    corsOrigins: c.CORS_ORIGINS.split(',').map((o) => o.trim()).filter(Boolean),
+    corsOrigins: c.CORS_ORIGINS.split(',')
+      .map((o) => o.trim())
+      .filter(Boolean),
     dataDir: c.SETU_DATA_DIR ?? resolve(here, '../../data'),
     jwtTtlSeconds: c.JWT_TTL_SECONDS,
     coolingOffHours: c.COOLING_OFF_HOURS,

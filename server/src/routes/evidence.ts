@@ -14,7 +14,12 @@ export function buildExport(ctx: AppContext, user: UserRow) {
     generated_at: new Date().toISOString(),
     scope: user.role === 'admin' ? 'all' : 'own',
     audit: rows.map((r) => entryOut(r)),
-    verify: { ok: res.ok, checked: res.checked, broken_at_seq: res.broken_at_seq, reason: res.reason },
+    verify: {
+      ok: res.ok,
+      checked: res.checked,
+      broken_at_seq: res.broken_at_seq,
+      reason: res.reason,
+    },
     head_hash: rows.length ? rows[rows.length - 1]?.hash : null,
   };
 }

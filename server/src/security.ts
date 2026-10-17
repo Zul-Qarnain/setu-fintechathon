@@ -22,7 +22,13 @@ export async function verifyPassword(pw: string, hashed: string): Promise<boolea
 
 const secretKey = (s: string) => new TextEncoder().encode(s);
 
-export async function createToken(userId: string, role: string, jwtSecret: string, ttl = JWT_TTL_SECONDS, nowSec = Math.floor(Date.now() / 1000)): Promise<{ token: string; ttl: number }> {
+export async function createToken(
+  userId: string,
+  role: string,
+  jwtSecret: string,
+  ttl = JWT_TTL_SECONDS,
+  nowSec = Math.floor(Date.now() / 1000)
+): Promise<{ token: string; ttl: number }> {
   const token = await new SignJWT({ role })
     .setProtectedHeader({ alg: JWT_ALG, typ: 'JWT' })
     .setSubject(userId)
@@ -34,9 +40,21 @@ export async function createToken(userId: string, role: string, jwtSecret: strin
 }
 
 /** Throws on any problem. Algorithm pinned: rejects alg=none / RS* / expired / missing claims. */
-export async function decodeToken(token: string, jwtSecret: string): Promise<{ sub: string; role: string; exp: number; iat: number; jti?: string }> {
-  const { payload } = await jwtVerify(token, secretKey(jwtSecret), { algorithms: [JWT_ALG], requiredClaims: ['exp', 'sub', 'iat'] });
-  return payload as unknown as { sub: string; role: string; exp: number; iat: number; jti?: string };
+export async function decodeToken(
+  token: string,
+  jwtSecret: string
+): Promise<{ sub: string; role: string; exp: number; iat: number; jti?: string }> {
+  const { payload } = await jwtVerify(token, secretKey(jwtSecret), {
+    algorithms: [JWT_ALG],
+    requiredClaims: ['exp', 'sub', 'iat'],
+  });
+  return payload as unknown as {
+    sub: string;
+    role: string;
+    exp: number;
+    iat: number;
+    jti?: string;
+  };
 }
 
 // ---- TOTP (RFC 6238: HMAC-SHA1, 30 s, 6 digits) ----
@@ -86,13 +104,23 @@ export function totpAt(secret: string, unixSeconds: number): string {
   msg.writeBigUInt64BE(BigInt(counter));
   const h = createHmac('sha1', base32Decode(secret)).update(msg).digest();
   const off = (h[h.length - 1] as number) & 0xf;
-  const bin = (((h[off] as number) & 0x7f) << 24) | (((h[off + 1] as number) & 0xff) << 16) | (((h[off + 2] as number) & 0xff) << 8) | ((h[off + 3] as number) & 0xff);
+  const bin =
+    (((h[off] as number) & 0x7f) << 24) |
+    (((h[off + 1] as number) & 0xff) << 16) |
+    (((h[off + 2] as number) & 0xff) << 8) |
+    ((h[off + 3] as number) & 0xff);
   return String(bin % 1_000_000).padStart(6, '0');
 }
-export const totpNow = (secret: string, now: () => number = Date.now): string => totpAt(secret, Math.floor(now() / 1000));
+export const totpNow = (secret: string, now: () => number = Date.now): string =>
+  totpAt(secret, Math.floor(now() / 1000));
 
 /** Returns the matched time-step if valid and not replayed (step > lastStep), else null. */
-export function checkTotp(secret: string, code: string, lastStep: number, nowSeconds: number = Date.now() / 1000): number | null {
+export function checkTotp(
+  secret: string,
+  code: string,
+  lastStep: number,
+  nowSeconds: number = Date.now() / 1000
+): number | null {
   if (!/^[0-9]{6}$/.test(code)) return null;
   for (const offset of [-1, 0, 1]) {
     const step = Math.floor(nowSeconds / 30) + offset;
@@ -104,5 +132,7 @@ export function checkTotp(secret: string, code: string, lastStep: number, nowSec
   return null;
 }
 
-export const encryptSecret = (secret: string, userId: string, keyB64?: string): string => encrypt(secret, keyB64 ? { aad: `totp:${userId}`, keyB64 } : { aad: `totp:${userId}` });
-export const decryptSecret = (enc: string, userId: string, keyB64?: string): string => decrypt(enc, keyB64 ? { aad: `totp:${userId}`, keyB64 } : { aad: `totp:${userId}` });
+export const encryptSecret = (secret: string, userId: string, keyB64?: string): string =>
+  encrypt(secret, keyB64 ? { aad: `totp:${userId}`, keyB64 } : { aad: `totp:${userId}` });
+export const decryptSecret = (enc: string, userId: string, keyB64?: string): string =>
+  decrypt(enc, keyB64 ? { aad: `totp:${userId}`, keyB64 } : { aad: `totp:${userId}` });

@@ -1,88 +1,88 @@
 {
- "payloads": [
-  {
-   "z": "last",
-   "a": "first",
-   "m": {
-    "nested": "值"
-   }
-  },
-  {
-   "name": "Aisha 🎓",
-   "bal": "18500.00",
-   "ok": true,
-   "n": null,
-   "seq": 42,
-   "l": [
-    3,
+  "payloads": [
     {
-     "b": 1,
-     "a": []
+      "z": "last",
+      "a": "first",
+      "m": {
+        "nested": "值"
+      }
+    },
+    {
+      "name": "Aisha 🎓",
+      "bal": "18500.00",
+      "ok": true,
+      "n": null,
+      "seq": 42,
+      "l": [
+        3,
+        {
+          "b": 1,
+          "a": []
+        }
+      ]
+    },
+    {},
+    {
+      "日本": 1,
+      "abc": 2,
+      "Z": 3,
+      "é": 4,
+      "😀": 5
     }
-   ]
-  },
-  {},
-  {
-   "日本": 1,
-   "abc": 2,
-   "Z": 3,
-   "é": 4,
-   "😀": 5
-  }
- ],
- "canon": [
-  "{\"a\":\"first\",\"m\":{\"nested\":\"值\"},\"z\":\"last\"}",
-  "{\"bal\":\"18500.00\",\"l\":[3,{\"a\":[],\"b\":1}],\"n\":null,\"name\":\"Aisha 🎓\",\"ok\":true,\"seq\":42}",
-  "{}",
-  "{\"Z\":3,\"abc\":2,\"é\":4,\"日本\":1,\"😀\":5}"
- ],
- "phash": [
-  "83ff28bddb30184234250eaf1b75b75e063840afc41f23e417c5dd45ced4f26a",
-  "63d664352d5b7d46b64e8a66cfdaf706d4eb7d13622cd3cd027d1e232ec6095c",
-  "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
-  "c5c88897e861e12d89d47bd9e6e8064a55d6bc9031f29bb4b3da68c9c5766968"
- ],
- "tsStr": "2026-10-17T12:30:45.123456Z",
- "rows": [
-  {
-   "seq": 1,
-   "ts": "2026-10-17T12:30:45.001111Z",
-   "actor": "user_1",
-   "event": "evt.1",
-   "payload_hash": "83ff28bddb30184234250eaf1b75b75e063840afc41f23e417c5dd45ced4f26a",
-   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-   "hash": "54fc10805eb65c45e5864b08b8046a366110cecf7c1d78b66c9bfe24bb031c43",
-   "payload_json": "{\"a\":\"first\",\"m\":{\"nested\":\"值\"},\"z\":\"last\"}"
-  },
-  {
-   "seq": 2,
-   "ts": "2026-10-17T12:30:45.002222Z",
-   "actor": "user_1",
-   "event": "evt.2",
-   "payload_hash": "63d664352d5b7d46b64e8a66cfdaf706d4eb7d13622cd3cd027d1e232ec6095c",
-   "prev_hash": "54fc10805eb65c45e5864b08b8046a366110cecf7c1d78b66c9bfe24bb031c43",
-   "hash": "8991ed36b00c5a00c5e567913dfb0440e9cca556f12c820ee8ae1274ae539be2",
-   "payload_json": "{\"bal\":\"18500.00\",\"l\":[3,{\"a\":[],\"b\":1}],\"n\":null,\"name\":\"Aisha 🎓\",\"ok\":true,\"seq\":42}"
-  },
-  {
-   "seq": 3,
-   "ts": "2026-10-17T12:30:45.003333Z",
-   "actor": "user_1",
-   "event": "evt.3",
-   "payload_hash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
-   "prev_hash": "8991ed36b00c5a00c5e567913dfb0440e9cca556f12c820ee8ae1274ae539be2",
-   "hash": "8982df8e6237d1c62e6d2c8b085e974a4bbbe04a3c8988420fccbfa810832f21",
-   "payload_json": "{}"
-  },
-  {
-   "seq": 4,
-   "ts": "2026-10-17T12:30:45.004444Z",
-   "actor": "user_1",
-   "event": "evt.4",
-   "payload_hash": "c5c88897e861e12d89d47bd9e6e8064a55d6bc9031f29bb4b3da68c9c5766968",
-   "prev_hash": "8982df8e6237d1c62e6d2c8b085e974a4bbbe04a3c8988420fccbfa810832f21",
-   "hash": "f9416ae2bb38086d771e7f7c3a13e483012820b9d92445e9bda9f22dbd8eb09b",
-   "payload_json": "{\"Z\":3,\"abc\":2,\"é\":4,\"日本\":1,\"😀\":5}"
-  }
- ]
+  ],
+  "canon": [
+    "{\"a\":\"first\",\"m\":{\"nested\":\"值\"},\"z\":\"last\"}",
+    "{\"bal\":\"18500.00\",\"l\":[3,{\"a\":[],\"b\":1}],\"n\":null,\"name\":\"Aisha 🎓\",\"ok\":true,\"seq\":42}",
+    "{}",
+    "{\"Z\":3,\"abc\":2,\"é\":4,\"日本\":1,\"😀\":5}"
+  ],
+  "phash": [
+    "83ff28bddb30184234250eaf1b75b75e063840afc41f23e417c5dd45ced4f26a",
+    "63d664352d5b7d46b64e8a66cfdaf706d4eb7d13622cd3cd027d1e232ec6095c",
+    "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "c5c88897e861e12d89d47bd9e6e8064a55d6bc9031f29bb4b3da68c9c5766968"
+  ],
+  "tsStr": "2026-10-17T12:30:45.123456Z",
+  "rows": [
+    {
+      "seq": 1,
+      "ts": "2026-10-17T12:30:45.001111Z",
+      "actor": "user_1",
+      "event": "evt.1",
+      "payload_hash": "83ff28bddb30184234250eaf1b75b75e063840afc41f23e417c5dd45ced4f26a",
+      "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "hash": "54fc10805eb65c45e5864b08b8046a366110cecf7c1d78b66c9bfe24bb031c43",
+      "payload_json": "{\"a\":\"first\",\"m\":{\"nested\":\"值\"},\"z\":\"last\"}"
+    },
+    {
+      "seq": 2,
+      "ts": "2026-10-17T12:30:45.002222Z",
+      "actor": "user_1",
+      "event": "evt.2",
+      "payload_hash": "63d664352d5b7d46b64e8a66cfdaf706d4eb7d13622cd3cd027d1e232ec6095c",
+      "prev_hash": "54fc10805eb65c45e5864b08b8046a366110cecf7c1d78b66c9bfe24bb031c43",
+      "hash": "8991ed36b00c5a00c5e567913dfb0440e9cca556f12c820ee8ae1274ae539be2",
+      "payload_json": "{\"bal\":\"18500.00\",\"l\":[3,{\"a\":[],\"b\":1}],\"n\":null,\"name\":\"Aisha 🎓\",\"ok\":true,\"seq\":42}"
+    },
+    {
+      "seq": 3,
+      "ts": "2026-10-17T12:30:45.003333Z",
+      "actor": "user_1",
+      "event": "evt.3",
+      "payload_hash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "prev_hash": "8991ed36b00c5a00c5e567913dfb0440e9cca556f12c820ee8ae1274ae539be2",
+      "hash": "8982df8e6237d1c62e6d2c8b085e974a4bbbe04a3c8988420fccbfa810832f21",
+      "payload_json": "{}"
+    },
+    {
+      "seq": 4,
+      "ts": "2026-10-17T12:30:45.004444Z",
+      "actor": "user_1",
+      "event": "evt.4",
+      "payload_hash": "c5c88897e861e12d89d47bd9e6e8064a55d6bc9031f29bb4b3da68c9c5766968",
+      "prev_hash": "8982df8e6237d1c62e6d2c8b085e974a4bbbe04a3c8988420fccbfa810832f21",
+      "hash": "f9416ae2bb38086d771e7f7c3a13e483012820b9d92445e9bda9f22dbd8eb09b",
+      "payload_json": "{\"Z\":3,\"abc\":2,\"é\":4,\"日本\":1,\"😀\":5}"
+    }
+  ]
 }

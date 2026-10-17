@@ -5,7 +5,9 @@ import { CryptoError, decrypt, encrypt } from '../../src/domain/crypto.js';
 import * as T from '../../src/domain/tokenize.js';
 
 const KEY2 = 'QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVowMTIzNDU=';
-const V = JSON.parse(readFileSync(new URL('../fixtures/crypto_vectors.json', import.meta.url), 'utf8')) as Record<string, string>;
+const V = JSON.parse(
+  readFileSync(new URL('../fixtures/crypto_vectors.json', import.meta.url), 'utf8')
+) as Record<string, string>;
 
 describe('crypto', () => {
   it('roundtrip and prefix', () => {
@@ -21,12 +23,20 @@ describe('crypto', () => {
     const tok = encrypt('secret', { aad: 'a' });
     expect(() => decrypt(tok, { aad: 'b' })).toThrow(CryptoError);
     expect(() => decrypt(tok, { aad: 'a', keyB64: KEY2 })).toThrow(CryptoError);
-    expect(() => decrypt(tok.slice(0, -4) + (tok.endsWith('AAAA') ? 'BBBB' : 'AAAA'), { aad: 'a' })).toThrow(CryptoError);
+    expect(() =>
+      decrypt(tok.slice(0, -4) + (tok.endsWith('AAAA') ? 'BBBB' : 'AAAA'), { aad: 'a' })
+    ).toThrow(CryptoError);
     expect(() => decrypt('plain text')).toThrow(CryptoError);
   });
-  it('bad key length rejected', () => expect(() => encrypt('x', { keyB64: 'c2hvcnQ=' })).toThrow(CryptoError));
+  it('bad key length rejected', () =>
+    expect(() => encrypt('x', { keyB64: 'c2hvcnQ=' })).toThrow(CryptoError));
   it('property: roundtrip', () => {
-    fc.assert(fc.property(fc.string({ maxLength: 200 }), (s) => decrypt(encrypt(s, { aad: 'p' }), { aad: 'p' }) === s));
+    fc.assert(
+      fc.property(
+        fc.string({ maxLength: 200 }),
+        (s) => decrypt(encrypt(s, { aad: 'p' }), { aad: 'p' }) === s
+      )
+    );
   });
 });
 
@@ -56,15 +66,27 @@ describe('tokenize', () => {
   });
   it('is_valid_account', () => {
     expect(T.isValidAccount('6222 0000 0000 4821')).toBe(true);
-    for (const bad of ['123', '6222 0000 0000 48x1', '６２２２００００００００４８２１', '6222'.repeat(8)]) expect(T.isValidAccount(bad)).toBe(false);
+    for (const bad of [
+      '123',
+      '6222 0000 0000 48x1',
+      '６２２２００００００００４８２１',
+      '6222'.repeat(8),
+    ])
+      expect(T.isValidAccount(bad)).toBe(false);
   });
   it('name skeleton folds lookalikes', () => {
-    expect(T.nameSkeleton('Shenzhen Exam\u0440le University')).toBe(T.nameSkeleton('Shenzhen Example University'));
-    expect(T.nameSkeleton('Shenzhen Examp1e University')).toBe(T.nameSkeleton('Shenzhen Example University (SYNTHETIC)'));
+    expect(T.nameSkeleton('Shenzhen Exam\u0440le University')).toBe(
+      T.nameSkeleton('Shenzhen Example University')
+    );
+    expect(T.nameSkeleton('Shenzhen Examp1e University')).toBe(
+      T.nameSkeleton('Shenzhen Example University (SYNTHETIC)')
+    );
     expect(T.nameSkeleton('深圳示例大学（合成）')).toBe('深圳示例大学');
   });
   it('tokenize_text replaces accounts only', () => {
-    const [out, m] = T.tokenizeText('pay 6222 0000 0000 4821 CNY 18500 by 2027-03-01 ref 2027-SPRING-0042');
+    const [out, m] = T.tokenizeText(
+      'pay 6222 0000 0000 4821 CNY 18500 by 2027-03-01 ref 2027-SPRING-0042'
+    );
     expect(out).not.toContain('6222');
     expect(out).toContain('18500');
     expect(out).toContain('2027-03-01');
@@ -76,9 +98,18 @@ describe('tokenize', () => {
     expect(s).toContain('[PHONE]');
     expect(s).toContain('****4821');
     expect(s).not.toContain('6222');
-    expect(T.redactObj({ a: ['x 6222000000004821'], b: { c: 'm@e.io' }, n: 5 })).toEqual({ a: ['x ****4821'], b: { c: '[EMAIL]' }, n: 5 });
+    expect(T.redactObj({ a: ['x 6222000000004821'], b: { c: 'm@e.io' }, n: 5 })).toEqual({
+      a: ['x ****4821'],
+      b: { c: '[EMAIL]' },
+      n: 5,
+    });
   });
   it('property: redacted text never contains raw long numbers', () => {
-    fc.assert(fc.property(fc.stringMatching(/^[0-9]{12,19}$/), (num) => !T.redactPii(`acct ${num} end`).includes(num)));
+    fc.assert(
+      fc.property(
+        fc.stringMatching(/^[0-9]{12,19}$/),
+        (num) => !T.redactPii(`acct ${num} end`).includes(num)
+      )
+    );
   });
 });

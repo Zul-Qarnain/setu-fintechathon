@@ -6,7 +6,10 @@ import { FxError } from '../domain/fx.js';
 import { AppError } from '../errors.js';
 import { fxQuoteOut } from '../services.js';
 
-const bad = (field: string, msg: string) => new AppError('validation_error', 'Request validation failed', 422, { errors: [{ loc: ['query', field], msg }] });
+const bad = (field: string, msg: string) =>
+  new AppError('validation_error', 'Request validation failed', 422, {
+    errors: [{ loc: ['query', field], msg }],
+  });
 
 export const fxRoutes: FastifyPluginAsync = async (app) => {
   const ctx = app.ctx;

@@ -27,7 +27,11 @@ describe('skeleton', () => {
   });
 
   it('echoes x-request-id', async () => {
-    const r = await app.inject({ method: 'GET', url: '/health', headers: { 'x-request-id': 'abc' } });
+    const r = await app.inject({
+      method: 'GET',
+      url: '/health',
+      headers: { 'x-request-id': 'abc' },
+    });
     expect(r.headers['x-request-id']).toBe('abc');
   });
 
