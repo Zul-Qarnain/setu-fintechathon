@@ -23,8 +23,10 @@ services:
   web:
     build:
       context: ./web
-    environment:
-      NEXT_PUBLIC_API_BASE: http://localhost:8000
+      args:
+        # inlined at build time: the BROWSER calls the API directly on the host's port 8000
+        NEXT_PUBLIC_API_URL: http://localhost:8000
+        NEXT_PUBLIC_MOCK: "false"
     depends_on:
       backend:
         condition: service_healthy
