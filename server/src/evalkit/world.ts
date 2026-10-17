@@ -117,3 +117,10 @@ export const NOTICE_INJECTED =
 
 export const NOTICE_PAYEE_CHANGED =
   NOTICE_CLEAN.replace('6222 0000 0000 4821', '6222 0000 0000 7777') + '\nOur bank account has changed. Please use the new account above.\n';
+
+/** Chat-driven payment proposal for the student (first proposed action). */
+export async function payAction(w: World, message = 'Pay my spring tuition'): Promise<any> { // eslint-disable-line @typescript-eslint/no-explicit-any
+  const r = await w.post('/chat', { message }, w.student);
+  if (r.status !== 200) throw new Error(`chat failed: ${r.text}`);
+  return r.json.proposed_actions[0];
+}
