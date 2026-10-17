@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-17T05:41:51.171279+00:00",
+  "generated_at": "2026-10-17T05:49:28.825475+00:00",
   "offline": true,
   "synthetic": true,
   "steps": [
@@ -20,7 +20,7 @@
     {
       "step": "confirm_fields",
       "blocked": false,
-      "obligation": "obl_bd7078db0a8f",
+      "obligation": "obl_b244cd932458",
       "payee_verified": true
     },
     {
@@ -44,7 +44,7 @@
     {
       "step": "family_approver_totp",
       "status": "executed",
-      "bank_txn": "sbx_txn_405e820e5e53",
+      "bank_txn": "sbx_txn_e413da615412",
       "state": "settled"
     },
     {

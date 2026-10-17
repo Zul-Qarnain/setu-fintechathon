@@ -19,6 +19,8 @@ The LLM (or the scripted planner) may only emit JSON calls to an allowlist of to
 
 ## Run it (one command)
 
+No `make`? Every target is a thin wrapper: e.g. `cd backend && uv sync && PYTHONPATH=. uv run python -m app.demo` and `cd backend && uv run pytest`. (The Makefile was written but `make` is not installed on the box where this was developed; the underlying commands were run directly and pass.)
+
 Prerequisites: [`uv`](https://docs.astral.sh/uv/) (it installs Python 3.12 for you). No API keys, no network needed.
 
 ```bash
