@@ -1,1 +1,23 @@
-{}
+{
+  "T0": {
+    "label": "T0 · Read",
+    "desc": "Read-only: quotes and explanations"
+  },
+  "T1": {
+    "label": "T1 · Draft",
+    "desc": "Draft only: messages and payment drafts"
+  },
+  "T2": {
+    "label": "T2 · TOTP",
+    "desc": "Up to CNY 2,000 to a verified payee: TOTP required"
+  },
+  "T3": {
+    "label": "T3 · Approval",
+    "desc": "Over CNY 2,000 or new/changed payee: TOTP + family approver (+24h cooling-off for new payees)"
+  },
+  "T4": {
+    "label": "T4 · Blocked",
+    "desc": "Blocked: unverified payee, action sourced only from document text, or bulk PII export"
+  },
+  "title": "Risk tier"
+}

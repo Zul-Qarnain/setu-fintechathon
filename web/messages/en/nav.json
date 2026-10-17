@@ -1,1 +1,14 @@
-{}
+{
+  "dashboard": "Dashboard",
+  "agent": "Agent",
+  "documents": "Documents",
+  "payees": "Payees",
+  "approvals": "Approvals",
+  "audit": "Audit log",
+  "settings": "Settings",
+  "logout": "Log out",
+  "menu": "Menu",
+  "closeMenu": "Close menu",
+  "main": "Main navigation",
+  "signedInAs": "Signed in as {email}"
+}

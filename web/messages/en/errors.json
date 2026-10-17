@@ -1,1 +1,17 @@
-{}
+{
+  "generic": "Something went wrong.",
+  "TOTP_INVALID": "That code is invalid or expired. Check your authenticator app and try again.",
+  "TOTP_LOCKED": "Too many wrong codes. Please wait a few minutes before trying again.",
+  "COOLING_OFF_ACTIVE": "This payment is still in its 24-hour cooling-off period. It can be approved once the timer ends.",
+  "POLICY_BLOCKED": "Blocked by policy (Tier 4). This action can never be approved.",
+  "AMOUNT_MISMATCH": "The amount you confirmed does not match the document. Check it against the original notice.",
+  "RATE_LIMITED": "Too many requests. Please slow down and retry shortly.",
+  "NETWORK": "Cannot reach the Setu API. Is the backend running?",
+  "UNAUTHORIZED": "Your session expired or the credentials are wrong. Please sign in again.",
+  "FORBIDDEN": "You are not allowed to do that.",
+  "NOT_FOUND": "Not found.",
+  "NOT_APPROVER": "Only the linked family approver can approve this.",
+  "validation_error": "Some fields are invalid. Please check and retry.",
+  "pageTitle": "Something went wrong",
+  "pageBody": "An unexpected error occurred. Your data was not changed."
+}

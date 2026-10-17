@@ -53,7 +53,7 @@ export interface Obligation {
   due_date: string;
   payee_id: string;
   payee_name: string;
-  doc_hash: string;
+  doc_hash: string | null;
   status: string;
 }
 export interface FxQuote {
@@ -146,7 +146,7 @@ export interface Approval {
 }
 export interface ActionOut {
   id: string;
-  plan_id: string;
+  plan_id: string | null;
   type: "payment" | "draft_message" | "verify_payee" | "export_data" | "read";
   tier: Tier;
   status: ActionStatus;
@@ -261,6 +261,8 @@ export interface Persona {
   password: string;
   role: Role;
   name: string;
+  locale?: string;
+  synthetic?: boolean;
 }
 export interface DemoNotice {
   id: string;

@@ -1,1 +1,51 @@
-{}
+{
+  "title": "Dashboard",
+  "subtitle": "Your upcoming obligations and what is safe to spend. All figures are synthetic.",
+  "welcome": "Welcome, {email}",
+  "stats": {
+    "nextDue": "Next tuition / fee due",
+    "bdtNeeded": "BDT needed for it",
+    "safeToSpend": "Safe to spend this month",
+    "pending": "Pending approvals",
+    "noneDue": "Nothing due",
+    "fees": "fees included",
+    "budgetLine": "Budget {budget} − spent {spent}",
+    "safeBdt": "BDT estimate at the SAMPLE rate (not live)",
+    "pendingHint": "Waiting for TOTP or family approver",
+    "viewApprovals": "View approvals",
+    "rate": "Exchange rate",
+    "rateLine": "1 CNY = {rate} BDT",
+    "negative": "Over budget this month"
+  },
+  "timeline": {
+    "title": "Obligation timeline",
+    "empty": "No open obligations yet.",
+    "emptyCta": "Upload a fee notice",
+    "planPayment": "Plan payment",
+    "dueIn": "{days, plural, =0 {Due today} =1 {Due tomorrow} other {Due in # days}}",
+    "overdue": "{days, plural, =1 {1 day overdue} other {# days overdue}}",
+    "docHash": "Document hash"
+  },
+  "deadlines": {
+    "title": "Upcoming deadlines",
+    "urgent": "Within 7 days",
+    "soon": "Within 30 days",
+    "later": "Later",
+    "none": "No deadlines in the next 30 days."
+  },
+  "chart": {
+    "title": "This month: budget vs spent",
+    "budget": "Budget",
+    "spent": "Spent",
+    "remaining": "Remaining",
+    "alt": "Bar chart: monthly budget {budget}, spent {spent}"
+  },
+  "fx": {
+    "title": "Exchange rate",
+    "sample": "SAMPLE rate — fixture, not a live market rate",
+    "live": "Live rate",
+    "source": "Source: {source}",
+    "asOf": "As of {date}"
+  },
+  "approverNote": "You are viewing as a family approver. Approvals waiting for you appear under Approvals."
+}

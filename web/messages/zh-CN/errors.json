@@ -1,1 +1,17 @@
-{}
+{
+  "generic": "出错了。",
+  "TOTP_INVALID": "验证码无效或已过期。请检查验证器应用后重试。",
+  "TOTP_LOCKED": "错误次数过多，请几分钟后再试。",
+  "COOLING_OFF_ACTIVE": "该汇款仍在 24 小时冷静期内，倒计时结束后方可批准。",
+  "POLICY_BLOCKED": "已被策略阻止（等级 T4），此操作永远无法批准。",
+  "AMOUNT_MISMATCH": "您确认的金额与文档不一致，请对照原始通知核对。",
+  "RATE_LIMITED": "请求过于频繁，请稍后重试。",
+  "NETWORK": "无法连接 Setu 服务，后端是否已启动？",
+  "UNAUTHORIZED": "登录已过期或凭据错误，请重新登录。",
+  "FORBIDDEN": "您无权执行此操作。",
+  "NOT_FOUND": "未找到。",
+  "NOT_APPROVER": "只有关联的家人审批人才能批准。",
+  "validation_error": "部分字段无效，请检查后重试。",
+  "pageTitle": "出错了",
+  "pageBody": "发生意外错误，您的数据未被更改。"
+}

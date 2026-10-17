@@ -1,1 +1,14 @@
-{}
+{
+  "dashboard": "总览",
+  "agent": "智能助手",
+  "documents": "文档",
+  "payees": "收款人",
+  "approvals": "审批",
+  "audit": "审计日志",
+  "settings": "设置",
+  "logout": "退出登录",
+  "menu": "菜单",
+  "closeMenu": "关闭菜单",
+  "main": "主导航",
+  "signedInAs": "当前账号：{email}"
+}

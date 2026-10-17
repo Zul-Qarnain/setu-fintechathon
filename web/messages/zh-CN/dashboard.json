@@ -1,1 +1,51 @@
-{}
+{
+  "title": "总览",
+  "subtitle": "您即将到期的缴费事项与安全可支配金额。所有数字均为合成数据。",
+  "welcome": "欢迎，{email}",
+  "stats": {
+    "nextDue": "最近到期的学费/费用",
+    "bdtNeeded": "所需 BDT",
+    "safeToSpend": "本月安全可支配",
+    "pending": "待审批",
+    "noneDue": "暂无到期事项",
+    "fees": "含手续费",
+    "budgetLine": "预算 {budget} − 已花费 {spent}",
+    "safeBdt": "按样例汇率估算的 BDT（非实时）",
+    "pendingHint": "等待动态验证码或家人审批人",
+    "viewApprovals": "查看审批",
+    "rate": "汇率",
+    "rateLine": "1 CNY = {rate} BDT",
+    "negative": "本月已超出预算"
+  },
+  "timeline": {
+    "title": "缴费时间线",
+    "empty": "暂无待办缴费事项。",
+    "emptyCta": "上传缴费通知",
+    "planPayment": "规划汇款",
+    "dueIn": "{days, plural, =0 {今天到期} =1 {明天到期} other {还有 # 天到期}}",
+    "overdue": "已逾期 {days} 天",
+    "docHash": "文档哈希"
+  },
+  "deadlines": {
+    "title": "近期截止日期",
+    "urgent": "7 天内",
+    "soon": "30 天内",
+    "later": "更晚",
+    "none": "未来 30 天内没有截止日期。"
+  },
+  "chart": {
+    "title": "本月：预算与支出",
+    "budget": "预算",
+    "spent": "已花费",
+    "remaining": "剩余",
+    "alt": "柱状图：本月预算 {budget}，已花费 {spent}"
+  },
+  "fx": {
+    "title": "汇率",
+    "sample": "样例汇率——测试数据，非实时市场汇率",
+    "live": "实时汇率",
+    "source": "来源：{source}",
+    "asOf": "截至 {date}"
+  },
+  "approverNote": "您当前以家人审批人身份查看。等待您处理的审批会显示在“审批”页面。"
+}
