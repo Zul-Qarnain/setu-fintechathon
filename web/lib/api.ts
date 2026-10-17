@@ -79,10 +79,15 @@ export const api = {
   dashboard: () => request<Dashboard>("GET", "/dashboard"),
   obligations: () => request<Obligation[]>("GET", "/obligations"),
   createDocument: (b: DocumentCreate) => request<DocumentOut>("POST", "/documents", { body: b }),
-  uploadDocumentFile: (file: File) => {
+  uploadDocumentFile: async (file: File) => {
+    if (MOCK) {
+      // Mock mode has no PDF parser: accept text files only.
+      if (/\.pdf$/i.test(file.name)) throw new ApiError(415, "UNSUPPORTED_MEDIA", "PDF parsing needs the real backend (text-layer PDFs only). Paste the text or upload a .txt in mock mode.");
+      return request<DocumentOut>("POST", "/documents", { body: { filename: file.name, text: await file.text(), synthetic: true } });
+    }
     const form = new FormData();
     form.append("file", file);
-    return request<DocumentOut>("POST", "/documents", { form, body: { filename: file.name, text: "" } });
+    return request<DocumentOut>("POST", "/documents", { form });
   },
   confirmDocument: (id: string, b: ConfirmRequest) => request<ConfirmResponse>("POST", `/documents/${id}/confirm`, { body: b }),
   chat: (b: ChatRequest) => request<ChatResponse>("POST", "/chat", { body: b }),

@@ -1,6 +1,6 @@
 import { getRequestConfig } from "next-intl/server";
 import { routing } from "./routing";
-import en from "../messages/en.json";
+import { enMessages, zhMessages } from "../messages";
 
 type Msgs = Record<string, unknown>;
 function merge(base: Msgs, over: Msgs): Msgs {
@@ -16,7 +16,6 @@ function merge(base: Msgs, over: Msgs): Msgs {
 export default getRequestConfig(async ({ requestLocale }) => {
   let locale = await requestLocale;
   if (!locale || !(routing.locales as readonly string[]).includes(locale)) locale = routing.defaultLocale;
-  if (locale === "en") return { locale, messages: en };
-  const zh = (await import("../messages/zh-CN.json")).default;
-  return { locale, messages: merge(en as Msgs, zh as Msgs) as typeof en };
+  if (locale === "en") return { locale, messages: enMessages };
+  return { locale, messages: merge(enMessages as Msgs, zhMessages as Msgs) as typeof enMessages };
 });
