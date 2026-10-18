@@ -14,7 +14,7 @@ export function AuthLayout({ title, subtitle, children, aside }: { title: string
         </div>
         <p className="text-xs text-ink-600" role="note">SYNTHETIC DEMO DATA · Sandbox bank — Setu never holds funds.</p>
       </main>
-      <aside className="hidden bg-ink p-10 text-white lg:flex lg:flex-col lg:justify-center" aria-label="About">{aside}</aside>
+      <aside className="hidden bg-chrome p-10 text-white lg:flex lg:flex-col lg:justify-center" aria-label="About">{aside}</aside>
     </div>
   );
 }

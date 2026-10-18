@@ -13,6 +13,7 @@ export default defineConfig({
   projects: [
     { name: "smoke", testMatch: /smoke\.spec\.ts/ },
     { name: "screenshots", testMatch: /screenshots\.spec\.ts/ },
+    { name: "layout", testMatch: /layout\.spec\.ts/, timeout: 300_000 },
   ],
   webServer: { command: `npx next start -p ${PORT}`, url: `http://localhost:${PORT}/en/login`, reuseExistingServer: true, timeout: 60_000 },
 });

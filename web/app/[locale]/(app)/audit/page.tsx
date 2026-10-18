@@ -15,7 +15,7 @@ function CopyHash({ value }: { value: string }) {
   return (
     <span className="inline-flex items-center gap-1">
       <code title={value} className="text-xs">{shortHash(value, 8)}</code>
-      <button type="button" className="rounded px-1 text-xs text-bridge-700 underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600" aria-label={`${t("copy")} ${value.slice(0, 8)}`} onClick={() => { void navigator.clipboard?.writeText(value).then(() => { setOk(true); window.setTimeout(() => setOk(false), 1500); }); }}>{ok ? t("copied") : t("copy")}</button>
+      <button type="button" className="inline-flex min-h-9 items-center rounded px-2 text-xs text-bridge-700 underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600" aria-label={`${t("copy")} ${value.slice(0, 8)}`} onClick={() => { void navigator.clipboard?.writeText(value).then(() => { setOk(true); window.setTimeout(() => setOk(false), 1500); }); }}>{ok ? t("copied") : t("copy")}</button>
     </span>
   );
 }
@@ -65,7 +65,7 @@ export default function AuditPage() {
       {err ? <Banner tone="danger" className="mb-4">{err}</Banner> : null}
       <div aria-live="polite" className="mb-4">
         {verify?.ok ? (
-          <div role="status" className="rounded-xl border-2 border-jade-600 bg-jade-50 p-4 text-jade-800" data-testid="chain-ok">
+          <div role="status" className="rounded-xl border border-l-4 border-jade-600/40 border-l-jade-600 bg-jade-50 p-4 text-jade-800" data-testid="chain-ok">
             <p className="text-xl font-extrabold"><span aria-hidden="true">✓ </span>{t("chainOk")}</p>
             <p className="mt-1 text-sm">{t("checked", { n: verify.checked })}</p>
           </div>
@@ -79,7 +79,38 @@ export default function AuditPage() {
         ) : null}
       </div>
 
-      <Card as="div" className="overflow-x-auto p-0 sm:p-0">
+      {/* Mobile: one card per entry (no horizontal scrolling) */}
+      <ul className="space-y-3 sm:hidden" aria-label={t("title")}>
+        {entries === null && !err ? <li className="text-center text-ink-600" role="status">{tc("loading")}</li> : null}
+        {entries?.length === 0 ? <li className="text-center text-ink-600">{t("empty")}</li> : null}
+        {entries?.map((e) => {
+          const hit = broken === e.seq;
+          const isOpen = open === e.seq;
+          return (
+            <li key={e.seq} className={`rounded-xl border bg-surface p-3 shadow-card ${hit ? "border-2 border-cinnabar-600 bg-cinnabar-50" : "border-line"}`} data-testid={`audit-card-${e.seq}`}>
+              <div className="flex items-start justify-between gap-2">
+                <p className="min-w-0 break-words font-semibold"><span className="font-mono text-ink-600">#{e.seq}</span> {e.event}</p>
+                {hit ? <span className="shrink-0 text-xs font-bold text-cinnabar-700">⚠ {t("tamperedRow")}</span> : null}
+              </div>
+              <p className="mt-1 text-xs text-ink-600">{formatDateTime(e.ts, locale)} · <code>{e.actor}</code></p>
+              <div className="mt-2 flex items-center justify-between gap-2">
+                <CopyHash value={e.hash} />
+                <button type="button" aria-expanded={isOpen} aria-controls={`plm-${e.seq}`} onClick={() => setOpen(isOpen ? null : e.seq)} className="inline-flex min-h-9 items-center px-2 text-xs font-semibold text-bridge-700 underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600">{isOpen ? t("hide") : t("details")}</button>
+              </div>
+              {isOpen ? (
+                <dl id={`plm-${e.seq}`} className="mt-2 space-y-1 border-t border-line pt-2 text-xs">
+                  <dt className="text-ink-600">{t("payloadHash")}</dt><dd><code className="break-all">{e.payload_hash}</code></dd>
+                  <dt className="text-ink-600">{t("prevHash")}</dt><dd><code className="break-all">{e.prev_hash}</code></dd>
+                  <dt className="text-ink-600">{t("hash")}</dt><dd><code className="break-all">{e.hash}</code></dd>
+                  <dt className="text-ink-600">{t("payload")}</dt><dd><pre className="overflow-x-auto whitespace-pre-wrap break-words font-mono">{JSON.stringify(e.payload, null, 2)}</pre></dd>
+                </dl>
+              ) : null}
+            </li>
+          );
+        })}
+      </ul>
+
+      <Card as="div" className="hidden p-0 sm:block sm:p-0"><div className="overflow-x-auto">
         <table className="w-full min-w-[40rem] text-left text-sm">
           <caption className="sr-only">{t("title")}</caption>
           <thead className="bg-paper text-xs uppercase tracking-wide text-ink-600">
@@ -93,9 +124,9 @@ export default function AuditPage() {
               const isOpen = open === e.seq;
               return (
                 <Fragment key={e.seq}>
-                  <tr className={`border-t border-line ${hit ? "bg-cinnabar-50 outline outline-2 -outline-offset-2 outline-cinnabar-600" : ""}`} data-testid={`audit-row-${e.seq}`} aria-current={hit ? "true" : undefined}>
+                  <tr className={`border-t border-line transition-colors hover:bg-paper ${hit ? "bg-cinnabar-50 outline outline-2 -outline-offset-2 outline-cinnabar-600" : ""}`} data-testid={`audit-row-${e.seq}`} aria-current={hit ? "true" : undefined}>
                     <th scope="row" className="px-3 py-2 font-mono">{e.seq}{hit ? <span className="ml-1 font-sans text-xs font-bold text-cinnabar-700">⚠ {t("tamperedRow")}</span> : null}</th>
-                    <td className="whitespace-nowrap px-3 py-2 text-xs">{formatDateTime(e.ts, locale)}</td>
+                    <td className="whitespace-nowrap px-3 py-2 text-xs tabular-nums">{formatDateTime(e.ts, locale)}</td>
                     <td className="px-3 py-2"><code className="text-xs">{e.actor}</code></td>
                     <td className="px-3 py-2 font-medium">{e.event}</td>
                     <td className="px-3 py-2"><CopyHash value={e.hash} /></td>
@@ -116,10 +147,10 @@ export default function AuditPage() {
             })}
           </tbody>
         </table>
-      </Card>
+      </div></Card>
       {entries && broken !== null && !entries.some((e) => e.seq === broken) ? <Banner tone="warning" className="mt-3">{t("hiddenBreak", { seq: broken })}</Banner> : null}
 
-      <details className="mt-6 rounded-xl border border-dashed border-line bg-white p-4">
+      <details className="mt-6 rounded-xl border border-dashed border-line bg-surface p-4">
         <summary className="cursor-pointer text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600">{t("demo.title")}</summary>
         <p className="mt-2 text-xs text-ink-600">{t("demo.body")}</p>
         <div className="mt-3 flex flex-wrap items-end gap-3">

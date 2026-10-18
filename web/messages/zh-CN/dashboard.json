@@ -45,7 +45,11 @@
     "sample": "样例汇率——测试数据，非实时市场汇率",
     "live": "实时汇率",
     "source": "来源：{source}",
-    "asOf": "截至 {date}"
+    "asOf": "截至 {date}",
+    "sampleNote": "示例汇率，来自离线测试数据，并非实时市场汇率。",
+    "sources": {
+      "fixture-sample": "离线示例数据"
+    }
   },
   "approverNote": "您当前以家人审批人身份查看。等待您处理的审批会显示在“审批”页面。"
 }

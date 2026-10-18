@@ -1,34 +1,46 @@
 "use client";
-import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { useTranslations } from "next-intl";
 import { formatCny } from "@/lib/format";
 
-/** Budget vs spent vs remaining (CNY). Values are plotted as numbers for geometry only; labels use exact decimal strings. */
+/** Budget donut: spent vs remaining of the monthly budget, centre = % spent, legend rows with mono amounts. */
 export function BudgetChart({ budget, spent, remaining }: { budget: string; spent: string; remaining: string }) {
   const t = useTranslations("dashboard.chart");
-  const rows = [
-    { name: t("budget"), value: Number(budget), label: budget, fill: "#1d4ed8" },
-    { name: t("spent"), value: Number(spent), label: spent, fill: "#9a5b00" },
-    { name: t("remaining"), value: Math.max(0, Number(remaining)), label: remaining, fill: "#0b7a5a" },
+  const b = Number(budget) || 0, s = Math.max(0, Number(spent) || 0), r = Math.max(0, Number(remaining) || 0);
+  const pct = b > 0 ? Math.min(100, Math.round((s / b) * 100)) : 0;
+  const slices = [
+    { name: t("spent"), value: s, label: spent, color: "rgb(var(--amber-600))", pct },
+    { name: t("remaining"), value: r, label: remaining, color: "rgb(var(--jade-600))", pct: b > 0 ? Math.max(0, 100 - pct) : 0 },
   ];
+  const data = s + r > 0 ? slices : [{ ...slices[1]!, value: 1 }];
   return (
     <figure>
-      <div role="img" aria-label={t("alt", { budget: formatCny(budget), spent: formatCny(spent) })} className="h-56 w-full">
+      <div role="img" aria-label={t("alt", { budget: formatCny(budget), spent: formatCny(spent) })} className="relative mx-auto h-48 w-48">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={rows} margin={{ top: 8, right: 8, bottom: 0, left: 8 }}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2ded3" />
-            <XAxis dataKey="name" tick={{ fill: "#26364d", fontSize: 12 }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fill: "#26364d", fontSize: 12 }} axisLine={false} tickLine={false} width={56} tickFormatter={(v: number) => `¥${v}`} />
-            <Tooltip formatter={(_v, _n, item) => formatCny((item.payload as { label: string }).label)} cursor={{ fill: "rgba(15,27,45,0.05)" }} />
-            <Bar dataKey="value" radius={[6, 6, 0, 0]} isAnimationActive={false}>
-              {rows.map((r) => <Cell key={r.name} fill={r.fill} />)}
-            </Bar>
-          </BarChart>
+          <PieChart>
+            <Pie data={data} dataKey="value" innerRadius="64%" outerRadius="100%" startAngle={90} endAngle={-270} stroke="rgb(var(--surface))" strokeWidth={2} isAnimationActive={false}>
+              {data.map((d) => <Cell key={d.name} fill={d.color} />)}
+            </Pie>
+            <Tooltip formatter={(_v, _n, item) => formatCny((item.payload as { label: string }).label)} />
+          </PieChart>
         </ResponsiveContainer>
+        <div className="pointer-events-none absolute inset-0 grid place-content-center text-center">
+          <span className="font-mono text-2xl font-bold tabular-nums text-ink">{pct}%</span>
+          <span className="text-xs text-ink-600">{t("spent")}</span>
+        </div>
       </div>
+      <ul className="mt-3 space-y-2 text-sm">
+        <li className="flex items-center justify-between gap-3 border-t border-line pt-2"><span className="text-ink-600">{t("budget")}</span><span className="font-mono tabular-nums font-semibold">{formatCny(budget)}</span></li>
+        {slices.map((x) => (
+          <li key={x.name} className="flex items-center justify-between gap-3">
+            <span className="flex items-center gap-2 text-ink-700"><span aria-hidden="true" className="h-2.5 w-2.5 rounded-full" style={{ background: x.color }} />{x.name}</span>
+            <span className="font-mono tabular-nums">{formatCny(x.label)} <span className="text-ink-600">· {x.pct}%</span></span>
+          </li>
+        ))}
+      </ul>
       <table className="sr-only">
         <caption>{t("title")}</caption>
-        <tbody>{rows.map((r) => <tr key={r.name}><th scope="row">{r.name}</th><td>{formatCny(r.label)}</td></tr>)}</tbody>
+        <tbody>{[{ n: t("budget"), v: budget }, { n: t("spent"), v: spent }, { n: t("remaining"), v: remaining }].map((r2) => <tr key={r2.n}><th scope="row">{r2.n}</th><td>{formatCny(r2.v)}</td></tr>)}</tbody>
       </table>
     </figure>
   );

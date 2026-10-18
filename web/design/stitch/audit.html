@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Setu 桥 · Sovereign Escrow - Audit Log 审计日志</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&amp;family=Noto+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-primary-fixed": "#002115",
+            "primary-container": "#0b7a5a",
+            "error-container": "#ffdad6",
+            "surface-variant": "#d7e3fc",
+            "on-background": "#101c2e",
+            "tertiary-container": "#a45800",
+            "on-tertiary-fixed-variant": "#6e3900",
+            "on-secondary-fixed-variant": "#00468c",
+            "secondary-fixed-dim": "#a9c7ff",
+            "on-tertiary": "#ffffff",
+            "tertiary-fixed-dim": "#ffb77d",
+            "surface-container-high": "#dee8ff",
+            "background": "#f9f9ff",
+            "secondary-fixed": "#d6e3ff",
+            "on-secondary": "#ffffff",
+            "surface-dim": "#cfdaf3",
+            "surface-container-low": "#f0f3ff",
+            "outline-variant": "#bdc9c2",
+            "error": "#ba1a1a",
+            "tertiary": "#804300",
+            "secondary": "#125db2",
+            "inverse-surface": "#253144",
+            "secondary-container": "#6ea6ff",
+            "surface": "#f9f9ff",
+            "on-surface-variant": "#3e4943",
+            "on-primary-container": "#a7ffd9",
+            "on-tertiary-fixed": "#2f1500",
+            "primary-fixed": "#98f5cd",
+            "outline": "#6e7a73",
+            "surface-container-lowest": "#ffffff",
+            "primary-fixed-dim": "#7bd8b2",
+            "tertiary-fixed": "#ffdcc3",
+            "on-secondary-container": "#003b77",
+            "surface-container-highest": "#d7e3fc",
+            "on-error-container": "#93000a",
+            "surface-container": "#e7eeff",
+            "on-primary": "#ffffff",
+            "surface-bright": "#f9f9ff",
+            "inverse-primary": "#7bd8b2",
+            "primary": "#005f45",
+            "on-secondary-fixed": "#001b3d",
+            "on-primary-fixed-variant": "#00513a",
+            "on-surface": "#101c2e",
+            "on-tertiary-container": "#ffe9db",
+            "surface-tint": "#006c4f",
+            "inverse-on-surface": "#ecf1ff",
+            "on-error": "#ffffff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter": "1rem",
+            "margin-desktop": "2rem",
+            "margin": "1rem",
+            "space-xl": "2rem",
+            "space-lg": "1.5rem",
+            "gutter-mobile": "0.75rem",
+            "space-xs": "0.25rem",
+            "space-md": "1rem",
+            "space-sm": "0.5rem"
+          },
+          "fontFamily": {
+            "sans": ["Noto Sans", "sans-serif"],
+            "mono": ["JetBrains Mono", "monospace"],
+            "label-sm": ["Noto Sans"],
+            "body-lg": ["Noto Sans"],
+            "headline-md": ["Noto Sans"],
+            "headline-sm": ["Noto Sans"],
+            "label-md": ["Noto Sans"],
+            "label-lg": ["Noto Sans"],
+            "body-md": ["Noto Sans"],
+            "headline-lg-mobile": ["Noto Sans"],
+            "tabular-amount-md": ["Noto Sans"],
+            "tabular-amount-lg": ["Noto Sans"],
+            "headline-lg": ["Noto Sans"],
+            "body-sm": ["Noto Sans"]
+          },
+          "fontSize": {
+            "label-sm": ["10px", {"lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700"}],
+            "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+            "headline-md": ["22px", {"lineHeight": "30px", "fontWeight": "600"}],
+            "headline-sm": ["18px", {"lineHeight": "26px", "fontWeight": "600"}],
+            "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+            "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+            "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+            "headline-lg-mobile": ["26px", {"lineHeight": "34px", "fontWeight": "700"}],
+            "tabular-amount-md": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+            "tabular-amount-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+            "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+            "body-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 20px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      height: 6px;
+      width: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #f1ede3;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body class="bg-[#f6f4ef] text-on-surface font-sans min-h-screen flex flex-col antialiased selection:bg-primary selection:text-white">
+<!-- Slim Top Amber Sandbox Strip -->
+<div class="w-full bg-[#fffbeb] border-b border-[#fde68a] px-4 py-1.5 text-xs text-[#92400e] font-mono flex items-center justify-between shadow-xs">
+<div class="flex items-center space-x-2">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#d97706] opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-[#d97706]"></span>
+</span>
+<span class="font-semibold tracking-wide uppercase">SYNTHETIC DATA · SANDBOX BANK · 演示数据 · SAMPLE FX</span>
+<span class="hidden md:inline text-[#d97706]">|</span>
+<span class="hidden md:inline font-medium">CORRIDOR: CNY / BDT (GUARDED TUITION ESCROW)</span>
+</div>
+<div class="flex items-center space-x-3">
+<span class="bg-[#fef3c7] px-2 py-0.5 rounded text-[11px] border border-[#fde68a] text-[#78350f]">CHAIN ID: SETU-DEV-24</span>
+<span class="text-[11px] text-[#b45309] hidden sm:inline">STATE: VERIFYING_BLOCK_#14</span>
+</div>
+</div>
+<!-- Shared Component: TopNavBar (Exact mapping of JSON specifications) -->
+<header class="bg-on-background w-full px-margin-desktop flex justify-between items-center h-16 shadow-sm border-b border-outline z-30">
+<div class="flex items-center space-x-8">
+<!-- Product Name & Brand Anchor -->
+<a class="flex items-center space-x-2 text-headline-sm font-headline-sm font-bold text-surface-container-lowest tracking-tight hover:opacity-95 transition-opacity" href="#">
+<span class="material-symbols-outlined text-primary-container text-2xl" data-icon="shield" style="font-variation-settings: 'FILL' 1;">shield</span>
+<span>Setu 桥 · Sovereign Escrow</span>
+</a>
+<!-- Desktop Navigation Links from JSON -->
+<nav class="hidden lg:flex items-center space-x-6 text-label-lg font-label-lg pt-1">
+<a class="text-surface-variant hover:text-surface-container-lowest transition-colors pb-1" href="#">
+          Overview · 概览
+        </a>
+<a class="text-surface-variant hover:text-surface-container-lowest transition-colors pb-1" href="#">
+          Approvals · 审批
+        </a>
+<!-- ACTIVE STATE: Audit Log · 审计日志 mapped directly -->
+<a class="border-b-2 border-primary-container text-surface-container-lowest font-semibold pb-1 flex items-center gap-1.5" href="#">
+<span>Audit Log · 审计日志</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+</a>
+<a class="text-surface-variant hover:text-surface-container-lowest transition-colors pb-1" href="#">
+          Agent Live Trace · 实时链路上追踪
+        </a>
+</nav>
+</div>
+<!-- Trailing Actions & Icons -->
+<div class="flex items-center space-x-3">
+<!-- Trailing Secondary Action -->
+<span class="hidden xl:inline-flex items-center gap-1.5 text-xs font-mono text-emerald-300 bg-emerald-950/60 border border-emerald-800/80 px-2.5 py-1 rounded">
+<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        CN-BD Sandbox · 模拟沙箱
+      </span>
+<!-- Language Switcher Pill -->
+<div class="bg-inverse-surface border border-slate-700/60 rounded px-2 py-0.5 text-xs text-surface-container-lowest flex items-center space-x-1 cursor-pointer hover:border-slate-500">
+<span class="font-semibold text-primary-fixed">EN</span>
+<span class="text-slate-500">/</span>
+<span class="text-slate-300">简</span>
+</div>
+<!-- Icon Actions with exact data-icon values from JSON -->
+<button class="p-1.5 text-surface-variant hover:text-surface-container-lowest transition-all duration-150 active:scale-[0.99] rounded hover:bg-inverse-surface" title="Verified Authority">
+<span class="material-symbols-outlined" data-icon="verified_user">verified_user</span>
+</button>
+<button class="p-1.5 text-surface-variant hover:text-surface-container-lowest transition-all duration-150 active:scale-[0.99] rounded hover:bg-inverse-surface relative" title="Notifications">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-amber-500 rounded-full"></span>
+</button>
+<button class="p-1.5 text-surface-variant hover:text-surface-container-lowest transition-all duration-150 active:scale-[0.99] rounded hover:bg-inverse-surface" title="Assistance">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<!-- Trailing Primary Action from JSON -->
+<button class="hidden sm:flex items-center space-x-1.5 bg-primary-container hover:bg-[#085d44] text-white text-xs font-medium px-3 py-1.5 rounded transition-all duration-150 shadow-xs active:scale-[0.99]">
+<span class="material-symbols-outlined text-sm" data-icon="file_download">file_download</span>
+<span>Security Export · 导出凭证</span>
+</button>
+<!-- Compliance Officer Profile Avatar -->
+<div class="flex items-center pl-2 border-l border-slate-700 ml-1">
+<img class="w-8 h-8 rounded-full border border-slate-600 object-cover" data-alt="A portrait photo of an international sovereign compliance director in a sharp professional navy suit against an architectural glass background, bathed in soft balanced daytime office light. The aesthetic uses deep inks, muted parchment tones, and polished high-contrast realism reflecting institutional cross-border escrow authority and strict banking compliance." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2ysNh7Dv7T662v9_WIsB6iEpfXm8agVBU159IxrRYm5tbmRONGKYMYCY_U5BccNc4085oGCQVcONyTUm5mbDUdUo_FVwQuNQ6r_DK23gYqJ8PPn1eGmuhzFT7TudyeOLVlPUyEvgMZRimFyvAQJTMVsYpK0yghs-_tOUaZYEsf2nYClWFi60bYIAl-8wcGee2rvyEyqbdm422Gs6gc_oyytSJ8E7wtF5uODrlwXn1VR96mQgmXcLbJIEr5x786yjCWT7OrRiox4g"/>
+</div>
+</div>
+</header>
+<!-- Main Canvas Container -->
+<main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+<!-- Screen Title Bar & Action Cluster -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2 border-b border-[#e2ded3]">
+<div>
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded text-[11px] font-mono font-semibold bg-emerald-100 text-[#0b7a5a] border border-emerald-300">
+            STATE-MACHINE NOTARIZATION
+          </span>
+<span class="text-xs text-on-surface-variant font-mono">HASH TREE LEVEL 3</span>
+</div>
+<h1 class="text-headline-lg font-headline-lg text-on-background tracking-tight mt-1 flex items-baseline gap-3">
+<span>Audit log</span>
+<span class="text-headline-md font-headline-md text-outline font-normal">审计日志</span>
+</h1>
+<p class="text-body-md font-body-md text-on-surface-variant max-w-3xl mt-1">
+          Guarded cryptographic verification for all escrow state transitions, multi-sig consensus, and oracle execution · <span class="font-normal text-slate-600">智能托管状态流转审计与防篡改存证</span>
+</p>
+</div>
+<!-- Action Bar -->
+<div class="flex flex-wrap items-center gap-2.5">
+<button class="bg-primary-container hover:bg-[#085d44] text-white font-label-lg text-label-lg px-4 py-2.5 rounded-xl flex items-center gap-2 shadow-xs transition-all active:scale-[0.98]">
+<span class="material-symbols-outlined text-lg" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span>Verify chain 校验链完整性</span>
+</button>
+<button class="bg-white hover:bg-slate-50 text-on-background border border-[#cbd5e1] font-label-lg text-label-lg px-3.5 py-2.5 rounded-xl flex items-center gap-2 transition-all active:scale-[0.98] shadow-xs">
+<span class="material-symbols-outlined text-lg text-slate-600" data-icon="inventory_2">inventory_2</span>
+<span>Export evidence 导出存证包 (ZIP/PDF)</span>
+</button>
+<!-- Quick Filter Dropdown -->
+<div class="relative inline-block text-left">
+<button class="bg-white hover:bg-slate-50 border border-[#cbd5e1] text-on-surface-variant font-label-md text-label-md px-3 py-2.5 rounded-xl flex items-center gap-1.5">
+<span class="material-symbols-outlined text-base" data-icon="filter_list">filter_list</span>
+<span>Filter: All Events 全部事件</span>
+<span class="material-symbols-outlined text-sm" data-icon="arrow_drop_down">arrow_drop_down</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Integrity Status Banners (Dual Comparative State Showcase) -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+<!-- Verified State Banner (Institutional Jade) -->
+<div class="bg-white border border-[#a7f3d0] rounded-xl p-4 shadow-xs relative overflow-hidden flex flex-col justify-between">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-[#0b7a5a]"></div>
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-full bg-[#ecfdf5] border border-[#a7f3d0] flex items-center justify-center text-[#0b7a5a] shrink-0">
+<span class="material-symbols-outlined text-lg" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="space-y-1 flex-1">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-sm text-headline-sm text-[#0b7a5a] font-bold">
+                ✓ Chain verified · 42 entries checked · 链完整性已验证
+              </h3>
+<span class="text-[11px] font-mono text-[#0b7a5a] bg-[#ecfdf5] px-2 py-0.5 rounded border border-[#a7f3d0]">VALID</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant">
+              Continuous Merkle chain verified from Genesis to Seq #11. Zero state derivation collisions detected across Chinese &amp; Bangladeshi notary nodes.
+            </p>
+<div class="pt-2 flex flex-wrap items-center gap-3 text-xs font-mono text-slate-600">
+<span class="flex items-center gap-1">
+<span class="text-slate-400">MERKLE ROOT:</span>
+<span class="bg-[#f6f4ef] px-2 py-0.5 rounded text-on-surface font-semibold border border-[#e2ded3]">0x8a9f...b012</span>
+</span>
+<span class="flex items-center gap-1">
+<span class="text-slate-400">LAST NOTARIZED:</span>
+<span>2024-10-24 14:30:00 UTC+8</span>
+</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Critical Tamper Detected Banner (Cinnabar Red Alert) -->
+<div class="bg-[#fef2f2] border-2 border-[#dc2626] rounded-xl p-4 shadow-xs relative overflow-hidden flex flex-col justify-between animate-pulse">
+<div class="absolute left-0 top-0 bottom-0 w-2 bg-[#dc2626]"></div>
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-full bg-[#fee2e2] border border-[#fca5a5] flex items-center justify-center text-[#dc2626] shrink-0">
+<span class="material-symbols-outlined text-xl" data-icon="error" style="font-variation-settings: 'FILL' 1;">error</span>
+</div>
+<div class="space-y-1 flex-1">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-sm text-headline-sm text-[#dc2626] font-bold">
+                ✕ Chain broken at #12 · 链完整性校验失败: 序列 #12 校验和不匹配
+              </h3>
+<span class="text-[11px] font-mono text-white bg-[#dc2626] px-2 py-0.5 rounded font-bold">HALTED 挂起</span>
+</div>
+<p class="text-body-sm font-body-sm text-[#7f1d1d] font-medium leading-relaxed">
+              Hash mismatch detected in state transition block #12. The computed sha256 payload does not correspond to the recorded parent merkle leaf. Escrow execution halted automatically.
+            </p>
+<div class="pt-1 flex items-center gap-2 text-xs font-mono text-[#991b1b]">
+<span class="material-symbols-outlined text-sm" data-icon="lock_clock">lock_clock</span>
+<span>ESCROW HARD FREEZE TRIGGERED: DISBURSEMENT DISALLOWED</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Ledger Meta Strip -->
+<div class="flex flex-wrap items-center justify-between bg-white px-4 py-2.5 rounded-xl border border-[#e2ded3] shadow-xs text-xs text-on-surface-variant font-mono">
+<div class="flex items-center gap-4">
+<span>CORRIDOR: <strong class="text-on-surface">CNY / BDT</strong></span>
+<span>BENEFICIARY: <strong class="text-on-surface">Tsinghua Univ Intl Student Fund</strong></span>
+<span>STUDENT ID: <strong class="text-on-surface">THU-2024-BD-8809</strong></span>
+</div>
+<div class="flex items-center gap-3">
+<span class="inline-flex items-center gap-1 text-emerald-700">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+          Oracle Sync: Active (19.0270)
+        </span>
+<span class="text-slate-300">|</span>
+<span>Quorum: 2-of-3 Guardians Signed</span>
+</div>
+</div>
+<!-- Audit Log Ledger Table Card -->
+<div class="bg-white rounded-xl border border-[#e2ded3] shadow-xs overflow-hidden">
+<div class="p-4 border-b border-[#e2ded3] flex items-center justify-between bg-[#faf8f5]">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[#0f1b2d]" data-icon="account_tree">account_tree</span>
+<h2 class="font-headline-sm text-headline-sm text-[#0f1b2d] font-bold">Cryptographic Ledger Transitions · 账本状态流转表</h2>
+</div>
+<div class="flex items-center gap-2 text-xs font-mono">
+<span class="text-slate-500">Auto-refresh:</span>
+<span class="text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">STREAMING LIVE 5s</span>
+</div>
+</div>
+<div class="overflow-x-auto custom-scroll">
+<table class="w-full text-left border-collapse font-sans text-xs">
+<thead>
+<tr class="bg-[#f1ede3] text-on-surface border-b border-[#e2ded3] font-label-md text-label-md">
+<th class="py-3 px-4 w-16">Seq<br/><span class="text-[10px] text-slate-500 font-normal">序号</span></th>
+<th class="py-3 px-4 w-44">Timestamp (UTC+8)<br/><span class="text-[10px] text-slate-500 font-normal">时间戳</span></th>
+<th class="py-3 px-4 w-48">Actor<br/><span class="text-[10px] text-slate-500 font-normal">执行主体</span></th>
+<th class="py-3 px-4">Event / Operation<br/><span class="text-[10px] text-slate-500 font-normal">事件类型与操作</span></th>
+<th class="py-3 px-4 w-48">Hash &amp; Proof<br/><span class="text-[10px] text-slate-500 font-normal">加密哈希</span></th>
+<th class="py-3 px-4 w-36">Status<br/><span class="text-[10px] text-slate-500 font-normal">状态</span></th>
+<th class="py-3 px-4 w-24 text-right">Details<br/><span class="text-[10px] text-slate-500 font-normal">展开详情</span></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#e2ded3]">
+<!-- ROW #14 -->
+<tr class="hover:bg-[#faf9f5] transition-colors">
+<td class="py-3.5 px-4 font-mono font-bold text-on-surface">#14</td>
+<td class="py-3.5 px-4 font-mono text-slate-600">2024-10-24 14:32:11</td>
+<td class="py-3.5 px-4">
+<div class="font-semibold text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-xs text-primary-container" data-icon="smart_toy">smart_toy</span>
+<span>Orchestrator Agent</span>
+</div>
+<div class="text-[11px] text-slate-500">智能协作者 · Core Node</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="font-medium text-on-surface">Policy Gated: Dual-Sign Quorum Required</div>
+<div class="text-[11px] text-slate-500 font-mono">Amount: CNY 18,500.00 (≈ ৳ 352,000 BDT)</div>
+</td>
+<td class="py-3.5 px-4 font-mono">
+<div class="inline-flex items-center gap-1 bg-[#f6f4ef] px-2 py-0.5 rounded border border-[#e2ded3] text-slate-700">
+<span>0x4e2a...c891</span>
+<button class="hover:text-primary active:scale-90" title="Copy Hash">
+<span class="material-symbols-outlined text-[14px]" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#ecfdf5] text-[#0b7a5a] border border-[#a7f3d0]">
+<span class="material-symbols-outlined text-[13px]" data-icon="check" style="font-variation-settings: 'FILL' 1;">check</span>
+                  VERIFIED 校验有效
+                </span>
+</td>
+<td class="py-3.5 px-4 text-right">
+<button class="p-1 rounded hover:bg-slate-200 text-slate-500">
+<span class="material-symbols-outlined text-base" data-icon="expand_more">expand_more</span>
+</button>
+</td>
+</tr>
+<!-- ROW #13 -->
+<tr class="hover:bg-[#faf9f5] transition-colors">
+<td class="py-3.5 px-4 font-mono font-bold text-on-surface">#13</td>
+<td class="py-3.5 px-4 font-mono text-slate-600">2024-10-24 14:32:08</td>
+<td class="py-3.5 px-4">
+<div class="font-semibold text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-xs text-blue-600" data-icon="fingerprint">fingerprint</span>
+<span>Student App</span>
+</div>
+<div class="text-[11px] text-slate-500">Tanvir Ahmed (Dhaka Client)</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="font-medium text-on-surface">TOTP Biometric Signed: Fall Tuition 2024</div>
+<div class="text-[11px] text-slate-500">Secure hardware enclave verification pass</div>
+</td>
+<td class="py-3.5 px-4 font-mono">
+<div class="inline-flex items-center gap-1 bg-[#f6f4ef] px-2 py-0.5 rounded border border-[#e2ded3] text-slate-700">
+<span>0x9b1c...aa42</span>
+<button class="hover:text-primary active:scale-90" title="Copy Hash">
+<span class="material-symbols-outlined text-[14px]" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#ecfdf5] text-[#0b7a5a] border border-[#a7f3d0]">
+<span class="material-symbols-outlined text-[13px]" data-icon="check" style="font-variation-settings: 'FILL' 1;">check</span>
+                  VERIFIED 校验有效
+                </span>
+</td>
+<td class="py-3.5 px-4 text-right">
+<button class="p-1 rounded hover:bg-slate-200 text-slate-500">
+<span class="material-symbols-outlined text-base" data-icon="expand_more">expand_more</span>
+</button>
+</td>
+</tr>
+<!-- ROW #12: TAMPERED ROW (EXPANDED STATE) -->
+<tr class="bg-[#fef2f2] border-t-2 border-b-0 border-[#dc2626]">
+<td class="py-3 px-4 font-mono font-bold text-[#dc2626]">
+<div class="flex items-center gap-1">
+<span>#12</span>
+<span class="w-2 h-2 rounded-full bg-[#dc2626] animate-ping"></span>
+</div>
+</td>
+<td class="py-3 px-4 font-mono text-[#991b1b] font-semibold">2024-10-24 14:31:02</td>
+<td class="py-3 px-4">
+<div class="font-bold text-[#b91c1c] flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="gpp_bad">gpp_bad</span>
+<span>External Relayer / Modified</span>
+</div>
+<div class="text-[11px] text-[#dc2626] font-mono">IP: 185.220.101.4 [UNTRUSTED]</div>
+</td>
+<td class="py-3 px-4">
+<div class="font-bold text-[#991b1b] flex items-center gap-1.5">
+<span class="line-through text-slate-400">IBAN CN39...0018</span>
+<span class="material-symbols-outlined text-xs" data-icon="arrow_forward">arrow_forward</span>
+<span class="text-[#dc2626] underline decoration-wavy">Escrow Beneficiary Replaced: IBAN CN39...7721</span>
+</div>
+<div class="text-[11px] text-[#b91c1c] font-medium">Unauthorized mutation of settlement smart-contract payload</div>
+</td>
+<td class="py-3 px-4 font-mono">
+<div class="inline-flex items-center gap-1 bg-[#fee2e2] px-2 py-0.5 rounded border border-[#fca5a5] text-[#b91c1c] font-bold">
+<span class="line-through decoration-[#dc2626]">0xd411...ff09</span>
+<span class="material-symbols-outlined text-xs" data-icon="warning">warning</span>
+</div>
+</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-[#dc2626] text-white shadow-xs">
+<span class="material-symbols-outlined text-[13px]" data-icon="cancel">cancel</span>
+                  TAMPER DETECTED 篡改检测
+                </span>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="p-1 rounded bg-[#fee2e2] text-[#dc2626]" title="Collapse details">
+<span class="material-symbols-outlined text-base" data-icon="expand_less">expand_less</span>
+</button>
+</td>
+</tr>
+<!-- ROW #12 EXPANDED DRAWER CELL -->
+<tr class="bg-[#fff5f5] border-b-2 border-[#dc2626]">
+<td class="p-4" colspan="7">
+<div class="bg-[#101c2e] text-slate-100 rounded-xl p-4 font-mono text-xs border border-red-900/50 shadow-inner space-y-3">
+<div class="flex flex-wrap items-center justify-between border-b border-slate-700/80 pb-2">
+<div class="flex items-center gap-2 text-red-400 font-bold">
+<span class="material-symbols-outlined text-sm" data-icon="terminal">terminal</span>
+<span>CRYPTOGRAPHIC STATE TRANSITION DIAGNOSTIC [BLOCK #12 INTEGRITY BREACH]</span>
+</div>
+<span class="px-2 py-0.5 text-[10px] rounded bg-red-950 text-red-300 border border-red-700 font-sans font-bold">
+                      ZERO-TRUST STATE HALT
+                    </span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-[11px] leading-relaxed">
+<div class="space-y-1.5">
+<div class="text-slate-400">Computed Payload SHA-256 (Current Execution):</div>
+<div class="bg-black/50 p-2 rounded text-red-400 font-mono break-all border border-red-900/40">
+                        sha256: 7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069
+                        <span class="text-red-500 font-bold ml-1">[INVALID_STATE]</span>
+</div>
+<div class="text-slate-400 pt-1">Parent Link Hash (prev_hash -&gt; Seq #11):</div>
+<div class="bg-black/40 p-2 rounded text-emerald-400 font-mono break-all border border-emerald-900/40">
+                        0x6a382cf190270bdf19842aef28491002341b119d [VERIFIED_ANCESTOR]
+                      </div>
+</div>
+<div class="space-y-1.5">
+<div class="text-slate-400">Recorded In-Transit Merkle Leaf:</div>
+<div class="bg-black/50 p-2 rounded text-amber-300 font-mono break-all border border-amber-900/40">
+                        0xd411d3bb7e09ef21008a0029cff09
+                        <span class="text-red-400 block mt-1 text-[10px] font-sans font-medium">Discrepancy: Expected parent notarized value was 0x5c8e41a...339a</span>
+</div>
+<div class="p-2 rounded bg-red-950/40 border border-red-800/60 text-red-200 text-[11px]">
+<strong class="font-bold text-red-300">Failure Reason / 校验中断原因:</strong>
+                        The settlement destination was silently replaced from Tsinghua University Custody account to an unauthorized rogue relay. Signature verification with Guardian Key #2 failed quorum. State transition rejected; funds remained locked inside sovereign escrow.
+                      </div>
+</div>
+</div>
+<div class="pt-2 flex flex-wrap items-center justify-between border-t border-slate-800 text-[10px] text-slate-400">
+<div>SIGNER PUBLIC KEY: <span class="text-slate-200">0x04bf91...77d1 (UNRECOGNIZED_UNREGISTERED)</span></div>
+<div class="flex items-center gap-3">
+<button class="text-red-300 hover:text-white underline">View Raw Merkle Proof JSON</button>
+<span>·</span>
+<button class="text-red-300 hover:text-white underline">Download Forensic Crash Dump</button>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<!-- ROW #11 -->
+<tr class="hover:bg-[#faf9f5] transition-colors">
+<td class="py-3.5 px-4 font-mono font-bold text-on-surface">#11</td>
+<td class="py-3.5 px-4 font-mono text-slate-600">2024-10-24 14:30:00</td>
+<td class="py-3.5 px-4">
+<div class="font-semibold text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-xs text-amber-600" data-icon="currency_exchange">currency_exchange</span>
+<span>FX Oracle Guardian</span>
+</div>
+<div class="text-[11px] text-slate-500">PBOC / Bangladesh Bank Feed</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="font-medium text-on-surface">Rate Lock Notarized: 1 CNY = 19.0270 BDT</div>
+<div class="text-[11px] text-slate-500">Guaranteed window: 120 minutes with zero slippage clamp</div>
+</td>
+<td class="py-3.5 px-4 font-mono">
+<div class="inline-flex items-center gap-1 bg-[#f6f4ef] px-2 py-0.5 rounded border border-[#e2ded3] text-slate-700">
+<span>0x6a38...119d</span>
+<button class="hover:text-primary active:scale-90" title="Copy Hash">
+<span class="material-symbols-outlined text-[14px]" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#ecfdf5] text-[#0b7a5a] border border-[#a7f3d0]">
+<span class="material-symbols-outlined text-[13px]" data-icon="check" style="font-variation-settings: 'FILL' 1;">check</span>
+                  VERIFIED 校验有效
+                </span>
+</td>
+<td class="py-3.5 px-4 text-right">
+<button class="p-1 rounded hover:bg-slate-200 text-slate-500">
+<span class="material-symbols-outlined text-base" data-icon="expand_more">expand_more</span>
+</button>
+</td>
+</tr>
+<!-- ROW #10 -->
+<tr class="hover:bg-[#faf9f5] transition-colors">
+<td class="py-3.5 px-4 font-mono font-bold text-on-surface">#10</td>
+<td class="py-3.5 px-4 font-mono text-slate-600">2024-10-24 11:28:40</td>
+<td class="py-3.5 px-4">
+<div class="font-semibold text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-xs text-blue-800" data-icon="account_balance">account_balance</span>
+<span>Tsinghua Univ Treasury</span>
+</div>
+<div class="text-[11px] text-slate-500">清华大学财务处 · Direct API</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="font-medium text-on-surface">Direct Invoice Ingestion: #INT-2024</div>
+<div class="text-[11px] text-slate-500">Fall Semester Tuition + On-campus Accomodation</div>
+</td>
+<td class="py-3.5 px-4 font-mono">
+<div class="inline-flex items-center gap-1 bg-[#f6f4ef] px-2 py-0.5 rounded border border-[#e2ded3] text-slate-700">
+<span>0x1f02...e38c</span>
+<button class="hover:text-primary active:scale-90" title="Copy Hash">
+<span class="material-symbols-outlined text-[14px]" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#ecfdf5] text-[#0b7a5a] border border-[#a7f3d0]">
+<span class="material-symbols-outlined text-[13px]" data-icon="check" style="font-variation-settings: 'FILL' 1;">check</span>
+                  VERIFIED 校验有效
+                </span>
+</td>
+<td class="py-3.5 px-4 text-right">
+<button class="p-1 rounded hover:bg-slate-200 text-slate-500">
+<span class="material-symbols-outlined text-base" data-icon="expand_more">expand_more</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination / Footer Bar for Table -->
+<div class="px-4 py-3 bg-[#faf8f5] border-t border-[#e2ded3] flex flex-col sm:flex-row items-center justify-between text-xs text-slate-600 gap-2">
+<div class="font-mono">
+          Showing <strong>5</strong> of <strong>42</strong> continuous cryptographic state transitions
+        </div>
+<div class="flex items-center gap-1">
+<button class="px-2.5 py-1 rounded border border-[#cbd5e1] bg-white hover:bg-slate-100 disabled:opacity-40" disabled="">Previous 上一页</button>
+<span class="px-2 text-on-surface font-bold">1</span>
+<button class="px-2.5 py-1 rounded border border-[#cbd5e1] bg-white hover:bg-slate-100">2</button>
+<button class="px-2.5 py-1 rounded border border-[#cbd5e1] bg-white hover:bg-slate-100">3</button>
+<button class="px-2.5 py-1 rounded border border-[#cbd5e1] bg-white hover:bg-slate-100">Next 下一页</button>
+</div>
+</div>
+</div>
+<!-- Tamper Demo & Fault Injection Sandbox Panel -->
+<div class="bg-white rounded-xl border border-[#e2ded3] p-5 shadow-xs">
+<div class="flex items-center justify-between border-b border-[#e2ded3] pb-3 cursor-pointer">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center font-bold">
+<span class="material-symbols-outlined text-base" data-icon="science">science</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">
+              Tamper Demo &amp; Fault Injection 沙箱篡改注入实验
+            </h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant">
+              Interactive zero-trust test suite: Mutate transaction state payload to witness automatic escrow freeze and merkle rupture.
+            </p>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-400" data-icon="tune">tune</span>
+</div>
+<!-- Sandbox Interactive Form Controls -->
+<div class="mt-4 grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+<div class="md:col-span-3 space-y-1">
+<label class="block text-label-md font-label-md text-on-surface font-semibold">
+            Target Block Seq 目标序列号
+          </label>
+<div class="relative">
+<input class="w-full bg-[#f6f4ef] border border-[#cbd5e1] rounded-lg px-3 py-2 text-xs font-mono font-bold text-on-surface focus:outline-hidden focus:border-secondary" type="text" value="12"/>
+<span class="absolute right-2.5 top-2.5 text-[11px] font-mono text-slate-400">#SEQ</span>
+</div>
+</div>
+<div class="md:col-span-4 space-y-1">
+<label class="block text-label-md font-label-md text-on-surface font-semibold">
+            Modified Payload Field 篡改目标字段
+          </label>
+<select class="w-full bg-[#f6f4ef] border border-[#cbd5e1] rounded-lg px-3 py-2 text-xs font-mono text-on-surface focus:outline-hidden focus:border-secondary">
+<option selected="">Beneficiary Account (IBAN Replacement)</option>
+<option>Authorized FX Spot Rate (19.0270 -&gt; 24.5000)</option>
+<option>Disbursement Quorum Threshold (2-of-3 -&gt; 1-of-1)</option>
+<option>Academic Deadline Timestamp</option>
+</select>
+</div>
+<div class="md:col-span-5 flex items-center gap-2 pt-1 md:pt-0">
+<button class="flex-1 bg-[#dc2626] hover:bg-[#b91c1c] text-white font-label-lg text-label-lg px-3 py-2.5 rounded-lg flex items-center justify-center gap-1.5 shadow-xs transition-colors active:scale-[0.98]">
+<span class="material-symbols-outlined text-base" data-icon="bug_report">bug_report</span>
+<span>Simulate Tamper 注入篡改并重验</span>
+</button>
+<button class="bg-[#f1ede3] hover:bg-[#e6e0d4] text-on-surface border border-[#cbd5e1] font-label-lg text-label-lg px-3.5 py-2.5 rounded-lg flex items-center justify-center gap-1 transition-colors active:scale-[0.98]">
+<span class="material-symbols-outlined text-base" data-icon="restart_alt">restart_alt</span>
+<span class="hidden sm:inline">Reset Chain 恢复</span>
+</button>
+</div>
+</div>
+<!-- Explanatory Micro Note -->
+<div class="mt-3 bg-[#faf9f5] border border-[#e2ded3] p-3 rounded-lg text-xs text-on-surface-variant flex items-start gap-2">
+<span class="material-symbols-outlined text-base text-amber-600 shrink-0 mt-0.5" data-icon="info">info</span>
+<div>
+<span class="font-semibold text-on-surface">How Setu 桥 Zero-Trust Notarization Protects Cross-Border Funds:</span>
+          Each tuition installment binds the student biometric token, FX quote, and university registry hash into a Merkle-DAG leaf. Even a 1-bit unauthorized alteration in transit creates an immediate hash divergence, instantaneously denying settlement and shielding student tuition from intermediary hijacking.
+        </div>
+</div>
+</div>
+</main>
+<!-- Shared Component: Footer (Exact mapping of JSON specifications) -->
+<footer class="bg-surface-container-low w-full px-margin-desktop py-space-lg flex flex-col md:flex-row justify-between items-center border-t border-outline-variant mt-10">
+<div class="flex flex-col md:flex-row items-center gap-4 text-center md:text-left mb-4 md:mb-0">
+<div class="text-label-lg font-label-lg font-bold text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-lg" data-icon="verified_user" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<span>Setu 桥 · Sovereign Escrow</span>
+</div>
+<div class="text-body-sm font-body-sm text-on-surface-variant max-w-xl">
+        © 2024 Setu 桥 Cross-Border Academic Clearing System. Regulated Institutional Escrow &amp; Sovereign FX Corridor (BDT/CNY). All cryptographic chains notarized.
+      </div>
+</div>
+<!-- Footer Links from JSON -->
+<div class="flex flex-wrap items-center justify-center gap-4 text-label-sm font-label-sm text-on-surface-variant">
+<a class="hover:text-primary transition-colors" href="#">Sovereign Protocol Specification</a>
+<span class="text-outline-variant">·</span>
+<a class="hover:text-primary transition-colors" href="#">Audit Trail Certificate</a>
+<span class="text-outline-variant">·</span>
+<a class="hover:text-primary transition-colors" href="#">Regulatory Disclosures · 监管公示</a>
+<span class="text-outline-variant">·</span>
+<a class="hover:text-primary transition-colors" href="#">Escrow Integrity SLA</a>
+</div>
+</footer>
+</body></html>

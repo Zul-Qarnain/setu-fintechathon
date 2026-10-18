@@ -2,6 +2,7 @@
 // Output: out/raw.webm + out/timeline.json ; then build_video.sh muxes captions' voiceover -> ../Setu_Demo.mp4
 // Run: node record.mjs   (needs piper venv at /workspace/tts for voiceover; falls back to caption-only timing)
 import { createRequire } from "node:module";
+import { synthMood } from "./tts.mjs";
 import fs from "node:fs";
 import path from "node:path";
 import http from "node:http";
@@ -24,7 +25,14 @@ const PASSWORD = "demo-password-123";
 const SHOTS = "/workspace/tts/shots"; fs.mkdirSync(SHOTS, { recursive: true });
 
 // ---------- narration audio ----------
-function synth(text) {
+const MOOD_SEQ = ["intro","calm","calm","payment","careful","payment","payment","careful","attack","attack","assured","friendly","assured","closing"];
+let sceneN = 0;
+async function synth(text) {
+  const mood = MOOD_SEQ[sceneN++] || "calm";
+  if (!process.env.NO_CLOUD_TTS) {
+    const w = await synthMood(text, mood, AUDIO);
+    if (w) { const p = spawnSync("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", w], { encoding: "utf-8" }); return { file: w, dur: parseFloat(p.stdout) }; }
+  }
   if (!HAVE_TTS) return { file: null, dur: Math.max(3, text.split(/\s+/).length / 2.6) };
   const h = crypto.createHash("md5").update(text).digest("hex").slice(0, 10);
   const wav = path.join(AUDIO, `${h}.wav`);
@@ -101,7 +109,7 @@ const shot = async (name) => { await page.screenshot({ path: path.join(SHOTS, `$
 
 /** Show a caption, play the narration, and run `act` while it is speaking. */
 async function scene(caption, narration, act, { card = null, minTail = 0.6 } = {}) {
-  const a = synth(narration);
+  const a = await synth(narration);
   state = { ...(card ? { card } : {}), ...(caption ? { cap: caption } : {}) };
   await apply();
   const start = now();

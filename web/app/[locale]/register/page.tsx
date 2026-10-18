@@ -43,7 +43,7 @@ export default function RegisterPage() {
           <legend className={label}>{t("register.role")}</legend>
           <div className="grid gap-2 sm:grid-cols-2">
             {(["student", "family_approver"] as const).map((r) => (
-              <label key={r} className={`flex cursor-pointer items-center gap-2 rounded-lg border p-3 text-sm focus-within:ring-2 focus-within:ring-bridge-600 ${role === r ? "border-jade-600 bg-jade-50" : "border-line bg-white"}`}>
+              <label key={r} className={`flex cursor-pointer items-center gap-2 rounded-lg border p-3 text-sm focus-within:ring-2 focus-within:ring-bridge-600 ${role === r ? "border-jade-600 bg-jade-50" : "border-line bg-surface"}`}>
                 <input type="radio" name="role" value={r} checked={role === r} onChange={() => setRole(r)} className="accent-jade-700" />
                 {t(`register.${r}`)}
               </label>

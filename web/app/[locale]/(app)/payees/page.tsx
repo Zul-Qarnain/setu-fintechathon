@@ -21,10 +21,10 @@ function PayeeRow({ p, canVerify, onVerify, busy }: { p: Payee; canVerify: boole
   return (
     <Card as="li" className="space-y-2" aria-labelledby={`p-${p.id}`}>
       <div className="flex flex-wrap items-center gap-2">
-        <h3 id={`p-${p.id}`} className="font-semibold">{p.name}</h3>
+        <h3 id={`p-${p.id}`} className="min-w-0 flex-1 font-semibold">{p.name}</h3>
         <StatusBadge status={p.verified ? "verified" : "unverified"} />
       </div>
-      <dl className="grid gap-x-6 gap-y-1 text-sm sm:grid-cols-3">
+      <dl className="grid items-baseline gap-x-6 gap-y-2 text-sm sm:grid-cols-[minmax(6rem,auto)_minmax(10rem,1fr)_1fr]">
         <div><dt className="text-xs text-ink-600">{t("account")}</dt><dd><code>{p.account_masked}</code></dd></div>
         <div><dt className="text-xs text-ink-600">{t("token")}</dt><dd><code className="break-all text-xs">{p.account_token}</code></dd></div>
         <div><dt className="text-xs text-ink-600">{t("bank")}</dt><dd>{p.bank}</dd></div>
@@ -92,7 +92,7 @@ export default function PayeesPage() {
               <div><label htmlFor="pn" className={label}>{t("name")}</label><input id="pn" className={input} value={name} onChange={(e) => setName(e.target.value)} required /></div>
               <div><label htmlFor="pa" className={label}>{t("accountNumber")}</label><input id="pa" inputMode="numeric" autoComplete="off" className={input} value={acct} onChange={(e) => setAcct(e.target.value)} required minLength={8} /></div>
               <div><label htmlFor="pb" className={label}>{t("bankName")}</label><input id="pb" className={input} value={bank} onChange={(e) => setBank(e.target.value)} required /></div>
-              <button type="submit" disabled={busy || !name || acct.length < 8} className={button("primary")}>{busy ? t("adding") : t("addSubmit")}</button>
+              <button type="submit" disabled={busy || !name || acct.length < 8} className={`${button("primary")} w-full min-h-11`}>{busy ? t("adding") : t("addSubmit")}</button>
             </form>
           </Card>
         ) : null}

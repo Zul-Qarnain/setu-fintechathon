@@ -5,8 +5,8 @@ const TONE: Record<Tone, string> = {
   ok: "bg-jade-50 text-jade-800 border-jade-600/40",
   warn: "bg-amber-50 text-amber-700 border-amber-600/50",
   bad: "bg-cinnabar-50 text-cinnabar-700 border-cinnabar-600/50",
-  info: "bg-bridge-50 text-bridge-700 border-blue-300",
-  neutral: "bg-slate-100 text-ink-700 border-slate-300",
+  info: "bg-bridge-50 text-bridge-700 border-bridge-600/30",
+  neutral: "bg-sunken text-ink-700 border-line-strong",
 };
 const ICON: Record<Tone, string> = { ok: "✓", warn: "⏳", bad: "✕", info: "ℹ", neutral: "•" };
 const MAP: Record<string, Tone> = {

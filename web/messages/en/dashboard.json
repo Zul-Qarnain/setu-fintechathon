@@ -45,7 +45,11 @@
     "sample": "SAMPLE rate — fixture, not a live market rate",
     "live": "Live rate",
     "source": "Source: {source}",
-    "asOf": "As of {date}"
+    "asOf": "As of {date}",
+    "sampleNote": "SAMPLE rate from an offline fixture. Not a live market rate.",
+    "sources": {
+      "fixture-sample": "Offline fixture (sample)"
+    }
   },
   "approverNote": "You are viewing as a family approver. Approvals waiting for you appear under Approvals."
 }
