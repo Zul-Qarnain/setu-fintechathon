@@ -37,6 +37,9 @@ Caveat: the notice corpus and the attack scenarios were written by the same team
 - **Privacy**: PII-redacting logs, `DELETE /me` erasure, no third-party scripts, offline by default.
 - **Availability**: per-client-IP-and-path sliding-window rate limit, request size caps.
 
+- **Verified by tests (`server/tests/api/security_authz.test.ts`)**: every protected route returns 401 for missing/garbage/`alg=none`/tampered JWTs; cross-user (IDOR) read/approve/reject of actions, payees and obligations is denied; a student cannot self-approve the family-approver step; `/demo/*` is closed without `DEMO_MODE`; TOTP brute force locks out; security headers present; CORS allows only configured origins; malformed bodies are 4xx, never 500.
+- **Residual**: the JWT is kept in `localStorage` (readable by any XSS; mitigated by CSP and no `dangerouslySetInnerHTML`, but an httpOnly-cookie session would be stronger).
+
 ## 4. KNOWN RISKS and limitations (read before trusting this)
 1. **Not a licensed payment service.** Setu never holds funds; the bank is a sandbox. No real money movement was tested.
 2. **Approver linking has no consent handshake.** A student can name any registered email as approver; a real system needs the approver to accept the link.
@@ -48,13 +51,13 @@ Caveat: the notice corpus and the attack scenarios were written by the same team
 8. **Scripted planner coverage is narrow** (EN/ZH regexes). Unusual phrasing becomes `unknown` and gets a capabilities reply. Free-form amounts in chat are deliberately ignored: "Pay the university 5000 yuan" proposes the first open confirmed obligation, not 5000.
 9. **Guardian is rule-based.** Novel injection phrasings, other languages, or text hidden in PDF structure can evade it; this is why the policy engine, not the guardian, is the authority (document-sourced actions are T4 regardless of verdict).
 10. **Dev-default secrets.** `JWT_SECRET`, `HMAC_KEY`, `AES_KEY_B64` have publicly visible dev defaults so the demo runs with zero setup. They **must** be replaced in any real deployment, and there is no key rotation.
-11. **Demo endpoints** (`/demo/*`: TOTP peek, audit tamper, reset) exist when `DEMO_MODE=true` (the default) and would be a serious hole in production. Set `DEMO_MODE=false`.
+11. **Demo endpoints** (`/demo/*`: TOTP peek, audit tamper, reset) exist only when `DEMO_MODE=true` (the TypeScript default is **off**; the judges' demo/compose sets it on) and would be a serious hole in production. Keep `DEMO_MODE=false` outside demos; production start-up also refuses the dev-default secrets (`NODE_ENV=production`).
 12. **SQLite**, single node, no backups, no migrations tooling.
-13. **TLS and security headers are not handled** by the app; terminate TLS in a proxy. CORS is limited to `http://localhost:3000` by default.
+13. **TLS is not terminated by the app**; use a proxy. The API now sends `nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: no-referrer`, a `default-src 'none'` CSP, `Cache-Control: no-store` and HSTS; the web app sends a CSP (`script-src 'self' 'unsafe-inline'` because Next 14 inline bootstrap needs it, no nonce), frame-ancestors none, nosniff, HSTS. CORS is limited to `http://localhost:3000` by default (tested: foreign origins get no ACAO).
 14. **TOTP UX limitation**: replay protection means one user cannot approve two actions within the same 30-second window; the second attempt must wait for the next code.
 15. **Fee and FX numbers are illustrative.** Offline rates are SAMPLE values; sandbox channel fees are made up. World Bank RPW rows in `data/channel_costs.csv` are marked VERIFY before citing.
 16. **Glossary and Chinese UI strings are drafts** pending native-speaker review.
-17. **Dependency and supply-chain scanning** is limited to gitleaks in CI; no SCA, SAST or container scanning. The Docker images were written but not built in the development environment (no Docker daemon available).
+17. **Dependency and supply-chain scanning**: `npm audit --omit=dev` is clean for `server/`; for `web/` it reports advisories against Next 14.2 / next-intl 3 / PostCSS (fixes need Next 16 + next-intl 4, a breaking upgrade tracked separately; the DoS/SSRF/RCE classes mostly concern features this app does not use: Image Optimizer, Server Actions, rewrites, Pages-Router i18n, Windows hosting). A full secrets scan of the working tree and all git history found no keys. No SAST or container scanning. The Docker images were written but not built in the development environment (no Docker daemon available).
 18. **Fixed regex-based PII redaction** can miss unusual formats (e.g. spaced phone numbers in other countries).
 
 ## 5. What we would do next
