@@ -1,4 +1,5 @@
 "use client";
+import { waitingSubKey } from "@/lib/approval-text";
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
@@ -79,7 +80,7 @@ export function TracePanel({ turn }: { turn: ChatResponse | null }) {
         </div>
       ) : null}
       {!blocked && !cooling && tc.decision === "REQUIRE_APPROVAL" ? (
-        <Banner tone="warning" title={t("waitingTitle")} className="mt-3">{t("waitingSub")} <Link href="/approvals" className="font-semibold underline">{t("openApprovals")}</Link></Banner>
+        <Banner tone="warning" title={t("waitingTitle")} className="mt-3">{t(waitingSubKey(tc.tier, act?.decision.required))} <Link href="/approvals" className="font-semibold underline">{t("openApprovals")}</Link></Banner>
       ) : null}
       {!blocked && !cooling && tc.decision === "ALLOW" && tc.tier === "T2" ? <Banner tone="info" title={t("t2Title")} className="mt-3">{t("t2Sub")}</Banner> : null}
 

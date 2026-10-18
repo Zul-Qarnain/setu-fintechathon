@@ -96,3 +96,14 @@ test("language toggle switches to zh-CN, saves cookie, and formats ¥", async ({
   await page.goto("/zh-CN/audit");
   await expect(page.getByRole("heading", { name: "审计日志" })).toBeVisible();
 });
+
+test("T2 dorm fee: banner says TOTP only (no family approver)", async ({ page }) => {
+  await login(page, "aisha");
+  await page.goto("/en/agent");
+  await page.getByLabel("Message").fill("Pay my dorm fee");
+  await page.keyboard.press("Enter");
+  const banner = page.getByText("Waiting for approval").first();
+  await expect(banner).toBeVisible();
+  await expect(page.getByText("Needs your TOTP code only")).toBeVisible();
+  await expect(page.getByText("family approver", { exact: false }).filter({ hasText: "Needs your TOTP and" })).toHaveCount(0);
+});
