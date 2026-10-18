@@ -16,3 +16,5 @@ server/node_modules/
 server/dist/
 server/coverage/
 server/data/*.db
+server/setu.db-shm
+server/setu.db-wal
