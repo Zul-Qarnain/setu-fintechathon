@@ -125,11 +125,11 @@ export function ActionCard({ action, onChange, studentLabel, compact = false }: 
       {canAct ? (
         <div className="mt-4 border-t border-line pt-3">
           {alreadyMine ? <p className="text-sm font-medium text-jade-800">✓ {t("youApproved")}</p> : (
-            <div className="flex flex-wrap items-end gap-3">
+            <div className="flex flex-wrap items-end gap-3 [&>button]:min-h-11 max-sm:[&>button]:flex-1">
               <TotpInput value={code} onChange={setCode} label={t(myKind === "family_approver" ? "totpFamily" : "totpStudent")} hint={coolingActive ? t("coolingBlock") : undefined} id={`${idp}-totp`} />
               <button type="button" className={button("jade")} disabled={busy || code.length !== 6 || coolingActive} onClick={() => void approve()}>{busy ? tc("loading") : t("approve")}</button>
               <button type="button" className={button("ghost")} disabled={busy} onClick={() => setRejecting((v) => !v)} aria-expanded={rejecting}>{t("reject")}</button>
-              <button type="button" className="text-xs font-medium text-bridge-700 underline" onClick={() => void fillDemo()}>{t("demoFill")}</button>
+              <button type="button" className="inline-flex min-h-9 items-center rounded px-1 text-xs font-medium text-bridge-700 underline" onClick={() => void fillDemo()}>{t("demoFill")}</button>
             </div>
           )}
           {rejecting ? (

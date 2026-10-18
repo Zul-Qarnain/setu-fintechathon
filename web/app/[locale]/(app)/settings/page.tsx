@@ -73,6 +73,7 @@ export default function SettingsPage() {
       <Banner tone="info" className="mb-4">{t("notice")}</Banner>
       <div aria-live="polite" className="mb-4">{err ? <Banner tone="danger">{err}</Banner> : null}</div>
       <div className="grid gap-6 lg:grid-cols-2">
+        <div className="space-y-6">
         <Card aria-labelledby="totp-h">
           <h2 id="totp-h" className="text-lg font-semibold">{t("totp.title")}</h2>
           <p className="mt-2 text-sm">{user?.totp_enabled || done ? <span className="font-medium text-jade-800">✓ {t("totp.enabled")}</span> : t("totp.notEnabled")}</p>
@@ -99,7 +100,6 @@ export default function SettingsPage() {
           ) : null}
         </Card>
 
-        <div className="space-y-6">
           <Card aria-labelledby="lang-h">
             <h2 id="lang-h" className="text-lg font-semibold">{t("language.title")}</h2>
             <div className="mt-3"><LocaleToggle /></div>
@@ -111,13 +111,15 @@ export default function SettingsPage() {
             <div className="mt-3"><ThemeToggle /></div>
             <p className="mt-2 text-sm text-ink-600">{t("theme.help")}</p>
           </Card>
+        </div>
 
+        <div className="space-y-6">
           <Card aria-labelledby="consent-h">
             <h2 id="consent-h" className="text-lg font-semibold">{t("consent.title")}</h2>
             <p className="mt-1 text-sm text-ink-600">{t("consent.help")}</p>
             <div className="mt-3 space-y-3">
               {(["sensitive", "crossBorder", "llm"] as const).map((k) => (
-                <label key={k} className="flex items-start gap-2 text-sm"><input type="checkbox" className="mt-1 accent-jade-700" checked={consent[k]} onChange={(e) => setC(k, e.target.checked)} />{t(`consent.${k}`)}</label>
+                <label key={k} className="flex min-h-11 items-start gap-2 text-sm sm:min-h-0"><input type="checkbox" className="mt-0.5 h-4 w-4 shrink-0 rounded accent-jade-700" checked={consent[k]} onChange={(e) => setC(k, e.target.checked)} />{t(`consent.${k}`)}</label>
               ))}
             </div>
             <p role="status" className="mt-2 text-xs text-jade-800">{consentSaved ? t("consent.saved") : ""}</p>
@@ -127,8 +129,8 @@ export default function SettingsPage() {
             <h2 id="data-h" className="text-lg font-semibold">{t("data.title")}</h2>
             <div className="mt-3 space-y-4">
               <div><button type="button" className={button("ghost")} onClick={() => void exportEv()}>{t("data.export")}</button><p className="mt-1 text-xs text-ink-600">{t("data.exportHelp")}</p></div>
-              <div>
-                <button type="button" className={button("danger")} onClick={() => setConfirmErase(true)}>{t("data.erase")}</button>
+              <div className="rounded-xl border border-cinnabar-600/30 bg-cinnabar-50/50 p-3">
+                <button type="button" className={`${button("danger")} min-h-11`} onClick={() => setConfirmErase(true)}>{t("data.erase")}</button>
                 <p className="mt-1 text-xs text-ink-600">{t("data.eraseHelp")}</p>
               </div>
             </div>

@@ -17,6 +17,7 @@ const config: Config = {
         sunken: "rgb(var(--sunken) / <alpha-value>)",
         line: { DEFAULT: "rgb(var(--line) / <alpha-value>)", strong: "rgb(var(--line-strong) / <alpha-value>)" },
         chrome: "rgb(var(--chrome) / <alpha-value>)",
+        cta: "rgb(var(--cta) / <alpha-value>)",
         primary: { DEFAULT: "rgb(var(--primary) / <alpha-value>)", hover: "rgb(var(--primary-hover) / <alpha-value>)" },
         danger: "rgb(var(--danger) / <alpha-value>)",
         jade: { 50: "rgb(var(--jade-50) / <alpha-value>)", 100: "rgb(var(--jade-100) / <alpha-value>)", 600: "rgb(var(--jade-600) / <alpha-value>)", 700: "rgb(var(--jade-700) / <alpha-value>)", 800: "rgb(var(--jade-800) / <alpha-value>)" },

@@ -65,7 +65,7 @@ export default function AuditPage() {
       {err ? <Banner tone="danger" className="mb-4">{err}</Banner> : null}
       <div aria-live="polite" className="mb-4">
         {verify?.ok ? (
-          <div role="status" className="rounded-xl border-2 border-jade-600 bg-jade-50 p-4 text-jade-800" data-testid="chain-ok">
+          <div role="status" className="rounded-xl border border-l-4 border-jade-600/40 border-l-jade-600 bg-jade-50 p-4 text-jade-800" data-testid="chain-ok">
             <p className="text-xl font-extrabold"><span aria-hidden="true">✓ </span>{t("chainOk")}</p>
             <p className="mt-1 text-sm">{t("checked", { n: verify.checked })}</p>
           </div>
@@ -110,7 +110,7 @@ export default function AuditPage() {
         })}
       </ul>
 
-      <Card as="div" className="hidden overflow-x-auto p-0 sm:block sm:p-0">
+      <Card as="div" className="hidden p-0 sm:block sm:p-0"><div className="overflow-x-auto">
         <table className="w-full min-w-[40rem] text-left text-sm">
           <caption className="sr-only">{t("title")}</caption>
           <thead className="bg-paper text-xs uppercase tracking-wide text-ink-600">
@@ -124,9 +124,9 @@ export default function AuditPage() {
               const isOpen = open === e.seq;
               return (
                 <Fragment key={e.seq}>
-                  <tr className={`border-t border-line ${hit ? "bg-cinnabar-50 outline outline-2 -outline-offset-2 outline-cinnabar-600" : ""}`} data-testid={`audit-row-${e.seq}`} aria-current={hit ? "true" : undefined}>
+                  <tr className={`border-t border-line transition-colors hover:bg-paper ${hit ? "bg-cinnabar-50 outline outline-2 -outline-offset-2 outline-cinnabar-600" : ""}`} data-testid={`audit-row-${e.seq}`} aria-current={hit ? "true" : undefined}>
                     <th scope="row" className="px-3 py-2 font-mono">{e.seq}{hit ? <span className="ml-1 font-sans text-xs font-bold text-cinnabar-700">⚠ {t("tamperedRow")}</span> : null}</th>
-                    <td className="whitespace-nowrap px-3 py-2 text-xs">{formatDateTime(e.ts, locale)}</td>
+                    <td className="whitespace-nowrap px-3 py-2 text-xs tabular-nums">{formatDateTime(e.ts, locale)}</td>
                     <td className="px-3 py-2"><code className="text-xs">{e.actor}</code></td>
                     <td className="px-3 py-2 font-medium">{e.event}</td>
                     <td className="px-3 py-2"><CopyHash value={e.hash} /></td>
@@ -147,7 +147,7 @@ export default function AuditPage() {
             })}
           </tbody>
         </table>
-      </Card>
+      </div></Card>
       {entries && broken !== null && !entries.some((e) => e.seq === broken) ? <Banner tone="warning" className="mt-3">{t("hiddenBreak", { seq: broken })}</Banner> : null}
 
       <details className="mt-6 rounded-xl border border-dashed border-line bg-surface p-4">

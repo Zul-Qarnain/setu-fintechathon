@@ -115,16 +115,17 @@ export default function DocumentsPage() {
             </div>
             <div><label htmlFor="fname" className={label}>{t("filename")}</label><input id="fname" className={input} value={filename} onChange={(e) => setFilename(e.target.value)} /></div>
             <div><label htmlFor="txt" className={label}>{t("pasteLabel")}</label><textarea id="txt" rows={9} className={`${input} font-mono`} value={text} onChange={(e) => { setText(e.target.value); }} placeholder={t("pastePlaceholder")} data-testid="notice-text" /></div>
-            <div
-              onDragOver={(e) => { e.preventDefault(); setDrag(true); }} onDragLeave={() => setDrag(false)} onDrop={onDrop}
-              className={`rounded-xl border-2 border-dashed p-4 text-center text-sm ${drag ? "border-bridge-600 bg-bridge-50" : "border-line bg-paper"}`}
+            <label
+              htmlFor="file" onDragOver={(e) => { e.preventDefault(); setDrag(true); }} onDragLeave={() => setDrag(false)} onDrop={onDrop}
+              className={`grid min-h-28 cursor-pointer place-content-center gap-1 rounded-xl border-2 border-dashed p-4 text-center text-sm focus-within:ring-2 focus-within:ring-bridge-600 ${drag ? "border-bridge-600 bg-bridge-50" : "border-line bg-paper"}`}
             >
-              <button type="button" onClick={() => fileRef.current?.click()} className="font-semibold text-bridge-700 underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600">{t("dropTitle")}</button>
-              <p className="mt-1 text-xs text-ink-600">{t("dropHint")}</p>
-              <input ref={fileRef} type="file" accept=".txt,.pdf,text/plain,application/pdf" className="sr-only" aria-label={t("upload")} onChange={(e) => void onFile(e.target.files?.[0])} />
-            </div>
-            <button type="submit" disabled={busy} className={button("primary")} data-testid="analyse">{busy ? t("analysing") : t("analyse")}</button>
+              <span className="font-semibold text-bridge-700 underline">{t("dropTitle")}</span>
+              <span className="text-xs text-ink-600">{t("dropHint")}</span>
+              <input id="file" ref={fileRef} type="file" accept=".txt,.pdf,text/plain,application/pdf" className="sr-only" aria-label={t("upload")} onChange={(e) => void onFile(e.target.files?.[0])} />
+            </label>
+            <button type="submit" disabled={busy} className={`${button("primary")} w-full sm:w-auto`} data-testid="analyse">{busy ? t("analysing") : t("analyse")}</button>
           </form>
+          <p className="mt-3 text-xs text-ink-500">{tc("synthetic")} · {tc("sandbox")}</p>
           <div aria-live="polite" className="mt-3 space-y-2">
             {err ? <Banner tone="danger">{err}</Banner> : null}
             {localErr ? <Banner tone="warning">{localErr}</Banner> : null}
@@ -150,7 +151,7 @@ export default function DocumentsPage() {
               </div>
               <p className="mt-3 text-xs text-ink-600">{t("docHash")}: <code title={doc.doc_hash}>{shortHash(doc.doc_hash.replace("sha256:", ""), 12)}</code></p>
               <p className="mt-1 text-xs text-ink-600">{t("untrustedNote")}</p>
-              <button type="button" className="mt-2 text-sm font-semibold text-bridge-700 underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600" aria-expanded={showText} onClick={() => setShowText((v) => !v)}>{showText ? t("hideText") : t("showText")}</button>
+              <button type="button" className="mt-2 inline-flex min-h-11 items-center text-sm font-semibold text-bridge-700 underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600" aria-expanded={showText} onClick={() => setShowText((v) => !v)}>{showText ? t("hideText") : t("showText")}</button>
               {showText ? <pre className="mt-2 max-h-56 overflow-auto whitespace-pre-wrap break-words rounded-lg bg-paper p-3 font-mono text-xs">{text}</pre> : null}
             </Card>
           ) : null}
@@ -181,7 +182,7 @@ export default function DocumentsPage() {
                     <p id="c-acct-h" className="mt-1 text-xs text-ink-600">{t("accountHint", { masked: doc.parsed.account_masked ?? "—" })}</p>
                   </div>
                   <div><label htmlFor="c-ref" className={label}>{t("reference")}</label><input id="c-ref" className={input} value={reference} onChange={(e) => setReference(e.target.value)} disabled={blocked} /></div>
-                  <label className="flex items-start gap-2 text-sm"><input type="checkbox" className="mt-1 accent-jade-700" checked={checked} onChange={(e) => setChecked(e.target.checked)} disabled={blocked} />{t("checked")}</label>
+                  <label className="flex items-start gap-2 text-sm"><input type="checkbox" className="mt-0.5 h-4 w-4 rounded accent-jade-700" checked={checked} onChange={(e) => setChecked(e.target.checked)} disabled={blocked} />{t("checked")}</label>
                   <button type="submit" className={button("jade")} disabled={blocked || !checked || confirming} data-testid="confirm-doc">{confirming ? t("confirming") : t("confirm")}</button>
                 </form>
               </div>
@@ -204,7 +205,6 @@ export default function DocumentsPage() {
               </Banner>
             )
           ) : null}
-          {!doc ? <p className="text-sm text-ink-600">{tc("synthetic")} · {tc("sandbox")}</p> : null}
         </div>
       </div>
     </>

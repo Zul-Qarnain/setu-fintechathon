@@ -9,7 +9,7 @@ import { StatusBadge } from "@/components/status-badge";
 import { BudgetChart } from "@/components/dashboard-chart";
 import { useApiError } from "@/components/use-api-error";
 import { useAuth } from "@/components/auth-provider";
-import { button } from "@/components/ui";
+import { button, chip as hashChip } from "@/components/ui";
 import { api } from "@/lib/api";
 import { clampZero, isNegative, mul, sub } from "@/lib/decimal";
 import { daysUntil, formatCny, formatDate, formatDateTime, shortHash } from "@/lib/format";
@@ -20,7 +20,7 @@ function Stat({ label, children, foot, tone = "default" }: { label: string; chil
   return (
     <Card as="div" className={`border-l-4 ${ring}`}>
       <p className="text-xs font-semibold uppercase tracking-wide text-ink-600">{label}</p>
-      <p className="mt-2 text-2xl font-bold text-ink">{children}</p>
+      <p className="mt-2 font-mono text-[1.75rem] font-bold leading-8 tracking-tight text-ink">{children}</p>
       {foot ? <p className="mt-1 text-xs text-ink-600">{foot}</p> : null}
     </Card>
   );
@@ -66,11 +66,13 @@ export default function DashboardPage() {
           <span className="mt-0.5 block text-xs font-normal text-ink-600">{t("stats.safeBdt")}</span>
         </Stat>
         <Stat label={t("stats.pending")} tone={data.pending_actions > 0 ? "warn" : "default"} foot={t("stats.pendingHint")}>
-          <Link href="/approvals" className="inline-flex min-h-9 items-center underline decoration-dotted underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600">{data.pending_actions}</Link>
+          {data.pending_actions > 0
+            ? <Link href="/approvals" className="inline-flex min-h-11 items-center rounded-lg bg-amber-50 px-3 font-mono text-xl text-amber-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600">{data.pending_actions}</Link>
+            : <span>0</span>}
         </Stat>
       </section>
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-[3fr_2fr]">
+      <div className="mt-6 grid items-start gap-6 lg:grid-cols-[3fr_2fr]">
         <Card aria-labelledby="tl-h">
           <h2 id="tl-h" className="text-lg font-semibold">{t("timeline.title")}</h2>
           {sorted.length === 0 ? (
@@ -95,8 +97,8 @@ export default function DashboardPage() {
                     <p className="mt-1 text-sm text-ink-700">{o.payee_name}</p>
                     <div className="mt-1 flex flex-wrap items-center gap-3">
                       <Cny value={o.amount_cny} className="text-lg font-bold" />
-                      <Link href="/agent" className="inline-flex min-h-9 items-center text-sm font-semibold text-bridge-700 underline">{t("timeline.planPayment")}</Link>
-                      {o.doc_hash ? <span className="text-xs text-ink-600" title={o.doc_hash}>{t("timeline.docHash")}: <code>{shortHash(o.doc_hash.replace("sha256:", ""), 8)}</code></span> : null}
+                      <Link href="/agent" className="inline-flex min-h-11 items-center text-sm font-semibold text-bridge-700 underline">{t("timeline.planPayment")} <span aria-hidden="true" className="ml-1">→</span></Link>
+                      {o.doc_hash ? <span className="inline-flex items-center gap-1 text-xs text-ink-600" title={o.doc_hash}>{t("timeline.docHash")}: <code className={hashChip}>{shortHash(o.doc_hash.replace("sha256:", ""), 8)}</code></span> : null}
                     </div>
                   </li>
                 );
@@ -135,8 +137,8 @@ export default function DashboardPage() {
             <h2 id="fx-h" className="text-lg font-semibold">{t("fx.title")}</h2>
             <p className="mt-2 text-sm"><span className="font-semibold tabular-nums">{t("stats.rateLine", { rate: fx.rate })}</span></p>
             <p className={`mt-1 text-sm ${fx.is_live ? "text-jade-800" : "text-amber-700"} font-medium`}>{fx.is_live ? t("fx.live") : t("fx.sample")}</p>
-            <p className="mt-1 text-xs text-ink-600">{t("fx.source", { source: fx.source })} · {t("fx.asOf", { date: formatDateTime(fx.as_of, locale) })}</p>
-            <p className="mt-1 text-xs text-ink-600">{fx.disclaimer}</p>
+            <p className="mt-1 text-xs text-ink-600">{t("fx.source", { source: t.has(`fx.sources.${fx.source}`) ? t(`fx.sources.${fx.source}`) : fx.source })} · {t("fx.asOf", { date: formatDateTime(fx.as_of, locale) })}</p>
+            <p className="mt-1 text-xs text-ink-600">{fx.is_live ? fx.disclaimer : t("fx.sampleNote")}</p>
           </Card>
         </div>
       </div>
