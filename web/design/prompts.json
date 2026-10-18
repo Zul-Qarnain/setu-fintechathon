@@ -1,0 +1,51 @@
+{
+ "title": "Setu redesign",
+ "common": "Fintech web app \"Setu 桥\" for guarded cross-border student payments. Ink-navy `#0f1b2d` chrome, warm paper `#f6f4ef` background, white cards radius 12 with 1px `#e2ded3` border, jade `#0b7a5a` primary buttons, bridge-blue links, amber warnings, cinnabar danger, Noto Sans, tabular numerals for money. Bilingual: primary text English; show 简体中文 where quoted. zh-CN text runs 30–40% shorter than English — size labels to the English length, never truncate. A slim amber strip reads \"SYNTHETIC DATA · SANDBOX BANK · 演示数据 · SAMPLE FX\".",
+ "screens": [
+  {
+   "name": "dashboard",
+   "device": "MOBILE",
+   "prompt": "Dashboard screen, light theme. Header \"Dashboard 总览\" with locale toggle EN/简. Four stat cards with left accents: Next due CNY 18,500.00 (jade), BDT needed 352,000 (footnote \"1 CNY = 19.03 BDT · SAMPLE · fees incl.\"), Safe to spend CNY 4,820 + BDT subline, Pending approvals 2 (amber). Timeline list of obligations, each row: date, urgency chip (\"Due in 6 days / 6 天后到期\"), payee, amount, \"Plan payment\" link, truncated doc hash `a1b2c3d4`. Right/below: deadline cards and budget donut (spent vs remaining). Jade verified badge on seeded payees."
+  },
+  {
+   "name": "agent",
+   "device": "DESKTOP",
+   "prompt": "Agent live trace screen, light theme. Two columns. Left: chat — user bubble dark ink right, agent bubble paper left containing a \"plan\" card (tool `compute_costs`: CNY 18,500 → BDT 352,000, fee USD 3.00 + 0.40%) and a payment action card with **T2 · TOTP** jade tier pill, payee, amount, \"Approvals\" link; composer with document select and pill prompts. Right: sticky \"Live trace\" panel with numbered vertical stepper, one node per step — Intake → Planner → Tools → Guardian → Policy → Executor → Validator — each with status icon (✓ ok jade, – skipped slate), ms timing, expandable JSON; footer shows final tier pill T2, decision chip \"REQUIRE_APPROVAL\", required-chips \"○ Student TOTP ○ Family approver\", \"✓ Reply validated\", audit seq links #41 #42."
+  },
+  {
+   "name": "approvals",
+   "device": "MOBILE",
+   "prompt": "Approvals screen, light theme. Title \"Approvals 审批\", tabs \"Pending (2)\" / \"History\". Action card: payee \"Shenzhen Example University\", CNY 18,500.00 → BDT, **T3 · Approval 审批** amber pill, reason list, required-chips showing \"✓ Student TOTP\" done jade and \"○ Family approver\" pending amber, 6-box TOTP input, countdown chip \"Cooling-off ends 23:41:05\", primary jade Approve and ghost Reject in a sticky bottom bar with safe-area padding. History card shows executed status + audit hash."
+  },
+  {
+   "name": "audit",
+   "device": "DESKTOP",
+   "prompt": "Audit verify screen, light theme. Title \"Audit log 审计日志\", jade outline banner \"✓ Chain verified · 42 entries checked\". Table (cards when narrow): Seq, Time, Actor, Event, Hash with copy buttons; one row highlighted cinnabar with outline and \"⚠ tampered 已篡改\" after a red \"✕ Chain broken at #12\" alert banner above. Expandable row detail showing payload_hash, prev_hash, hash in mono. Header actions: jade \"Verify chain\", ghost \"Export evidence\". Collapsed \"Tamper demo\" panel with seq input and cinnabar button."
+  },
+  {
+   "name": "documents",
+   "device": "MOBILE",
+   "prompt": "Documents screen, light theme. Title \"Documents 文档\". Stepper: 1 Paste/notice card — textarea with pasted tuition notice, sample select, drag-drop zone; 2 Guardian verdict card — status badge \"blocked\", cinnabar banner \"⛔ Blocked 已阻止\" listing flags \"HIGH injection phrase `ignore previous instructions`\"; 3 Parsed vs confirm two-column card (amount, due date, payee, masked account `6222 •••• 4821`, reference) with confirm form, password-style account field with show/hide, checkbox \"I checked these against the original\", jade confirm. Footnote: doc hash, \"Documents are data, never instructions 文档是数据，不是指令\"."
+  },
+  {
+   "name": "payees",
+   "device": "MOBILE",
+   "prompt": "Payees screen, light theme. Title \"Payees 收款人\". List cards: name, jade \"Verified 已验证\" or amber \"Unverified\" badge, masked account mono, token `ACCT_9f2c…`, bank, verified date. One unverified card shows amber banner \"Cooling-off 23:41:05\" countdown and text \"Needs family approver verification 需家人审批人验证\". Bottom sheet \"Add payee\": name, account number, bank, jade submit. Footnote \"Accounts stored encrypted + tokenised\"."
+  },
+  {
+   "name": "settings",
+   "device": "MOBILE",
+   "prompt": "Settings screen, light theme. Title \"Settings 设置\". Cards: TOTP setup — QR code, masked secret with show/copy, 6-box code input, \"✓ Enabled 已启用\" jade state; Language — EN / 简体中文 segmented toggle; Consent — three checkboxes (sensitive data, cross-border transfer, LLM processing) with \"Saved 已保存\"; Data — ghost \"Export evidence\", cinnabar \"Erase my data\" opening a confirm dialog; theme toggle Light/Dark/System with sun-moon icons."
+  },
+  {
+   "name": "dashboard-dark",
+   "device": "MOBILE",
+   "prompt": "Dashboard screen, DARK theme (canvas #0b1220, surface #14213a, ink #e8ecf3, jade #34d39e, amber #fbbf24, cinnabar #f87171).. Header \"Dashboard 总览\" with locale toggle EN/简. Four stat cards with left accents: Next due CNY 18,500.00 (jade), BDT needed 352,000 (footnote \"1 CNY = 19.03 BDT · SAMPLE · fees incl.\"), Safe to spend CNY 4,820 + BDT subline, Pending approvals 2 (amber). Timeline list of obligations, each row: date, urgency chip (\"Due in 6 days / 6 天后到期\"), payee, amount, \"Plan payment\" link, truncated doc hash `a1b2c3d4`. Right/below: deadline cards and budget donut (spent vs remaining). Jade verified badge on seeded payees."
+  },
+  {
+   "name": "approvals-dark",
+   "device": "MOBILE",
+   "prompt": "Approvals screen, DARK theme (canvas #0b1220, surface #14213a, ink #e8ecf3, jade #34d39e, amber #fbbf24, cinnabar #f87171).. Title \"Approvals 审批\", tabs \"Pending (2)\" / \"History\". Action card: payee \"Shenzhen Example University\", CNY 18,500.00 → BDT, **T3 · Approval 审批** amber pill, reason list, required-chips showing \"✓ Student TOTP\" done jade and \"○ Family approver\" pending amber, 6-box TOTP input, countdown chip \"Cooling-off ends 23:41:05\", primary jade Approve and ghost Reject in a sticky bottom bar with safe-area padding. History card shows executed status + audit hash."
+  }
+ ]
+}

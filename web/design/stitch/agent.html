@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Setu 桥 · Guarded Cross-Border Fintech — Agent Live Trace</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#0f1b2d',
+            'ink-light': '#1c2e4a',
+            paper: '#f6f4ef',
+            'paper-subtle': '#fbfaf8',
+            'paper-card': '#ffffff',
+            'border-warm': '#e2ded3',
+            'border-subtle': '#ebe7dc',
+            jade: '#0b7a5a',
+            'jade-dark': '#085841',
+            'jade-light': '#e6f4ef',
+            'bridge-blue': '#1a56db',
+            'bridge-blue-hover': '#1545b3',
+            'amber-warn': '#b45309',
+            'amber-bg': '#fef3c7',
+            'amber-border': '#fde68a',
+            'cinnabar': '#c2410c',
+            'cinnabar-bg': '#ffedd5',
+          },
+          fontFamily: {
+            sans: ['"Noto Sans"', '"Noto Sans SC"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .font-num { font-feature-settings: "tnum" 1, "cv01" 1; }
+    .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #dcd7ca; border-radius: 9999px; }
+    .custom-scroll::-webkit-scrollbar-thumb:hover { background: #beb8a7; }
+    details > summary::-webkit-details-marker { display: none; }
+  </style>
+</head>
+<body class="bg-paper text-ink font-sans antialiased min-h-screen flex flex-col selection:bg-jade selection:text-white">
+
+  <!-- Amber Sandbox Banner -->
+  <header class="bg-[#fffbeb] border-b border-[#fef08a] text-[#92400e] text-xs font-semibold py-1.5 px-4 tracking-wider flex items-center justify-between font-num select-none sticky top-0 z-50 shadow-xs">
+    <div class="flex items-center space-x-2 mx-auto sm:mx-0">
+      <span class="inline-block w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+      <span class="uppercase tracking-widest text-[11px] font-bold">SYNTHETIC DATA · SANDBOX BANK · 演示数据 · SAMPLE FX</span>
+      <span class="hidden md:inline text-amber-600/70 text-[11px]">| Corridor: CNY / BDT (Guarded Tuition Escrow)</span>
+    </div>
+    <div class="hidden sm:flex items-center space-x-4 text-[11px]">
+      <span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded border border-amber-300 font-mono">CHAIN ID: SETU-DEV-24</span>
+      <span class="text-amber-700/80">LATENCY: 42ms</span>
+    </div>
+  </header>
+
+  <!-- Main Top Chrome Navbar -->
+  <nav class="bg-ink text-white px-5 py-3 border-b border-ink-light flex items-center justify-between shrink-0">
+    <div class="flex items-center space-x-6">
+      <!-- Brand Logo / Wordmark -->
+      <div class="flex items-center space-x-3">
+        <div class="w-9 h-9 rounded-lg bg-jade flex items-center justify-center text-white shadow-inner font-bold">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M8 11h8"/>
+            <path d="M12 7v8"/>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="text-lg font-bold tracking-tight text-white">Setu <span class="text-emerald-400 font-normal">桥</span></span>
+            <span class="text-[10px] font-mono tracking-wider px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-600/50 uppercase font-semibold">Guarded Escrow</span>
+          </div>
+          <div class="text-[11px] text-slate-400 flex items-center space-x-1.5">
+            <span>Student Cross-Border Corridor</span>
+            <span class="text-slate-600">·</span>
+            <span class="text-slate-300">跨境教育支付保护</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation tabs -->
+      <div class="hidden lg:flex items-center space-x-1 pl-4 border-l border-slate-700/70 text-sm">
+        <a href="#" class="px-3 py-1.5 rounded-md text-slate-300 hover:text-white hover:bg-white/5 transition-colors">Overview · 概览</a>
+        <a href="#" class="px-3 py-1.5 rounded-md text-slate-300 hover:text-white hover:bg-white/5 transition-colors">Escrows · 托管池</a>
+        <a href="#" class="px-3 py-1.5 rounded-md text-slate-300 hover:text-white hover:bg-white/5 transition-colors">Obligations · 账单</a>
+        <a href="#" class="px-3 py-1.5 rounded-md bg-white/10 text-white font-medium flex items-center space-x-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          <span>Agent Live Trace · 实时追踪</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Right Controls -->
+    <div class="flex items-center space-x-3 text-xs">
+      <!-- Session info badge -->
+      <div class="hidden md:flex flex-col text-right font-num">
+        <span class="text-slate-200 font-medium">Tanvir Ahmed · 清华大学国际留学生</span>
+        <span class="text-[10px] font-mono text-slate-400">ID: THU-2024-88492 · KYC Tier 2</span>
+      </div>
+
+      <div class="h-6 w-px bg-slate-700 hidden md:block"></div>
+
+      <!-- Environment Selector -->
+      <div class="flex items-center space-x-1.5 bg-ink-light px-2.5 py-1 rounded-md border border-slate-700 text-slate-300 font-mono text-[11px]">
+        <span class="text-emerald-400 text-xs">●</span>
+        <span>SANDBOX-CN-02</span>
+      </div>
+
+      <!-- Locale Pill -->
+      <button class="flex items-center space-x-1 bg-ink-light hover:bg-slate-800 text-slate-200 px-2.5 py-1 rounded-md border border-slate-700 font-medium transition-colors">
+        <span class="material-symbols-outlined text-[15px]">translate</span>
+        <span>EN / 简</span>
+      </button>
+
+      <!-- Account avatar -->
+      <div class="w-7 h-7 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold text-xs ring-1 ring-emerald-400">
+        TA
+      </div>
+    </div>
+  </nav>
+
+  <!-- Subheader Breadcrumb & Session State Bar -->
+  <div class="bg-white border-b border-border-warm px-6 py-2.5 flex flex-wrap items-center justify-between text-xs font-num">
+    <div class="flex items-center space-x-2 text-slate-600">
+      <span class="font-medium text-ink">Corridor Execution</span>
+      <span>/</span>
+      <span class="text-slate-500">Tsinghua Univ Tuition 2024 Fall (清华大学学费)</span>
+      <span>/</span>
+      <span class="font-mono text-slate-700 bg-paper px-2 py-0.5 rounded border border-border-warm">SESSION: #TR-99042</span>
+    </div>
+
+    <div class="flex items-center space-x-4 mt-1 sm:mt-0">
+      <div class="flex items-center space-x-1.5 text-slate-700">
+        <span class="material-symbols-outlined text-jade text-[17px]">lock</span>
+        <span>Guarded Safe-Spend Policy:</span>
+        <strong class="text-jade font-semibold">T2 Dual-Signature Active</strong>
+      </div>
+      <span class="text-slate-300">|</span>
+      <div class="flex items-center space-x-1 text-slate-600">
+        <span>Oracle FX:</span>
+        <span class="font-mono font-medium text-ink">1 CNY = 19.0270 BDT</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Body Content: Two Columns -->
+  <main class="flex-1 max-w-[1720px] w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+    <!-- LEFT COLUMN: Chat & Interactive Payment Workspace (col-span-7) -->
+    <section class="lg:col-span-7 flex flex-col space-y-4">
+
+      <!-- Conversation Container -->
+      <div class="bg-paper-card border border-border-warm rounded-[12px] shadow-sm flex flex-col overflow-hidden min-h-[640px]">
+        
+        <!-- Chat Header -->
+        <div class="px-5 py-3.5 border-b border-border-warm bg-paper-subtle flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 rounded-lg bg-jade-light text-jade border border-jade/30 flex items-center justify-center font-bold">
+              <span class="material-symbols-outlined text-[18px]">smart_toy</span>
+            </div>
+            <div>
+              <div class="flex items-center space-x-2">
+                <h2 class="text-sm font-bold text-ink">Setu Settlement Copilot · 跨境外汇助手</h2>
+                <span class="inline-flex items-center px-2 py-0.2 rounded-full text-[10px] font-medium bg-emerald-100 text-emerald-800 border border-emerald-300">
+                  <span class="w-1.5 h-1.5 mr-1 rounded-full bg-emerald-600 animate-pulse"></span>
+                  Agent Active
+                </span>
+              </div>
+              <p class="text-[11px] text-slate-500">Autonomous guarded execution engine for safe tuition & living transfers</p>
+            </div>
+          </div>
+
+          <div class="flex items-center space-x-2">
+            <button class="text-slate-500 hover:text-ink text-xs px-2.5 py-1 rounded hover:bg-slate-100 border border-border-warm flex items-center space-x-1 transition-colors">
+              <span class="material-symbols-outlined text-[14px]">history</span>
+              <span>Audit Log</span>
+            </button>
+            <button class="text-slate-500 hover:text-ink p-1 rounded hover:bg-slate-100 transition-colors" title="Settings">
+              <span class="material-symbols-outlined text-[16px]">more_vert</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Chat Stream Body -->
+        <div class="p-5 flex-1 space-y-5 overflow-y-auto custom-scroll text-sm">
+          
+          <!-- Timestamp divider -->
+          <div class="flex items-center justify-center my-2">
+            <span class="text-[11px] font-mono text-slate-400 bg-paper px-3 py-1 rounded-full border border-border-warm">
+              Today 14:32:08 UTC+8 · Tsinghua Tuition Cycle
+            </span>
+          </div>
+
+          <!-- USER BUBBLE (Dark Ink Right) -->
+          <div class="flex justify-end">
+            <div class="max-w-[85%] sm:max-w-[75%] space-y-1.5">
+              <div class="flex items-center justify-end space-x-2 text-[11px] text-slate-500 font-num">
+                <span>Tanvir Ahmed (Student)</span>
+                <span class="font-mono">14:32</span>
+              </div>
+              <div class="bg-ink text-white rounded-[12px] rounded-tr-none px-4 py-3 shadow-md border border-slate-700/60 leading-relaxed">
+                <p>Please initiate payment for my upcoming Tsinghua University Fall tuition instalment of <strong>CNY 18,500.00</strong> from my guardian-funded Dhaka escrow account. Lock the rate and prepare guardian countersign.</p>
+                <p class="text-xs text-slate-300 mt-1.5 pt-1.5 border-t border-slate-700/70">
+                  请帮我办理清华大学秋季学期学费分期付款 CNY 18,500.00，从达卡监管账户扣除并锁定汇率，准备家长复核。
+                </p>
+              </div>
+              <div class="flex items-center justify-end space-x-2 text-[10px] text-slate-500">
+                <span class="flex items-center text-jade"><span class="material-symbols-outlined text-[13px] mr-0.5">verified</span> E-Signed with Student PKey</span>
+                <span>·</span>
+                <span>Ref: OBLIG-THU-084</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- AGENT BUBBLE (Warm Paper Left) -->
+          <div class="flex justify-start">
+            <div class="max-w-[95%] sm:max-w-[88%] space-y-3">
+              <div class="flex items-center space-x-2 text-[11px] text-slate-500 font-num">
+                <span class="font-bold text-ink flex items-center">
+                  <span class="w-2 h-2 rounded-full bg-jade mr-1.5"></span>
+                  Setu Guarded Orchestrator
+                </span>
+                <span class="font-mono">14:32:11 · Latency 382ms</span>
+              </div>
+
+              <!-- Main Agent Paper Card Container -->
+              <div class="bg-paper border border-border-warm rounded-[12px] rounded-tl-none p-4 shadow-sm space-y-4">
+                
+                <p class="text-slate-800 leading-normal">
+                  I have calculated the corridor route and generated an execution plan for your tuition obligation. Because this transaction exceeds the CNY 10,000 threshold, it has been gated under <strong>Tier 2 Dual-Approval</strong>.
+                </p>
+                <p class="text-xs text-slate-600 -mt-2">
+                  已为您核算跨境汇兑路径并生成执行计划。由于该交易超过人民币 10,000 元阈值，已触发二级家长与学生双重身份复核 (Tier 2)。
+                </p>
+
+                <!-- 1. PLAN CARD (tool `compute_costs`) -->
+                <div class="bg-white border border-border-warm rounded-[10px] p-3.5 shadow-xs space-y-2.5">
+                  <div class="flex items-center justify-between pb-2 border-b border-border-subtle">
+                    <div class="flex items-center space-x-2">
+                      <span class="font-mono text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded border border-slate-200 font-semibold flex items-center">
+                        <span class="material-symbols-outlined text-[13px] mr-1 text-bridge-blue">terminal</span>
+                        tool: compute_costs
+                      </span>
+                      <span class="text-xs text-slate-500">FX Lock: Guaranteed 30-min window</span>
+                    </div>
+                    <span class="text-[11px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Quote: #FX-88319-CN</span>
+                  </div>
+
+                  <!-- Rate calculation row -->
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                    <div class="bg-paper-subtle p-2.5 rounded-lg border border-border-subtle">
+                      <span class="text-[11px] text-slate-500 block uppercase font-medium">Payable Amount · 支付金额</span>
+                      <div class="flex items-baseline space-x-2 mt-0.5 font-num">
+                        <span class="text-lg font-bold text-ink">CNY 18,500.00</span>
+                        <span class="text-xs text-slate-500">Tsinghua Univ</span>
+                      </div>
+                    </div>
+
+                    <div class="bg-paper-subtle p-2.5 rounded-lg border border-border-subtle">
+                      <span class="text-[11px] text-slate-500 block uppercase font-medium">Debit Amount · 扣款金额 (Escrow)</span>
+                      <div class="flex items-baseline space-x-2 mt-0.5 font-num">
+                        <span class="text-lg font-bold text-bridge-blue">352,000.00 BDT</span>
+                        <span class="text-[11px] text-slate-500">(1 CNY = 19.027 BDT)</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Fee breakdown row -->
+                  <div class="flex flex-wrap items-center justify-between bg-slate-50 px-3 py-2 rounded-md border border-slate-200/80 text-xs text-slate-600 font-num">
+                    <div class="flex items-center space-x-1.5">
+                      <span class="text-slate-500">Transparent Corridor Fee:</span>
+                      <span class="font-semibold text-ink font-mono">USD 3.00 + 0.40%</span>
+                      <span class="text-[11px] text-slate-400">(≈ 1,408 BDT included in debit)</span>
+                    </div>
+                    <div class="flex items-center space-x-1 text-jade font-medium text-[11px]">
+                      <span class="material-symbols-outlined text-[14px]">shield</span>
+                      <span>No Hidden Intermediary Markups</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 2. PAYMENT ACTION CARD -->
+                <div class="bg-white border-2 border-jade/30 rounded-[10px] p-4 shadow-sm space-y-3 relative overflow-hidden">
+                  <div class="absolute top-0 right-0 w-24 h-24 bg-jade/5 rounded-bl-full pointer-events-none"></div>
+
+                  <!-- Header with T2 · TOTP Jade Tier Pill -->
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                      <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-jade text-white shadow-xs tracking-wide flex items-center space-x-1">
+                        <span class="material-symbols-outlined text-[14px]">verified_user</span>
+                        <span>T2 · TOTP</span>
+                      </span>
+                      <span class="text-xs font-semibold text-ink">Guarded Settlement Authorization</span>
+                    </div>
+                    <span class="text-xs font-mono text-slate-500">SEQ #42-T2</span>
+                  </div>
+
+                  <!-- Payee Details & Verification -->
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-1 font-num">
+                    <div>
+                      <span class="text-slate-400 block text-[11px]">Payee · 收款单位</span>
+                      <span class="font-semibold text-ink text-sm block">Tsinghua University (清华大学)</span>
+                      <span class="text-[11px] text-slate-500">Account: 0200 0045 0908 9122 344 · Bank of China Beijing</span>
+                    </div>
+                    <div>
+                      <span class="text-slate-400 block text-[11px]">Obligation Type · 款项类别</span>
+                      <span class="font-medium text-slate-800 text-sm block">Tuition Instalment 2024 Fall</span>
+                      <span class="text-[11px] text-jade font-semibold flex items-center">
+                        <span class="material-symbols-outlined text-[13px] mr-0.5">check_circle</span>
+                        Verified Campus Registry ID #THU-INT-2024
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- Action Buttons & Approvals Link -->
+                  <div class="pt-2 border-t border-border-subtle flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center space-x-3 text-xs">
+                      <a href="#approvals" class="text-bridge-blue hover:text-bridge-blue-hover font-semibold underline flex items-center space-x-1">
+                        <span>Approvals</span>
+                        <span class="text-[11px] bg-blue-100 text-bridge-blue px-1.5 py-0.2 rounded no-underline ml-1">2 Pending</span>
+                        <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                      </a>
+                      <span class="text-slate-300">|</span>
+                      <span class="text-slate-500 text-[11px]">Escrow Release: Immediate on 2/2 sign-off</span>
+                    </div>
+
+                    <div class="flex items-center space-x-2">
+                      <button class="px-3 py-1.5 text-xs text-slate-600 hover:text-ink font-medium border border-border-warm rounded-md hover:bg-slate-50 transition-colors">
+                        Inspect Rules
+                      </button>
+                      <button class="px-4 py-1.5 text-xs bg-jade hover:bg-jade-dark text-white font-semibold rounded-md shadow-xs flex items-center space-x-1.5 transition-colors">
+                        <span class="material-symbols-outlined text-[15px]">send</span>
+                        <span>Sign & Dispatch · 签署并提交</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="text-[11px] text-slate-500 flex items-center space-x-1.5 pt-1">
+                  <span class="material-symbols-outlined text-[14px] text-emerald-600">info</span>
+                  <span>Funds are protected by smart escrow. They are released only to verified institutional bank rails.</span>
+                </div>
+
+              </div>
+
+              <!-- Context chips -->
+              <div class="flex items-center space-x-2 text-[10px] text-slate-400 pl-1 font-mono">
+                <span>INTENT: TUITION_SETTLEMENT</span>
+                <span>·</span>
+                <span>CONFIDENCE: 0.994</span>
+                <span>·</span>
+                <span>POLICY_ID: POL_STUDENT_CN_T2</span>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Composer & Interactive Prompt Area -->
+        <div class="p-4 border-t border-border-warm bg-paper-subtle space-y-3">
+          
+          <!-- Pill Prompts Row -->
+          <div class="flex items-center space-x-2 overflow-x-auto pb-1 text-xs">
+            <span class="text-slate-400 text-[11px] uppercase tracking-wider font-semibold whitespace-nowrap">Suggested:</span>
+            <button class="whitespace-nowrap px-2.5 py-1 rounded-full bg-white border border-border-warm hover:border-slate-400 text-slate-700 hover:text-ink transition-colors shadow-2xs flex items-center space-x-1">
+              <span>"What is today's BDT/CNY corridor trend?"</span>
+            </button>
+            <button class="whitespace-nowrap px-2.5 py-1 rounded-full bg-white border border-border-warm hover:border-slate-400 text-slate-700 hover:text-ink transition-colors shadow-2xs flex items-center space-x-1">
+              <span>"Send notification to Guardian approver in Dhaka"</span>
+            </button>
+            <button class="whitespace-nowrap px-2.5 py-1 rounded-full bg-white border border-border-warm hover:border-slate-400 text-slate-700 hover:text-ink transition-colors shadow-2xs flex items-center space-x-1">
+              <span>"Show escrow remaining buffer"</span>
+            </button>
+          </div>
+
+          <!-- Input Box with Document Selector and Primary Button -->
+          <div class="bg-white border border-border-warm rounded-[12px] p-2 focus-within:ring-2 focus-within:ring-jade/20 focus-within:border-jade transition-all shadow-xs">
+            
+            <!-- Document Attachment Bar -->
+            <div class="flex items-center justify-between px-2 pb-2 mb-2 border-b border-border-subtle text-xs">
+              <div class="flex items-center space-x-2">
+                <span class="text-slate-400 text-[11px] font-medium flex items-center">
+                  <span class="material-symbols-outlined text-[14px] mr-1">attach_file</span>
+                  Attach Invoice / Document:
+                </span>
+                
+                <!-- Document select dropdown styled -->
+                <div class="relative">
+                  <select class="bg-paper-subtle text-ink font-medium text-xs rounded-md border border-border-warm px-2.5 py-1 pr-6 hover:bg-slate-50 focus:outline-none focus:border-jade cursor-pointer appearance-none font-num">
+                    <option selected>清华大学学费通知书_2024Fall.pdf (18,500 CNY)</option>
+                    <option>Beijing_Student_Health_Insurance_Policy.pdf (800 CNY)</option>
+                    <option>Dhaka_Bank_Escrow_Fund_Deposit_Proof.pdf</option>
+                    <option>+ Upload new invoice or payment notice...</option>
+                  </select>
+                  <span class="material-symbols-outlined text-[14px] text-slate-400 absolute right-1.5 top-1.5 pointer-events-none">expand_more</span>
+                </div>
+              </div>
+
+              <span class="text-[11px] text-jade font-medium bg-jade-light px-2 py-0.5 rounded flex items-center">
+                <span class="material-symbols-outlined text-[13px] mr-0.5">verified</span>
+                OCR Verified
+              </span>
+            </div>
+
+            <!-- Text area -->
+            <textarea 
+              rows="2" 
+              class="w-full resize-none px-2 text-sm text-ink placeholder:text-slate-400 focus:outline-none bg-transparent"
+              placeholder="Ask Setu Copilot to plan, convert currency, or execute guarded school payments..."
+            >Confirm rate lock for Tsinghua tuition and notify family approver.</textarea>
+
+            <!-- Bottom actions in composer -->
+            <div class="flex items-center justify-between pt-1 px-1">
+              <div class="flex items-center space-x-1.5 text-slate-400">
+                <button class="p-1.5 rounded hover:text-slate-700 hover:bg-slate-100 transition-colors" title="Voice dictation">
+                  <span class="material-symbols-outlined text-[18px]">mic</span>
+                </button>
+                <button class="p-1.5 rounded hover:text-slate-700 hover:bg-slate-100 transition-colors" title="Upload document">
+                  <span class="material-symbols-outlined text-[18px]">upload_file</span>
+                </button>
+                <span class="text-xs text-slate-400 pl-2 hidden sm:inline">Press ⌘ + Enter to send</span>
+              </div>
+
+              <button class="bg-jade hover:bg-jade-dark text-white font-medium text-xs px-4 py-2 rounded-lg shadow-xs flex items-center space-x-1.5 transition-colors">
+                <span>Dispatch Prompt</span>
+                <span class="material-symbols-outlined text-[15px]">send</span>
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- RIGHT COLUMN: Sticky "Live Trace" Panel (col-span-5) -->
+    <section class="lg:col-span-5 flex flex-col space-y-4">
+      
+      <div class="bg-white border border-border-warm rounded-[12px] shadow-sm flex flex-col sticky top-14 overflow-hidden">
+        
+        <!-- Live Trace Header -->
+        <div class="px-5 py-3.5 border-b border-border-warm bg-paper-subtle flex items-center justify-between">
+          <div class="flex items-center space-x-2.5">
+            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></div>
+            <div>
+              <h3 class="text-sm font-bold text-ink flex items-center space-x-1.5">
+                <span>Live Agent Trace</span>
+                <span class="text-slate-400 font-normal">·</span>
+                <span class="text-xs font-normal text-slate-600">智能体执行追踪</span>
+              </h3>
+              <p class="text-[11px] font-mono text-slate-400">SESSION ID: TRC-2024-9981-CNBD</p>
+            </div>
+          </div>
+
+          <div class="flex items-center space-x-1.5">
+            <span class="text-[11px] font-mono bg-paper px-2 py-0.5 rounded border border-border-warm text-slate-600">Total: 412ms</span>
+            <button class="text-slate-400 hover:text-ink p-1 rounded hover:bg-slate-100" title="Full Raw Trace Log">
+              <span class="material-symbols-outlined text-[17px]">terminal</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Vertical Stepper Body: Intake → Planner → Tools → Guardian → Policy → Executor → Validator -->
+        <div class="p-5 overflow-y-auto max-h-[calc(100vh-280px)] custom-scroll space-y-1 font-sans text-xs">
+          
+          <!-- STEP 1: Intake -->
+          <div class="relative pl-7 pb-5 group">
+            <!-- Vertical connecting line -->
+            <div class="absolute left-3 top-6 bottom-0 w-0.5 bg-jade/30"></div>
+            <!-- Node icon -->
+            <div class="absolute left-0 top-0.5 w-6 h-6 rounded-full bg-jade text-white flex items-center justify-center font-bold text-xs shadow-xs">
+              <span class="material-symbols-outlined text-[14px]">check</span>
+            </div>
+            
+            <div class="bg-paper-subtle border border-border-warm rounded-lg p-2.5 hover:border-slate-400 transition-colors">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-1.5">
+                  <span class="font-bold text-ink">1. Intake · 意图解析</span>
+                  <span class="text-[10px] font-mono bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded font-semibold">SUCCESS</span>
+                </div>
+                <span class="font-mono text-slate-400 text-[11px]">18ms</span>
+              </div>
+              <p class="text-slate-600 text-[11px] mt-1">Parsed user request for tuition disbursement of CNY 18,500.00 to Tsinghua University.</p>
+              
+              <!-- Expandable JSON -->
+              <details class="mt-2 text-[11px] font-mono">
+                <summary class="cursor-pointer text-bridge-blue hover:underline flex items-center space-x-1 select-none">
+                  <span class="material-symbols-outlined text-[13px]">code</span>
+                  <span>Payload: parsed_intent.json</span>
+                </summary>
+                <pre class="mt-1.5 p-2 bg-ink text-slate-200 rounded text-[10px] overflow-x-auto leading-relaxed">{
+  "action": "PAY_TUITION",
+  "amount_cny": 18500.00,
+  "institution_code": "THU_BJ",
+  "beneficiary": "Tsinghua University International",
+  "source_vault": "ESCROW_DAC_09"
+}</pre>
+              </details>
+            </div>
+          </div>
+
+          <!-- STEP 2: Planner -->
+          <div class="relative pl-7 pb-5 group">
+            <div class="absolute left-3 top-6 bottom-0 w-0.5 bg-jade/30"></div>
+            <div class="absolute left-0 top-0.5 w-6 h-6 rounded-full bg-jade text-white flex items-center justify-center font-bold text-xs shadow-xs">
+              <span class="material-symbols-outlined text-[14px]">check</span>
+            </div>
+            
+            <div class="bg-paper-subtle border border-border-warm rounded-lg p-2.5 hover:border-slate-400 transition-colors">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-1.5">
+                  <span class="font-bold text-ink">2. Planner · 路由规划</span>
+                  <span class="text-[10px] font-mono bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded font-semibold">SUCCESS</span>
+                </div>
+                <span class="font-mono text-slate-400 text-[11px]">34ms</span>
+              </div>
+              <p class="text-slate-600 text-[11px] mt-1">Generated DAG DAG-CNBD-098. Selected tool sequence: compute_costs → guard_policy_eval.</p>
+
+              <details class="mt-2 text-[11px] font-mono">
+                <summary class="cursor-pointer text-bridge-blue hover:underline flex items-center space-x-1 select-none">
+                  <span class="material-symbols-outlined text-[13px]">code</span>
+                  <span>Graph: execution_dag.json</span>
+                </summary>
+                <pre class="mt-1.5 p-2 bg-ink text-slate-200 rounded text-[10px] overflow-x-auto leading-relaxed">{
+  "corridor": "BD_TO_CN",
+  "steps": ["fetch_oracle", "compute_costs", "guardian_rule", "t2_gate"],
+  "sla_threshold_seconds": 1800
+}</pre>
+              </details>
+            </div>
+          </div>
+
+          <!-- STEP 3: Tools -->
+          <div class="relative pl-7 pb-5 group">
+            <div class="absolute left-3 top-6 bottom-0 w-0.5 bg-jade/30"></div>
+            <div class="absolute left-0 top-0.5 w-6 h-6 rounded-full bg-jade text-white flex items-center justify-center font-bold text-xs shadow-xs">
+              <span class="material-symbols-outlined text-[14px]">check</span>
+            </div>
+            
+            <div class="bg-paper-subtle border border-border-warm rounded-lg p-2.5 hover:border-slate-400 transition-colors">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-1.5">
+                  <span class="font-bold text-ink">3. Tools · 汇率核算工具</span>
+                  <span class="text-[10px] font-mono bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded font-semibold">SUCCESS</span>
+                </div>
+                <span class="font-mono text-slate-400 text-[11px]">96ms</span>
+              </div>
+              <p class="text-slate-600 text-[11px] mt-1">Invoked <code class="font-mono text-slate-800 bg-white px-1 py-0.5 rounded border border-border-warm">compute_costs</code>. Locked 352,000 BDT for CNY 18,500.00.</p>
+
+              <details class="mt-2 text-[11px] font-mono">
+                <summary class="cursor-pointer text-bridge-blue hover:underline flex items-center space-x-1 select-none">
+                  <span class="material-symbols-outlined text-[13px]">code</span>
+                  <span>Result: compute_costs.res</span>
+                </summary>
+                <pre class="mt-1.5 p-2 bg-ink text-slate-200 rounded text-[10px] overflow-x-auto leading-relaxed">{
+  "base_cny": 18500,
+  "quote_bdt": 352000,
+  "rate_applied": 19.027027,
+  "wire_fixed_fee_usd": 3.00,
+  "spread_fee_percent": 0.0040
+}</pre>
+              </details>
+            </div>
+          </div>
+
+          <!-- STEP 4: Guardian -->
+          <div class="relative pl-7 pb-5 group">
+            <div class="absolute left-3 top-6 bottom-0 w-0.5 bg-jade/30"></div>
+            <div class="absolute left-0 top-0.5 w-6 h-6 rounded-full bg-jade text-white flex items-center justify-center font-bold text-xs shadow-xs">
+              <span class="material-symbols-outlined text-[14px]">check</span>
+            </div>
+            
+            <div class="bg-paper-subtle border border-border-warm rounded-lg p-2.5 hover:border-slate-400 transition-colors">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-1.5">
+                  <span class="font-bold text-ink">4. Guardian · 托管合规监控</span>
+                  <span class="text-[10px] font-mono bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded font-semibold">SUCCESS</span>
+                </div>
+                <span class="font-mono text-slate-400 text-[11px]">112ms</span>
+              </div>
+              <p class="text-slate-600 text-[11px] mt-1">Cross-checked Tsinghua Bank of China IBAN against verified educational whitelist. No sanction match.</p>
+
+              <details class="mt-2 text-[11px] font-mono">
+                <summary class="cursor-pointer text-bridge-blue hover:underline flex items-center space-x-1 select-none">
+                  <span class="material-symbols-outlined text-[13px]">code</span>
+                  <span>Compliance: guardian_check.json</span>
+                </summary>
+                <pre class="mt-1.5 p-2 bg-ink text-slate-200 rounded text-[10px] overflow-x-auto leading-relaxed">{
+  "institution_verified": true,
+  "whitelist_hash": "0x89ab...4410",
+  "student_status": "ENROLLED_VALIDATED",
+  "sanctions_screen": "CLEAR"
+}</pre>
+              </details>
+            </div>
+          </div>
+
+          <!-- STEP 5: Policy (REQUIRE_APPROVAL trigger) -->
+          <div class="relative pl-7 pb-5 group">
+            <div class="absolute left-3 top-6 bottom-0 w-0.5 bg-amber-border"></div>
+            <!-- Amber warning node for policy gating -->
+            <div class="absolute left-0 top-0.5 w-6 h-6 rounded-full bg-amber-500 text-white flex items-center justify-center font-bold text-xs shadow-xs">
+              <span class="material-symbols-outlined text-[14px]">gavel</span>
+            </div>
+            
+            <div class="bg-amber-50/70 border border-amber-border rounded-lg p-2.5 hover:border-amber-400 transition-colors">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-1.5">
+                  <span class="font-bold text-ink">5. Policy · 风控策略裁决</span>
+                  <span class="text-[10px] font-mono bg-amber-100 text-amber-900 border border-amber-300 px-1.5 py-0.2 rounded font-semibold">GATE TRIGGERED</span>
+                </div>
+                <span class="font-mono text-slate-400 text-[11px]">58ms</span>
+              </div>
+              <p class="text-amber-900 text-[11px] mt-1 font-medium">Policy rule POL-084 matched: Amount > CNY 10,000 mandates Tier 2 Dual-Approval before ledger dispatch.</p>
+
+              <details class="mt-2 text-[11px] font-mono">
+                <summary class="cursor-pointer text-amber-800 hover:underline flex items-center space-x-1 select-none">
+                  <span class="material-symbols-outlined text-[13px]">code</span>
+                  <span>Ruleset: policy_decision.json</span>
+                </summary>
+                <pre class="mt-1.5 p-2 bg-ink text-slate-200 rounded text-[10px] overflow-x-auto leading-relaxed">{
+  "rule": "LARGE_VALUE_STUDENT_ESCROW",
+  "decision": "REQUIRE_APPROVAL",
+  "tier": "T2",
+  "approvers_required": [
+    "student_totp",
+    "family_sponsor_sig"
+  ]
+}</pre>
+              </details>
+            </div>
+          </div>
+
+          <!-- STEP 6: Executor (Skipped/Holding for signature) -->
+          <div class="relative pl-7 pb-5 group">
+            <div class="absolute left-3 top-6 bottom-0 w-0.5 bg-slate-200"></div>
+            <!-- Skipped Slate node -->
+            <div class="absolute left-0 top-0.5 w-6 h-6 rounded-full bg-slate-300 text-slate-700 flex items-center justify-center font-bold text-xs">
+              <span class="font-mono font-bold">–</span>
+            </div>
+            
+            <div class="bg-paper-subtle border border-border-warm rounded-lg p-2.5 opacity-90">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-1.5">
+                  <span class="font-bold text-slate-600">6. Executor · 智能合约执行</span>
+                  <span class="text-[10px] font-mono bg-slate-200 text-slate-700 px-1.5 py-0.2 rounded font-medium">PAUSED (AWAITING SIG)</span>
+                </div>
+                <span class="font-mono text-slate-400 text-[11px]">0ms</span>
+              </div>
+              <p class="text-slate-500 text-[11px] mt-1">Corridor lock created. Transaction broadcast withheld until 2/2 cryptographic approvals are recorded.</p>
+            </div>
+          </div>
+
+          <!-- STEP 7: Validator -->
+          <div class="relative pl-7 group">
+            <div class="absolute left-0 top-0.5 w-6 h-6 rounded-full bg-jade text-white flex items-center justify-center font-bold text-xs shadow-xs">
+              <span class="material-symbols-outlined text-[14px]">check</span>
+            </div>
+            
+            <div class="bg-paper-subtle border border-border-warm rounded-lg p-2.5 hover:border-slate-400 transition-colors">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-1.5">
+                  <span class="font-bold text-ink">7. Validator · 响应校验与出证</span>
+                  <span class="text-[10px] font-mono bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded font-semibold">SUCCESS</span>
+                </div>
+                <span class="font-mono text-slate-400 text-[11px]">44ms</span>
+              </div>
+              <p class="text-slate-600 text-[11px] mt-1">Generated secure signature request card and rendered bilingual preview payload to student client.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Sticky Footer with Summary Chips & Audit Sequence Links -->
+        <div class="p-4 border-t border-border-warm bg-paper-subtle space-y-3 font-num">
+          
+          <!-- Final Decision and Status Banner -->
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            
+            <div class="flex items-center space-x-2">
+              <!-- Final Tier Pill T2 -->
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-jade text-white flex items-center space-x-1 shadow-2xs">
+                <span class="material-symbols-outlined text-[13px]">verified_user</span>
+                <span>T2 · TOTP</span>
+              </span>
+
+              <!-- Decision Chip REQUIRE_APPROVAL -->
+              <span class="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-amber-bg text-amber-warn border border-amber-border uppercase tracking-wider flex items-center">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-500 mr-1.5 animate-pulse"></span>
+                REQUIRE_APPROVAL
+              </span>
+            </div>
+
+            <!-- Reply validated badge -->
+            <div class="flex items-center space-x-1 text-jade text-xs font-bold">
+              <span class="material-symbols-outlined text-[16px]">check_circle</span>
+              <span>✓ Reply validated</span>
+            </div>
+          </div>
+
+          <!-- Required Chips: "○ Student TOTP ○ Family approver" -->
+          <div class="bg-white p-2.5 rounded-lg border border-border-warm space-y-1.5">
+            <span class="text-[11px] uppercase text-slate-400 font-semibold tracking-wider block">Signature Gate Status (待双签核准)</span>
+            <div class="flex flex-wrap items-center gap-2 text-xs">
+              
+              <!-- Student TOTP chip -->
+              <div class="flex items-center space-x-1.5 bg-paper-subtle px-2.5 py-1 rounded-md border border-border-warm text-slate-700">
+                <span class="w-2.5 h-2.5 rounded-full border border-slate-400 inline-block"></span>
+                <span class="font-medium">Student TOTP (本人动态口令)</span>
+                <span class="text-[10px] text-amber-700 font-mono bg-amber-100 px-1 rounded">Pending</span>
+              </div>
+
+              <!-- Family approver chip -->
+              <div class="flex items-center space-x-1.5 bg-paper-subtle px-2.5 py-1 rounded-md border border-border-warm text-slate-700">
+                <span class="w-2.5 h-2.5 rounded-full border border-slate-400 inline-block"></span>
+                <span class="font-medium">Family approver (达卡家长签字)</span>
+                <span class="text-[10px] text-slate-500 font-mono bg-slate-100 px-1 rounded">Queued SMS</span>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Audit Sequence Links #41 #42 -->
+          <div class="flex items-center justify-between text-xs text-slate-500 pt-1">
+            <div class="flex items-center space-x-2">
+              <span class="text-slate-400 text-[11px]">Audit Sequences:</span>
+              <a href="#audit-41" class="text-bridge-blue hover:underline font-mono font-semibold bg-white px-2 py-0.5 rounded border border-border-warm">#41 (INTK)</a>
+              <a href="#audit-42" class="text-bridge-blue hover:underline font-mono font-semibold bg-white px-2 py-0.5 rounded border border-border-warm">#42 (POL-T2)</a>
+            </div>
+
+            <div class="flex items-center space-x-1 text-[11px] text-slate-400">
+              <span class="material-symbols-outlined text-[13px]">verified</span>
+              <span>Merkle Root: 0x8a9f...b012</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="bg-white border-t border-border-warm py-3 px-6 mt-6 text-xs text-slate-500 flex flex-wrap items-center justify-between gap-4 font-num">
+    <div class="flex items-center space-x-4">
+      <span class="font-semibold text-ink">Setu 桥 · Guarded Cross-Border Fintech Platform</span>
+      <span class="text-slate-300">|</span>
+      <span>Regulated Education Payment Vault Sandbox</span>
+    </div>
+    <div class="flex items-center space-x-4 text-[11px]">
+      <span class="text-slate-400">All student obligations sealed under immutable audit hashes</span>
+      <span class="text-slate-300">·</span>
+      <span class="text-jade font-medium">Bilingual Compliant (EN / 简体中文)</span>
+    </div>
+  </footer>
+
+</body>
+</html>

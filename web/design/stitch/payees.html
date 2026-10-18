@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Setu 桥 · Sovereign Escrow - Payees 收款人</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Noto Sans & Mono Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-dim": "#cfdaf3",
+            "surface-container-low": "#f0f3ff",
+            "primary": "#005f45",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-highest": "#d7e3fc",
+            "primary-fixed-dim": "#7bd8b2",
+            "on-tertiary-fixed-variant": "#6e3900",
+            "secondary-container": "#6ea6ff",
+            "on-primary-container": "#a7ffd9",
+            "secondary-fixed-dim": "#a9c7ff",
+            "surface-container": "#e7eeff",
+            "on-tertiary-fixed": "#2f1500",
+            "background": "#f9f9ff",
+            "on-surface": "#101c2e",
+            "on-secondary-fixed": "#001b3d",
+            "primary-container": "#0b7a5a",
+            "tertiary-fixed-dim": "#ffb77d",
+            "surface": "#f9f9ff",
+            "secondary-fixed": "#d6e3ff",
+            "on-tertiary": "#ffffff",
+            "on-primary-fixed": "#002115",
+            "surface-variant": "#d7e3fc",
+            "on-tertiary-container": "#ffe9db",
+            "surface-tint": "#006c4f",
+            "error": "#ba1a1a",
+            "on-background": "#101c2e",
+            "outline-variant": "#bdc9c2",
+            "on-surface-variant": "#3e4943",
+            "on-primary-fixed-variant": "#00513a",
+            "inverse-primary": "#7bd8b2",
+            "on-primary": "#ffffff",
+            "on-error": "#ffffff",
+            "tertiary-fixed": "#ffdcc3",
+            "surface-container-high": "#dee8ff",
+            "secondary": "#125db2",
+            "on-secondary-fixed-variant": "#00468c",
+            "tertiary-container": "#a45800",
+            "tertiary": "#804300",
+            "primary-fixed": "#98f5cd",
+            "on-secondary-container": "#003b77",
+            "inverse-on-surface": "#ecf1ff",
+            "on-secondary": "#ffffff",
+            "inverse-surface": "#253144",
+            "error-container": "#ffdad6",
+            "surface-bright": "#f9f9ff",
+            "outline": "#6e7a73",
+            "on-error-container": "#93000a"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-xs": "0.25rem",
+            "margin-desktop": "2rem",
+            "margin": "1rem",
+            "space-xl": "2rem",
+            "gutter": "1rem",
+            "space-sm": "0.5rem",
+            "space-md": "1rem",
+            "gutter-mobile": "0.75rem",
+            "space-lg": "1.5rem"
+          },
+          "fontFamily": {
+            "tabular-amount-md": ["Noto Sans"],
+            "tabular-amount-lg": ["Noto Sans"],
+            "headline-lg-mobile": ["Noto Sans"],
+            "label-sm": ["Noto Sans"],
+            "headline-sm": ["Noto Sans"],
+            "body-md": ["Noto Sans"],
+            "body-lg": ["Noto Sans"],
+            "label-lg": ["Noto Sans"],
+            "headline-lg": ["Noto Sans"],
+            "label-md": ["Noto Sans"],
+            "body-sm": ["Noto Sans"],
+            "headline-md": ["Noto Sans"],
+            "mono": ["JetBrains Mono", "monospace"]
+          },
+          "fontSize": {
+            "tabular-amount-md": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "tabular-amount-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "headline-lg-mobile": ["26px", { "lineHeight": "34px", "fontWeight": "700" }],
+            "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "headline-sm": ["18px", { "lineHeight": "26px", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "headline-md": ["22px", { "lineHeight": "30px", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .font-mono-numbers {
+      font-family: 'JetBrains Mono', monospace;
+      font-feature-settings: "tnum";
+    }
+  </style>
+</head>
+<body class="bg-[#f6f4ef] text-on-surface min-h-screen flex flex-col font-body-md antialiased selection:bg-primary selection:text-white">
+<!-- Top Sandbox Banner -->
+<aside aria-label="Sandbox notification" class="w-full bg-[#fffbeb] border-b border-[#fde68a] px-4 md:px-margin-desktop py-1.5 flex items-center justify-between text-[#b45309] font-label-sm text-label-sm tracking-wide z-50">
+<div class="flex items-center gap-2 overflow-x-auto whitespace-nowrap">
+<span class="inline-block w-2 h-2 rounded-full bg-[#d97706] animate-pulse"></span>
+<span class="font-mono uppercase font-bold tracking-wider">SYNTHETIC DATA · SANDBOX BANK · 演示数据 · SAMPLE FX</span>
+<span class="text-[#d97706]/40">|</span>
+<span>CORRIDOR: CNY / BDT (GUARDED TUITION ESCROW)</span>
+<span class="text-[#d97706]/40">|</span>
+<span>ZERO-TRUST INGESTION</span>
+<span class="text-[#d97706]/40">|</span>
+<span class="font-mono">SHA-256 VAULT</span>
+</div>
+<div class="hidden lg:flex items-center gap-2 font-mono text-label-sm opacity-80">
+<span>SESSION: 0x9f8b..44c1</span>
+<span class="px-1.5 py-0.5 rounded bg-[#fef3c7] text-[#92400e] border border-[#fde68a]">SECURE QUORUM</span>
+</div>
+</aside>
+<!-- Top Navigation Bar -->
+<header class="w-full px-margin-desktop flex justify-between items-center h-16 bg-on-background dark:bg-inverse-surface border-b border-outline dark:border-outline-variant shadow-sm dark:shadow-none docked full-width top-0 z-40 sticky">
+<div class="flex items-center gap-8">
+<!-- Brand Logo -->
+<a class="flex items-center gap-2.5 group" href="#">
+<div class="w-9 h-9 rounded-lg bg-primary-container flex items-center justify-center text-on-primary shadow-sm border border-primary-fixed-dim/20">
+<span class="material-symbols-outlined text-[20px]" data-icon="account_balance">account_balance</span>
+</div>
+<div class="flex flex-col">
+<span class="text-headline-sm font-headline-sm font-bold text-surface-container-lowest dark:text-inverse-on-surface tracking-tight">Setu 桥 · Sovereign Escrow</span>
+<span class="text-[9px] font-label-sm text-[#7bd8b2] tracking-wider uppercase -mt-1 font-mono">BD-CN Academic Clearance Corridor</span>
+</div>
+</a>
+<!-- Desktop Nav Links -->
+<nav aria-label="Global Navigation" class="hidden md:flex items-center gap-6">
+<a class="text-surface-variant dark:text-outline-variant hover:text-surface-container-lowest transition-colors pb-1 text-label-md font-label-md flex items-center gap-1" href="#">
+<span>Overview · 概览</span>
+</a>
+<a class="border-b-2 border-primary-container text-surface-container-lowest dark:text-inverse-on-surface font-semibold pb-1 text-label-md font-label-md flex items-center gap-1.5" href="#">
+<span>Payees · 收款人</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+</a>
+<a class="text-surface-variant dark:text-outline-variant hover:text-surface-container-lowest transition-colors pb-1 text-label-md font-label-md flex items-center gap-1" href="#">
+<span>Approvals · 审批</span>
+<span class="px-1.5 py-0.2 rounded-full bg-tertiary-container text-on-tertiary-container text-[10px] font-mono">1</span>
+</a>
+<a class="text-surface-variant dark:text-outline-variant hover:text-surface-container-lowest transition-colors pb-1 text-label-md font-label-md" href="#">
+<span>Audit Log · 审计日志</span>
+</a>
+<a class="text-surface-variant dark:text-outline-variant hover:text-surface-container-lowest transition-colors pb-1 text-label-md font-label-md" href="#">
+<span>Agent Live Trace · 实时链路追踪</span>
+</a>
+</nav>
+</div>
+<!-- Trailing Actions & User Context -->
+<div class="flex items-center gap-3">
+<div class="hidden xl:flex items-center gap-2">
+<span class="px-2 py-1 rounded bg-[#1e293b] text-[#cbd5e1] border border-[#334155] text-label-sm font-label-sm flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+<span>CN-BD Sandbox · 模拟沙箱</span>
+</span>
+<button class="px-3 py-1.5 rounded bg-primary-container hover:bg-[#085d44] text-white text-label-md font-label-md font-semibold transition-all duration-150 active:scale-[0.99] flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="file_download">file_download</span>
+<span>Security Export · 导出凭证</span>
+</button>
+</div>
+<!-- Icon Actions -->
+<div class="flex items-center gap-1 border-l border-slate-700 pl-3">
+<button class="p-2 text-surface-variant hover:text-surface-container-lowest rounded-lg hover:bg-inverse-surface transition-colors" title="Verified Sovereign State" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="verified_user">verified_user</span>
+</button>
+<button class="p-2 text-surface-variant hover:text-surface-container-lowest rounded-lg hover:bg-inverse-surface transition-colors relative" title="Notifications" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="notifications">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-amber-500"></span>
+</button>
+<button class="p-2 text-surface-variant hover:text-surface-container-lowest rounded-lg hover:bg-inverse-surface transition-colors" title="Help" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="help_outline">help_outline</span>
+</button>
+</div>
+<!-- Lang switch -->
+<div class="hidden sm:flex items-center text-label-sm font-label-sm rounded border border-slate-700 overflow-hidden bg-slate-900/60 p-0.5 text-surface-variant">
+<span class="px-1.5 py-0.5 rounded bg-primary-container text-white font-semibold">EN</span>
+<span class="px-1.5 py-0.5 hover:text-white cursor-pointer transition-colors">简</span>
+</div>
+<!-- Avatar -->
+<div class="flex items-center gap-2 pl-2 border-l border-slate-700">
+<div class="w-8 h-8 rounded-full bg-slate-700 border border-slate-500 flex items-center justify-center text-white text-label-sm font-mono font-bold" title="Chief Compliance Officer Profile Avatar">
+          CCO
+        </div>
+</div>
+</div>
+</header>
+<!-- Main Content Layout -->
+<main class="flex-grow w-full max-w-[1440px] mx-auto px-4 md:px-margin-desktop py-space-lg space-y-space-lg">
+<!-- Breadcrumb & Corridor Metadata -->
+<nav aria-label="Corridor path" class="flex flex-wrap items-center justify-between text-label-md font-label-md text-on-surface-variant gap-2">
+<div class="flex items-center gap-2">
+<span>Sovereign Financial Mesh</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="chevron_right">chevron_right</span>
+<span>Escrow Clearance Corridor (BD → CN)</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="chevron_right">chevron_right</span>
+<span class="text-on-surface font-semibold">Payees 收款人名录</span>
+</div>
+<div class="flex items-center gap-2 text-label-sm font-mono bg-white px-2.5 py-1 rounded-md border border-[#e2ded3] shadow-sm">
+<span class="text-primary-container font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="lock">lock</span>
+          CORRIDOR LOCK:
+        </span>
+<span class="text-on-surface">1 CNY = 16.58 BDT</span>
+<span class="text-outline-variant">·</span>
+<span class="text-[#b45309]">SLA Guaranteed 28m 10s</span>
+</div>
+</nav>
+<!-- Page Title & Primary Actions Header -->
+<section class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-2 border-b border-[#e2ded3]">
+<div class="space-y-1">
+<div class="flex items-center gap-3">
+<h1 class="font-headline-lg text-headline-lg tracking-tight text-on-surface flex items-center gap-2">
+            Payees 收款人
+          </h1>
+<span class="px-2.5 py-1 rounded-full bg-[#ecfdf5] border border-[#a7f3d0] text-primary-container font-label-sm text-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="shield">shield</span>
+            Institutional Tier-3 Quorum
+          </span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-3xl">
+          Guarded institutional beneficiary directory, sovereign escrow whitelisting, and dual-custody verification · 跨境受托收款人名录与合规验证
+        </p>
+</div>
+<div class="flex flex-wrap items-center gap-3">
+<button class="px-4 py-2.5 rounded-xl bg-white border border-[#cbd5e1] hover:bg-slate-50 text-on-surface font-label-lg text-label-lg font-semibold flex items-center gap-2 shadow-sm transition-all duration-150 active:scale-[0.99]" type="button">
+<span class="material-symbols-outlined text-[18px] text-secondary" data-icon="verified">verified</span>
+<span>Whitelisted Institution Registry 官方名录</span>
+</button>
+<button class="px-4 py-2.5 rounded-xl bg-primary-container hover:bg-[#085d44] text-white font-label-lg text-label-lg font-semibold flex items-center gap-2 shadow-sm transition-all duration-150 active:scale-[0.99]" onclick="document.getElementById('addPayeeDrawer').classList.remove('translate-x-full')" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
+<span>Add Payee 新增收款人</span>
+</button>
+</div>
+</section>
+<!-- KPI Summary Bento Cards -->
+<section aria-label="Payee KPI Metrics" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- KPI 1 -->
+<article class="bg-white rounded-xl border border-[#e2ded3] p-4 relative overflow-hidden shadow-[0_1px_3px_rgba(15,27,45,0.05)]">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-[#0b7a5a]"></div>
+<div class="flex items-center justify-between text-on-surface-variant mb-1">
+<span class="font-label-md text-label-md font-medium">Verified Institutions · 已认证院校</span>
+<span class="material-symbols-outlined text-[20px] text-primary-container" data-icon="check_circle">check_circle</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-tabular-amount-lg text-tabular-amount-lg font-bold text-on-surface font-mono-numbers">4</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Verified 受托就绪</span>
+</div>
+<div class="mt-2.5 flex items-center gap-2">
+<span class="px-2 py-0.5 rounded-full bg-[#ecfdf5] border border-[#a7f3d0] text-primary-container font-label-sm text-label-sm font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-icon="security">security</span>
+            100% Whitelisted
+          </span>
+<span class="text-body-sm text-body-sm text-on-surface-variant">Zero clearance hold</span>
+</div>
+</article>
+<!-- KPI 2 -->
+<article class="bg-white rounded-xl border border-[#e2ded3] p-4 relative overflow-hidden shadow-[0_1px_3px_rgba(15,27,45,0.05)]">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-[#d97706]"></div>
+<div class="flex items-center justify-between text-on-surface-variant mb-1">
+<span class="font-label-md text-label-md font-medium">In Cooling-Off · 冷静期审核中</span>
+<span class="material-symbols-outlined text-[20px] text-[#d97706]" data-icon="hourglass_top">hourglass_top</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-tabular-amount-lg text-tabular-amount-lg font-bold text-on-surface font-mono-numbers">1</span>
+<span class="font-label-md text-label-md text-[#b45309]">Pending 待复核</span>
+</div>
+<div class="mt-2.5 flex items-center gap-1.5 text-body-sm text-body-sm text-[#b45309]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#d97706] animate-ping"></span>
+<span class="font-label-sm text-label-sm font-bold uppercase tracking-wide">Dual-Custody Quorum Required</span>
+</div>
+</article>
+<!-- KPI 3 -->
+<article class="bg-white rounded-xl border border-[#e2ded3] p-4 relative overflow-hidden shadow-[0_1px_3px_rgba(15,27,45,0.05)]">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-[#1d63b8]"></div>
+<div class="flex items-center justify-between text-on-surface-variant mb-1">
+<span class="font-label-md text-label-md font-medium">Active Sovereign Corridor · 活跃通道</span>
+<span class="material-symbols-outlined text-[20px] text-secondary" data-icon="hub">hub</span>
+</div>
+<div class="truncate">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">Tsinghua &amp; Univ Registry</span>
+</div>
+<div class="mt-2.5 flex items-center gap-2">
+<span class="px-2 py-0.5 rounded-full bg-[#f0f3ff] border border-[#d6e3ff] text-secondary font-label-sm text-label-sm font-semibold">
+            CNY Clearing
+          </span>
+<span class="text-body-sm text-body-sm text-on-surface-variant font-mono-numbers">BDT → CNY Auto-Lock</span>
+</div>
+</article>
+<!-- KPI 4 -->
+<article class="bg-white rounded-xl border border-[#e2ded3] p-4 relative overflow-hidden shadow-[0_1px_3px_rgba(15,27,45,0.05)]">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-[#0b7a5a]"></div>
+<div class="flex items-center justify-between text-on-surface-variant mb-1">
+<span class="font-label-md text-label-md font-medium">Escrow Protection Level · 托管保障</span>
+<span class="material-symbols-outlined text-[20px] text-primary-container" data-icon="policy">policy</span>
+</div>
+<div class="truncate">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">Tier-3 Multi-Sig</span>
+</div>
+<div class="mt-2.5 flex items-center gap-2 text-body-sm text-body-sm text-primary-container font-semibold">
+<span class="material-symbols-outlined text-[14px]" data-icon="verified_user">verified_user</span>
+<span>Sovereign Enforced (Bangladesh Bank / PBOC)</span>
+</div>
+</article>
+</section>
+<!-- Search, Filters, Corridor Ticker Bar -->
+<section class="bg-white rounded-xl border border-[#e2ded3] p-3 md:p-4 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 shadow-[0_1px_3px_rgba(15,27,45,0.05)]">
+<div class="flex-grow flex items-center gap-3">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-outline text-[20px]" data-icon="search">search</span>
+<input class="w-full pl-9 pr-4 py-2 bg-[#f9f9ff] border border-[#e2ded3] rounded-lg text-body-md font-body-md text-on-surface placeholder-on-surface-variant focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all" placeholder="Search by Payee Name, Chinese Legal Name, Account, Token ID..." type="search"/>
+</div>
+<div class="hidden lg:flex items-center gap-2">
+<span class="text-label-sm font-label-sm text-on-surface-variant font-bold uppercase tracking-wider">Type:</span>
+<button class="px-2.5 py-1 rounded-md bg-on-background text-white text-label-sm font-label-sm font-semibold" type="button">
+            All (5)
+          </button>
+<button class="px-2.5 py-1 rounded-md bg-[#f9f9ff] text-on-surface-variant hover:text-on-surface border border-[#e2ded3] text-label-sm font-label-sm font-medium" type="button">
+            Tuition 官方学费 (2)
+          </button>
+<button class="px-2.5 py-1 rounded-md bg-[#f9f9ff] text-on-surface-variant hover:text-on-surface border border-[#e2ded3] text-label-sm font-label-sm font-medium" type="button">
+            Housing 公寓专户 (1)
+          </button>
+<button class="px-2.5 py-1 rounded-md bg-[#fffbeb] text-[#b45309] border border-[#fde68a] text-label-sm font-label-sm font-medium" type="button">
+            Cooling-Off 冷静期 (1)
+          </button>
+</div>
+</div>
+<div class="flex items-center gap-2 justify-end">
+<button class="px-3 py-2 rounded-lg border border-[#e2ded3] text-on-surface-variant hover:text-on-surface text-label-md font-label-md flex items-center gap-1.5 hover:bg-slate-50" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="tune">tune</span>
+<span>Filter 筛选</span>
+</button>
+<button class="px-3 py-2 rounded-lg border border-[#e2ded3] text-on-surface-variant hover:text-on-surface text-label-md font-label-md flex items-center gap-1.5 hover:bg-slate-50" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="sort">sort</span>
+<span>Sort: Clearance Status</span>
+</button>
+</div>
+</section>
+<!-- Payees Cards Grid -->
+<section aria-label="Payee Beneficiary Cards" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+<!-- Card 1: Tsinghua University (Verified Institutional) -->
+<article class="bg-white rounded-xl border border-[#e2ded3] p-5 shadow-[0_1px_3px_rgba(15,27,45,0.05)] hover:border-[#cbd5e1] transition-all relative flex flex-col justify-between">
+<div class="space-y-4">
+<!-- Header with status badge -->
+<div class="flex items-start justify-between gap-3">
+<div class="flex items-start gap-3">
+<div class="w-12 h-12 rounded-xl bg-[#ecfdf5] border border-[#a7f3d0] flex items-center justify-center text-primary-container shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[26px]" data-icon="account_balance">account_balance</span>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-bold tracking-tight">
+                    Tsinghua University (清华大学)
+                  </h2>
+<span class="px-2 py-0.5 rounded-full bg-[#ecfdf5] border border-[#a7f3d0] text-primary-container font-label-sm text-label-sm font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]" data-icon="check_circle">check_circle</span>
+                    Verified 已验证
+                  </span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1.5 mt-0.5">
+<span class="font-semibold text-secondary">Institutional Tuition Vault</span>
+<span class="text-outline-variant">·</span>
+<span>公立高校学费专户 (Direct Clearing)</span>
+</p>
+</div>
+</div>
+<button class="text-outline hover:text-on-surface p-1 rounded hover:bg-slate-100" title="More Options" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+<!-- Account Specifics Box -->
+<div class="bg-[#f9f9ff] rounded-lg border border-[#e2ded3] p-3.5 space-y-2.5 font-mono text-body-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-sans font-medium uppercase tracking-wide">Beneficiary Account 银行账号</span>
+<span class="font-bold text-on-surface text-[15px] font-mono-numbers tracking-wider">6222 0045 0908 4821</span>
+</div>
+<div class="flex items-center justify-between text-body-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-sans uppercase">Corridor Token</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container text-secondary text-label-sm font-semibold">ACCT_9f2c841e0b</span>
+</div>
+<div class="border-t border-[#e2ded3] pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-on-surface-variant font-sans text-body-sm">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-outline" data-icon="apartment">apartment</span>
+                Bank of China Beijing Branch (中国银行北京支行)
+              </span>
+<span class="font-mono text-label-sm bg-white px-1.5 py-0.5 rounded border border-[#e2ded3] text-on-surface">SWIFT: BKCHCNBJ110</span>
+</div>
+</div>
+<!-- Trust and Signature Stamp -->
+<div class="flex items-center gap-2 text-body-sm text-body-sm text-on-surface-variant bg-[#ecfdf5]/40 px-3 py-2 rounded-lg border border-[#a7f3d0]/60">
+<span class="material-symbols-outlined text-[18px] text-primary-container" data-icon="verified">verified</span>
+<span class="truncate">Verified Oct 12, 2024 · Dual-Signed by Sovereign Guardian #1</span>
+</div>
+</div>
+<!-- Action Row -->
+<div class="mt-5 pt-3 border-t border-[#e2ded3] flex flex-wrap items-center justify-between gap-2">
+<button class="text-secondary hover:text-[#0c4482] font-label-md text-label-md font-semibold flex items-center gap-1.5 px-2 py-1" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="history_edu">history_edu</span>
+<span>Audit Merkle Proof 验证凭证</span>
+</button>
+<button class="px-4 py-2 rounded-lg bg-primary-container hover:bg-[#085d44] text-white font-label-md text-label-md font-semibold flex items-center gap-1.5 shadow-sm transition-all duration-150 active:scale-[0.99]" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="send">send</span>
+<span>Initiate Escrow Transfer 办理托管汇款</span>
+</button>
+</div>
+</article>
+<!-- Card 2: Shenzhen University (Verified Institutional) -->
+<article class="bg-white rounded-xl border border-[#e2ded3] p-5 shadow-[0_1px_3px_rgba(15,27,45,0.05)] hover:border-[#cbd5e1] transition-all relative flex flex-col justify-between">
+<div class="space-y-4">
+<!-- Header with status badge -->
+<div class="flex items-start justify-between gap-3">
+<div class="flex items-start gap-3">
+<div class="w-12 h-12 rounded-xl bg-[#ecfdf5] border border-[#a7f3d0] flex items-center justify-center text-primary-container shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[26px]" data-icon="school">school</span>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-bold tracking-tight">
+                    Shenzhen University (深圳大学)
+                  </h2>
+<span class="px-2 py-0.5 rounded-full bg-[#ecfdf5] border border-[#a7f3d0] text-primary-container font-label-sm text-label-sm font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]" data-icon="check_circle">check_circle</span>
+                    Verified 已验证
+                  </span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1.5 mt-0.5">
+<span class="font-semibold text-secondary">International Student Affairs</span>
+<span class="text-outline-variant">·</span>
+<span>留学生部综合款 (Tuition &amp; Insurance)</span>
+</p>
+</div>
+</div>
+<button class="text-outline hover:text-on-surface p-1 rounded hover:bg-slate-100" title="More Options" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+<!-- Account Specifics Box -->
+<div class="bg-[#f9f9ff] rounded-lg border border-[#e2ded3] p-3.5 space-y-2.5 font-mono text-body-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-sans font-medium uppercase tracking-wide">Beneficiary Account 银行账号</span>
+<span class="font-bold text-on-surface text-[15px] font-mono-numbers tracking-wider">6214 8302 9941 7721</span>
+</div>
+<div class="flex items-center justify-between text-body-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-sans uppercase">Corridor Token</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container text-secondary text-label-sm font-semibold">ACCT_4e1a90c23f</span>
+</div>
+<div class="border-t border-[#e2ded3] pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-on-surface-variant font-sans text-body-sm">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-outline" data-icon="apartment">apartment</span>
+                ICBC Shenzhen Branch (中国工商银行深圳分行)
+              </span>
+<span class="font-mono text-label-sm bg-white px-1.5 py-0.5 rounded border border-[#e2ded3] text-on-surface">CNAPS: 102584000183</span>
+</div>
+</div>
+<!-- Trust and Signature Stamp -->
+<div class="flex items-center gap-2 text-body-sm text-body-sm text-on-surface-variant bg-[#ecfdf5]/40 px-3 py-2 rounded-lg border border-[#a7f3d0]/60">
+<span class="material-symbols-outlined text-[18px] text-primary-container" data-icon="verified">verified</span>
+<span class="truncate">Verified Sep 28, 2024 · Academic Protocol Clearance Granted</span>
+</div>
+</div>
+<!-- Action Row -->
+<div class="mt-5 pt-3 border-t border-[#e2ded3] flex flex-wrap items-center justify-between gap-2">
+<button class="text-secondary hover:text-[#0c4482] font-label-md text-label-md font-semibold flex items-center gap-1.5 px-2 py-1" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="description">description</span>
+<span>View Agreement 查看协议</span>
+</button>
+<button class="px-4 py-2 rounded-lg bg-primary-container hover:bg-[#085d44] text-white font-label-md text-label-md font-semibold flex items-center gap-1.5 shadow-sm transition-all duration-150 active:scale-[0.99]" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="send">send</span>
+<span>Initiate Escrow Transfer 办理托管汇款</span>
+</button>
+</div>
+</article>
+<!-- Card 3: Beijing Z-Park Student Residence Corp (Verified Living/Accommodation) -->
+<article class="bg-white rounded-xl border border-[#e2ded3] p-5 shadow-[0_1px_3px_rgba(15,27,45,0.05)] hover:border-[#cbd5e1] transition-all relative flex flex-col justify-between">
+<div class="space-y-4">
+<!-- Header with status badge -->
+<div class="flex items-start justify-between gap-3">
+<div class="flex items-start gap-3">
+<div class="w-12 h-12 rounded-xl bg-[#ecfdf5] border border-[#a7f3d0] flex items-center justify-center text-primary-container shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[26px]" data-icon="apartment">apartment</span>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-bold tracking-tight">
+                    Beijing Z-Park Student Residence Corp
+                  </h2>
+<span class="px-2 py-0.5 rounded-full bg-[#ecfdf5] border border-[#a7f3d0] text-primary-container font-label-sm text-label-sm font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]" data-icon="check_circle">check_circle</span>
+                    Verified 已验证
+                  </span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1.5 mt-0.5">
+<span class="font-semibold text-secondary">Living Stipend &amp; Housing</span>
+<span class="text-outline-variant">·</span>
+<span>北京中关村留学生公寓 (学生住宿专户)</span>
+</p>
+</div>
+</div>
+<button class="text-outline hover:text-on-surface p-1 rounded hover:bg-slate-100" title="More Options" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+<!-- Account Specifics Box -->
+<div class="bg-[#f9f9ff] rounded-lg border border-[#e2ded3] p-3.5 space-y-2.5 font-mono text-body-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-sans font-medium uppercase tracking-wide">Beneficiary Account 银行账号</span>
+<span class="font-bold text-on-surface text-[15px] font-mono-numbers tracking-wider">6228 4801 7739 1204</span>
+</div>
+<div class="flex items-center justify-between text-body-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-sans uppercase">Corridor Token</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container text-secondary text-label-sm font-semibold">ACCT_7b3d51f98a</span>
+</div>
+<div class="border-t border-[#e2ded3] pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-on-surface-variant font-sans text-body-sm">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-outline" data-icon="business">business</span>
+                CCB Haidian Sub-branch (中国建设银行海淀支行)
+              </span>
+<span class="font-mono text-label-sm bg-white px-1.5 py-0.5 rounded border border-[#e2ded3] text-on-surface">CNAPS: 105100010023</span>
+</div>
+</div>
+<!-- Trust and Signature Stamp -->
+<div class="flex items-center gap-2 text-body-sm text-body-sm text-on-surface-variant bg-[#ecfdf5]/40 px-3 py-2 rounded-lg border border-[#a7f3d0]/60">
+<span class="material-symbols-outlined text-[18px] text-primary-container" data-icon="verified">verified</span>
+<span class="truncate">Verified Aug 15, 2024 · Verified Landlord Corporate Registry</span>
+</div>
+</div>
+<!-- Action Row -->
+<div class="mt-5 pt-3 border-t border-[#e2ded3] flex flex-wrap items-center justify-between gap-2">
+<button class="text-secondary hover:text-[#0c4482] font-label-md text-label-md font-semibold flex items-center gap-1.5 px-2 py-1" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="info">info</span>
+<span>Details 详情信息</span>
+</button>
+<button class="px-4 py-2 rounded-lg bg-primary-container hover:bg-[#085d44] text-white font-label-md text-label-md font-semibold flex items-center gap-1.5 shadow-sm transition-all duration-150 active:scale-[0.99]" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="send">send</span>
+<span>Initiate Escrow Transfer 办理托管汇款</span>
+</button>
+</div>
+</article>
+<!-- Card 4: Unverified / Cooling-Off Card (CRITICAL HIGHLIGHTED STATE) -->
+<article class="bg-[#fffdfa] rounded-xl border-2 border-[#f59e0b] p-5 shadow-[0_4px_12px_rgba(217,119,6,0.12)] relative flex flex-col justify-between overflow-hidden">
+<!-- Amber Banner Alert across top of card -->
+<div class="bg-gradient-to-r from-[#fef3c7] via-[#fffbeb] to-[#fef3c7] border-b border-[#fde68a] -mx-5 -mt-5 px-5 py-2.5 mb-4 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="relative flex h-3 w-3">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+<span class="relative inline-flex rounded-full h-3 w-3 bg-[#d97706]"></span>
+</span>
+<span class="font-mono font-bold text-[#b45309] text-label-md flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="timer">timer</span>
+              Cooling-off 23:41:05 (冷静期倒计时)
+            </span>
+</div>
+<span class="px-2 py-0.5 rounded bg-[#f59e0b] text-white font-label-sm text-label-sm font-bold tracking-wider uppercase">
+            Escrow Guarded
+          </span>
+</div>
+<div class="space-y-4">
+<!-- Header with Amber Unverified Badge -->
+<div class="flex items-start justify-between gap-3">
+<div class="flex items-start gap-3">
+<div class="w-12 h-12 rounded-xl bg-[#fffbeb] border border-[#fde68a] flex items-center justify-center text-[#d97706] shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[26px]" data-icon="science">science</span>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-bold tracking-tight">
+                    Prof. Zhang Wei (Research Materials Lab Fund)
+                  </h2>
+<span class="px-2 py-0.5 rounded-full bg-[#fffbeb] border border-[#fde68a] text-[#b45309] font-label-sm text-label-sm font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]" data-icon="pending">pending</span>
+                    Unverified 未验证
+                  </span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1.5 mt-0.5">
+<span class="font-semibold text-[#b45309]">Private Lab Fund 个人科研耗材款</span>
+<span class="text-outline-variant">·</span>
+<span>张伟教授实验室 (Individual Account)</span>
+</p>
+</div>
+</div>
+<button class="text-outline hover:text-on-surface p-1 rounded hover:bg-slate-100" title="More Options" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+<!-- Alert Warning Callout -->
+<div class="p-3 bg-[#fff7ed] border border-[#ffedd5] rounded-lg text-body-sm text-[#9a3412] flex items-start gap-2.5">
+<span class="material-symbols-outlined text-[20px] text-[#ea580c] shrink-0 mt-0.5" data-icon="warning">warning</span>
+<div class="space-y-1">
+<div class="font-semibold text-label-md">Needs family approver verification 需家人审批人验证</div>
+<p class="text-body-sm leading-relaxed text-[#7c2d12]">
+                High-tier security policy triggered for private/research personal accounts. Escrow settlement disbarred until sponsor guardian approves via TOTP countersignature.
+              </p>
+</div>
+</div>
+<!-- Account Specifics Box with Masked Digits -->
+<div class="bg-white rounded-lg border border-[#fde68a] p-3.5 space-y-2.5 font-mono text-body-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-sans font-medium uppercase tracking-wide">Masked Account 银行账号</span>
+<span class="font-bold text-on-surface text-[15px] font-mono-numbers tracking-wider">6217 0036 5512 **** 9912</span>
+</div>
+<div class="flex items-center justify-between text-body-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-sans uppercase">Corridor Token</span>
+<span class="px-1.5 py-0.5 rounded bg-amber-50 text-[#b45309] text-label-sm font-semibold border border-[#fde68a]">ACCT_1c78de92a4</span>
+</div>
+<div class="border-t border-[#fde68a] pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-on-surface-variant font-sans text-body-sm">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-outline" data-icon="account_balance">account_balance</span>
+                Agricultural Bank of China (中国农业银行)
+              </span>
+<span class="font-mono text-label-sm bg-[#fffbeb] px-1.5 py-0.5 rounded border border-[#fde68a] text-[#b45309]">Submitted Oct 24, 2024 14:15 UTC</span>
+</div>
+</div>
+</div>
+<!-- Action Row (Explicit Emergency Actions) -->
+<div class="mt-5 pt-3 border-t border-[#fde68a] flex flex-wrap items-center justify-between gap-2">
+<div class="flex items-center gap-3">
+<button class="text-secondary hover:text-[#0c4482] font-label-md text-label-md font-semibold flex items-center gap-1 px-1" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="policy">policy</span>
+<span>Audit Log 审计记录</span>
+</button>
+<button class="text-[#ba1a1a] hover:text-[#93000a] font-label-md text-label-md font-semibold flex items-center gap-1 px-1" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="cancel">cancel</span>
+<span>Cancel Request 撤销</span>
+</button>
+</div>
+<button class="px-4 py-2 rounded-lg bg-[#b45309] hover:bg-[#92400e] text-white font-label-md text-label-md font-semibold flex items-center gap-1.5 shadow-sm transition-all duration-150 active:scale-[0.99]" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="vpn_key">vpn_key</span>
+<span>Authorize as Family Approver 家长授权</span>
+</button>
+</div>
+</article>
+</section>
+<!-- Institutional Registry Explainer Section (Bento Info Block) -->
+<section class="bg-white rounded-xl border border-[#e2ded3] p-6 shadow-[0_1px_3px_rgba(15,27,45,0.05)]">
+<div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+<div class="space-y-2 max-w-2xl">
+<div class="flex items-center gap-2 text-primary-container font-label-md font-bold uppercase tracking-wider">
+<span class="material-symbols-outlined text-[18px]" data-icon="gavel">gavel</span>
+<span>Sovereign Regulatory Safeguards · 跨国外汇及反洗钱合规框架</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">
+            Dual-Jurisdiction Academic Escrow Clearing Standard (DJ-AECS)
+          </h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+            Cross-border tuition remittances from Bangladesh to China are guarded by smart contracts notarized through authorized FX clearing corridors. Personal beneficiaries mandate a 24-hour guardian cool-down and parental countersignature to prevent predatory academic fraud.
+          </p>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-3 w-full lg:w-auto shrink-0">
+<div class="p-3 bg-[#f9f9ff] border border-[#e2ded3] rounded-lg text-center">
+<div class="font-mono font-bold text-on-surface text-label-lg">24h</div>
+<div class="text-[11px] text-on-surface-variant mt-0.5">Cooling Off Period</div>
+</div>
+<div class="p-3 bg-[#f9f9ff] border border-[#e2ded3] rounded-lg text-center">
+<div class="font-mono font-bold text-primary-container text-label-lg">100%</div>
+<div class="text-[11px] text-on-surface-variant mt-0.5">Fund Ring-fenced</div>
+</div>
+<div class="p-3 bg-[#f9f9ff] border border-[#e2ded3] rounded-lg text-center col-span-2 sm:col-span-1">
+<div class="font-mono font-bold text-secondary text-label-lg">AES-256</div>
+<div class="text-[11px] text-on-surface-variant mt-0.5">Vault Notarized</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Interactive Slide-over Drawer / Bottom Sheet: "Add Payee 添加新收款人" -->
+<aside aria-label="Add guarded payee drawer" class="fixed inset-y-0 right-0 w-full max-w-xl bg-white shadow-2xl border-l border-[#cbd5e1] z-50 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col justify-between" id="addPayeeDrawer">
+<!-- Header -->
+<div class="px-6 py-5 bg-on-background text-white flex items-center justify-between border-b border-slate-700">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-lg bg-primary-container flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-[20px]" data-icon="person_add">person_add</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm font-bold text-white">Add New Guarded Payee 添加跨境收款人</h2>
+<p class="text-slate-300 text-label-sm font-label-sm">Institutional &amp; Dual-Custody Verification</p>
+</div>
+</div>
+<button class="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors" onclick="document.getElementById('addPayeeDrawer').classList.add('translate-x-full')" type="button">
+<span class="material-symbols-outlined text-[22px]" data-icon="close">close</span>
+</button>
+</div>
+<!-- Form Body -->
+<div class="p-6 overflow-y-auto space-y-5 flex-grow font-sans">
+<!-- Notice Card -->
+<div class="p-4 rounded-xl bg-[#fffbeb] border border-[#fde68a] text-body-sm text-[#92400e] space-y-1">
+<div class="flex items-center gap-1.5 font-bold text-label-md">
+<span class="material-symbols-outlined text-[18px] text-[#b45309]" data-icon="security">security</span>
+<span>Dual-Custody Ingestion Notice · 双重监管准入须知</span>
+</div>
+<p class="text-[13px] leading-relaxed">
+          Note: Institutional accounts from certified university whitelists are verified instantly. Personal accounts trigger mandatory 24h cooling-off and parental countersignature.
+        </p>
+</div>
+<!-- Field 1: Payee Legal Name -->
+<div class="space-y-1.5">
+<label class="block font-label-md text-label-md font-semibold text-on-surface" for="payeeName">
+          Payee Legal Name / 账户全称 <span class="text-[#ba1a1a]">*</span>
+</label>
+<input class="w-full px-3.5 py-2.5 bg-white border border-[#e2ded3] rounded-lg text-body-md font-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary" id="payeeName" placeholder="e.g. Peking University Treasury / 北京大学财务处" type="text"/>
+<span class="text-body-sm text-on-surface-variant block">Must match official university treasury registration or legal bank records.</span>
+</div>
+<!-- Field 2: Payee Category -->
+<div class="space-y-1.5">
+<label class="block font-label-md text-label-md font-semibold text-on-surface" for="payeeCategory">
+          Payee Category / 收款类别 <span class="text-[#ba1a1a]">*</span>
+</label>
+<select class="w-full px-3.5 py-2.5 bg-white border border-[#e2ded3] rounded-lg text-body-md font-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary" id="payeeCategory">
+<option selected="">University Tuition &amp; Fees (公立高校学费专户) · Instant Whitelist</option>
+<option>Student Dormitory / Residence (学生公寓住宿专户)</option>
+<option>Medical &amp; Health Insurance (国际生医疗保险费)</option>
+<option>Lab / Research Equipment Fee (实验室材料款 - Triggers 24h Cooling-off)</option>
+</select>
+</div>
+<!-- Field 3: Account / IBAN Number -->
+<div class="space-y-1.5">
+<label class="block font-label-md text-label-md font-semibold text-on-surface" for="accountNumber">
+          Account / IBAN Number / 银行账号 <span class="text-[#ba1a1a]">*</span>
+</label>
+<div class="relative">
+<input class="w-full px-3.5 py-2.5 bg-white border border-[#e2ded3] rounded-lg font-mono text-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary tracking-wider" id="accountNumber" placeholder="6222 0000 0000 0000" type="text"/>
+<span class="absolute right-3 top-2.5 text-label-sm font-mono text-outline-variant">UNIONPAY / CNAPS</span>
+</div>
+</div>
+<!-- Field 4 & 5 Grid: Bank and SWIFT -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div class="space-y-1.5">
+<label class="block font-label-md text-label-md font-semibold text-on-surface" for="bankName">
+            Beneficiary Bank / 开户银行 <span class="text-[#ba1a1a]">*</span>
+</label>
+<input class="w-full px-3.5 py-2.5 bg-white border border-[#e2ded3] rounded-lg text-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary" id="bankName" placeholder="Bank of China (中国银行)" type="text"/>
+</div>
+<div class="space-y-1.5">
+<label class="block font-label-md text-label-md font-semibold text-on-surface" for="swiftCode">
+            SWIFT / CNAPS / 联行号 <span class="text-[#ba1a1a]">*</span>
+</label>
+<input class="w-full px-3.5 py-2.5 bg-white border border-[#e2ded3] rounded-lg font-mono text-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary uppercase" id="swiftCode" placeholder="e.g. BKCHCNBJ110" type="text"/>
+</div>
+</div>
+<!-- Field 6: Relationship / Student ID Reference -->
+<div class="space-y-1.5">
+<label class="block font-label-md text-label-md font-semibold text-on-surface" for="studentRef">
+          Student ID Reference / 学号或缴费回执号 <span class="text-[#ba1a1a]">*</span>
+</label>
+<input class="w-full px-3.5 py-2.5 bg-white border border-[#e2ded3] rounded-lg font-mono text-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary" id="studentRef" placeholder="e.g. THU-2024-BD-8809" type="text"/>
+</div>
+<!-- Encryption Note Footnote -->
+<div class="p-3 bg-[#f0fdf4] border border-[#bbf7d0] rounded-lg text-primary-container text-body-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="lock">lock</span>
+<span class="text-[12px] font-medium leading-tight">
+          🔒 Accounts stored encrypted + tokenised · 账户经国密与AES-256多重硬件级加密与代币化隔离存储
+        </span>
+</div>
+</div>
+<!-- Drawer Footer Actions -->
+<div class="p-5 border-t border-[#e2ded3] bg-[#f9f9ff] flex items-center justify-end gap-3">
+<button class="px-5 py-2.5 rounded-lg border border-[#cbd5e1] hover:bg-white text-on-surface font-label-md text-label-md font-semibold transition-colors" onclick="document.getElementById('addPayeeDrawer').classList.add('translate-x-full')" type="button">
+        Cancel 取消
+      </button>
+<button class="px-5 py-2.5 rounded-lg bg-primary-container hover:bg-[#085d44] text-white font-label-md text-label-md font-semibold flex items-center gap-2 shadow-sm transition-all duration-150 active:scale-[0.99]" onclick="document.getElementById('addPayeeDrawer').classList.add('translate-x-full')" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="how_to_reg">how_to_reg</span>
+<span>Submit for Guardian Verification 提交受托验证</span>
+</button>
+</div>
+</aside>
+<!-- Footer Component (Shared Anchor) -->
+<footer class="w-full px-margin-desktop py-space-lg flex flex-col md:flex-row justify-between items-center border-t border-t border-outline-variant dark:border-outline bg-surface-container-low dark:bg-on-background flat no shadows docked full-width bottom-0 text-body-sm font-body-sm mt-auto gap-4">
+<div class="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left">
+<div class="text-label-lg font-label-lg font-bold text-on-surface dark:text-inverse-on-surface flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span>Setu 桥</span>
+</div>
+<span class="text-on-surface-variant dark:text-surface-variant text-[12px]">
+        © 2024 Setu 桥 Cross-Border Academic Clearing System. Regulated Institutional Escrow &amp; Sovereign FX Corridor (BDT/CNY). All cryptographic chains notarized.
+      </span>
+</div>
+<div class="flex flex-wrap items-center justify-center gap-5 font-label-sm text-label-sm">
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-on-surface transition-colors" href="#">
+        Sovereign Protocol Specification
+      </a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-on-surface transition-colors" href="#">
+        Audit Trail Certificate
+      </a>
+<a class="text-primary dark:text-inverse-primary font-semibold hover:underline" href="#">
+        Regulatory Disclosures · 监管公示
+      </a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-on-surface transition-colors" href="#">
+        Escrow Integrity SLA
+      </a>
+</div>
+</footer>
+</body></html>

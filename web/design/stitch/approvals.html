@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Approvals 审批 | Setu 桥 Cross-Border Guarded Payments</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&amp;family=Noto+Sans+SC:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "outline": "#6e7a73",
+            "tertiary-fixed": "#ffdcc3",
+            "secondary-fixed": "#d6e3ff",
+            "outline-variant": "#bdc9c2",
+            "surface-container-lowest": "#ffffff",
+            "on-tertiary-container": "#ffe9db",
+            "surface-container-high": "#dee8ff",
+            "inverse-on-surface": "#ecf1ff",
+            "surface-bright": "#f9f9ff",
+            "on-surface-variant": "#3e4943",
+            "tertiary-container": "#a45800",
+            "surface-container-low": "#f0f3ff",
+            "on-tertiary-fixed-variant": "#6e3900",
+            "on-error": "#ffffff",
+            "on-tertiary": "#ffffff",
+            "on-background": "#101c2e",
+            "secondary-fixed-dim": "#a9c7ff",
+            "secondary": "#125db2",
+            "on-secondary-fixed": "#001b3d",
+            "inverse-primary": "#7bd8b2",
+            "tertiary-fixed-dim": "#ffb77d",
+            "surface-tint": "#006c4f",
+            "on-primary-fixed": "#002115",
+            "error": "#ba1a1a",
+            "primary-fixed-dim": "#7bd8b2",
+            "on-secondary": "#ffffff",
+            "surface-container-highest": "#d7e3fc",
+            "on-secondary-container": "#003b77",
+            "on-primary-container": "#a7ffd9",
+            "primary": "#005f45",
+            "on-tertiary-fixed": "#2f1500",
+            "primary-fixed": "#98f5cd",
+            "on-primary-fixed-variant": "#00513a",
+            "surface-variant": "#d7e3fc",
+            "on-secondary-fixed-variant": "#00468c",
+            "surface-container": "#e7eeff",
+            "secondary-container": "#6ea6ff",
+            "primary-container": "#0b7a5a",
+            "surface": "#f9f9ff",
+            "on-primary": "#ffffff",
+            "background": "#f9f9ff",
+            "tertiary": "#804300",
+            "inverse-surface": "#253144",
+            "surface-dim": "#cfdaf3",
+            "on-error-container": "#93000a",
+            "error-container": "#ffdad6",
+            "on-surface": "#101c2e"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "gutter-mobile": "0.75rem",
+            "space-xs": "0.25rem",
+            "space-xl": "2rem",
+            "space-sm": "0.5rem",
+            "margin-desktop": "2rem",
+            "gutter": "1rem",
+            "margin": "1rem"
+          },
+          "fontFamily": {
+            "headline-md": ["Noto Sans", "Noto Sans SC", "sans-serif"],
+            "body-lg": ["Noto Sans", "Noto Sans SC", "sans-serif"],
+            "tabular-amount-lg": ["Noto Sans", "monospace", "sans-serif"],
+            "tabular-amount-md": ["Noto Sans", "monospace", "sans-serif"],
+            "headline-lg-mobile": ["Noto Sans", "Noto Sans SC", "sans-serif"],
+            "headline-lg": ["Noto Sans", "Noto Sans SC", "sans-serif"],
+            "body-md": ["Noto Sans", "Noto Sans SC", "sans-serif"],
+            "headline-sm": ["Noto Sans", "Noto Sans SC", "sans-serif"],
+            "label-md": ["Noto Sans", "Noto Sans SC", "sans-serif"],
+            "label-lg": ["Noto Sans", "Noto Sans SC", "sans-serif"],
+            "body-sm": ["Noto Sans", "Noto Sans SC", "sans-serif"],
+            "label-sm": ["Noto Sans", "Noto Sans SC", "sans-serif"]
+          },
+          "fontSize": {
+            "headline-md": ["22px", { "lineHeight": "30px", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "tabular-amount-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "tabular-amount-md": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "headline-lg-mobile": ["26px", { "lineHeight": "34px", "fontWeight": "700" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "headline-sm": ["18px", { "lineHeight": "26px", "fontWeight": "600" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    body {
+      background-color: #f6f4ef;
+      color: #101c2e;
+      -webkit-font-smoothing: antialiased;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      display: none;
+    }
+    .custom-scroll {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col font-body-md selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- Top Sandbox Regulatory Audit Strip -->
+<aside class="w-full bg-[#fffbeb] border-b border-[#fde68a] text-[#b45309] text-[11px] leading-tight py-1 px-3 sm:px-6 z-50">
+<div class="max-w-[768px] mx-auto flex items-center justify-between gap-2 overflow-x-auto whitespace-nowrap custom-scroll">
+<div class="flex items-center gap-1.5 font-mono">
+<span class="inline-block w-2 h-2 rounded-full bg-[#f59e0b] animate-ping opacity-75"></span>
+<span class="font-bold">SYNTHETIC DATA · SANDBOX BANK · 演示数据 · SAMPLE FX</span>
+<span class="text-[#fde68a]">|</span>
+<span>CORRIDOR: CNY / BDT (GUARDED TUITION ESCROW)</span>
+</div>
+<div class="font-mono text-[10px] bg-[#fef3c7] px-2 py-0.5 rounded border border-[#fde68a]">
+        CHAIN ID: SETU-DEV-24
+      </div>
+</div>
+</aside>
+<!-- TopAppBar Component (from Shared Components JSON with Injected Styles) -->
+<header class="bg-inverse-surface dark:bg-inverse-surface shadow-sm dark:shadow-none w-full sticky top-0 z-40">
+<div class="max-w-[440px] md:max-w-[768px] mx-auto px-margin py-2.5 flex items-center justify-between">
+<!-- Leading Brand & Emblem -->
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-[#0b7a5a]/20 flex items-center justify-center text-primary-fixed border border-primary-fixed/30">
+<span class="material-symbols-outlined text-[20px]" data-icon="shield">shield</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-headline-sm font-headline-sm font-bold text-inverse-on-surface dark:text-inverse-on-surface tracking-tight">Setu 桥</span>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-[#0f1b2d] text-[#f59e0b] border border-[#f59e0b]/40">SANDBOX-CN-02</span>
+</div>
+<p class="text-[11px] text-inverse-on-surface/70 leading-none">Guarded Cross-Border Rail</p>
+</div>
+</div>
+<!-- Trailing Action: User Profile & Language Selector -->
+<div class="flex items-center gap-2.5">
+<div class="hidden sm:flex flex-col text-right">
+<span class="text-label-md font-label-md text-inverse-on-surface font-semibold">Tanvir Ahmed</span>
+<span class="text-[10px] text-inverse-on-surface/60 font-medium">清华大学 · Sponsor Guardian</span>
+</div>
+<button class="px-2.5 py-1 rounded bg-surface-variant/20 hover:bg-surface-variant/30 text-inverse-on-surface text-label-md font-label-md font-semibold transition-transform duration-150 active:scale-[0.98] border border-outline/30 flex items-center gap-1">
+<span>EN / 简</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="translate">translate</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Canvas Content -->
+<main class="flex-1 max-w-[440px] md:max-w-[768px] w-full mx-auto px-margin pt-4 pb-28 md:pb-20 space-y-space-md">
+<!-- Screen Title & Dual-Signature Policy Banner -->
+<section class="space-y-space-xs">
+<div class="flex items-center justify-between">
+<div>
+<h1 class="text-headline-lg-mobile md:text-headline-lg font-headline-lg-mobile md:font-headline-lg text-[#0f1b2d] tracking-tight flex items-baseline gap-2">
+            Approvals <span class="text-headline-md font-headline-md font-bold text-on-surface-variant">审批</span>
+</h1>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-0.5">
+            Guarded multi-sign verification for student tuition &amp; living disbursement corridor · 跨境学生学费托管多签审批
+          </p>
+</div>
+<div class="hidden sm:flex items-center gap-1.5 px-3 py-1 bg-white rounded-lg border border-[#e2ded3] shadow-sm text-xs font-mono text-on-surface">
+<span class="w-2 h-2 rounded-full bg-[#0b7a5a]"></span>
+<span>ORACLE SYNC 19.0270</span>
+</div>
+</div>
+<!-- Alert Banner: T3 Dual Signature Mandate -->
+<div class="bg-[#fffbeb] border border-[#fde68a] rounded-xl p-3 flex items-start gap-2.5 shadow-sm">
+<span class="material-symbols-outlined text-[#b45309] text-[20px] mt-0.5 shrink-0" data-icon="gavel">gavel</span>
+<div class="flex-1">
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#fef3c7] text-[#92400e] border border-[#fde68a]">REGULATORY PROTOCOL</span>
+<span class="text-label-md font-label-md text-[#92400e] font-bold">Dual-Signature Mandatory for transfers &gt; CNY 10,000.00</span>
+</div>
+<p class="text-body-sm font-body-sm text-[#78350f] mt-0.5">
+            Cross-border Education Remittance Rule requires simultaneous Student TOTP and Verified Sponsor Guardian sign-off prior to smart escrow execution.
+          </p>
+</div>
+</div>
+</section>
+<!-- Navigation Tabs & Category Filters -->
+<nav aria-label="Approvals filter" class="space-y-space-xs">
+<div class="flex items-center justify-between border-b border-[#e2ded3] pb-2">
+<div class="flex gap-2">
+<!-- Active Tab: Pending (2) -->
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#0f1b2d] text-white text-label-md font-label-md shadow-sm transition-transform active:scale-95">
+<span>Pending 待审批</span>
+<span class="bg-[#0b7a5a] text-white text-[11px] font-bold px-1.5 py-0.2 rounded-full">2</span>
+</button>
+<!-- Inactive Tab: History -->
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-on-surface-variant hover:text-[#0f1b2d] hover:bg-white text-label-md font-label-md transition-colors">
+<span>History 历史记录</span>
+<span class="text-on-surface-variant/60 font-mono text-xs">(14)</span>
+</button>
+</div>
+<span class="text-[11px] font-mono text-on-surface-variant hidden sm:inline-block">2 OBLIGATIONS REQUIRING ATTENTION</span>
+</div>
+<!-- Filter Chips -->
+<div class="flex items-center gap-1.5 overflow-x-auto custom-scroll pt-1">
+<button class="shrink-0 px-2.5 py-1 rounded-full text-label-sm font-label-sm bg-[#0b7a5a] text-white shadow-xs">
+          All Obligations 全部
+        </button>
+<button class="shrink-0 px-2.5 py-1 rounded-full text-label-sm font-label-sm bg-white border border-[#e2ded3] text-on-surface-variant hover:border-[#0b7a5a]">
+          Tuition 学费 (1)
+        </button>
+<button class="shrink-0 px-2.5 py-1 rounded-full text-label-sm font-label-sm bg-white border border-[#e2ded3] text-on-surface-variant hover:border-[#0b7a5a]">
+          Living Allowance 生活费 (1)
+        </button>
+<button class="shrink-0 px-2.5 py-1 rounded-full text-label-sm font-label-sm bg-white border border-[#e2ded3] text-on-surface-variant hover:border-[#0b7a5a]">
+          Visa &amp; Health 签证杂费 (0)
+        </button>
+</div>
+</nav>
+<!-- PRIMARY ACTION CARD (Featured Pending Dual-Sign Approval) -->
+<article class="relative bg-white rounded-xl border border-[#e2ded3] shadow-[0_1px_4px_rgba(15,27,45,0.06)] overflow-hidden transition-all duration-200">
+<!-- 4px Jade Left Accent Border for Escrow / Verified Entity -->
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-[#0b7a5a]"></div>
+<div class="p-4 sm:p-5 pl-5 sm:pl-6 space-y-4">
+<!-- Card Header: Institutional Registry & Status -->
+<div class="flex flex-wrap items-start justify-between gap-2 border-b border-[#f0eee6] pb-3">
+<div class="space-y-0.5">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[#0b7a5a] text-[18px]" data-icon="account_balance">account_balance</span>
+<h2 class="text-headline-sm font-headline-sm font-bold text-[#0f1b2d]">Shenzhen Example University</h2>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant flex items-center gap-2 font-medium">
+<span>深圳示范大学 · 国际学院直属账户</span>
+<span class="inline-flex items-center text-[10px] text-[#0b7a5a] bg-[#ecfdf5] border border-[#a7f3d0] px-1.5 py-0.2 rounded font-mono">
+                ✓ VERIFIED IBAN
+              </span>
+</p>
+</div>
+<!-- Status Badge -->
+<div class="flex flex-col items-end gap-1">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-label-sm font-label-sm font-bold bg-[#fffbeb] text-[#b45309] border border-[#fde68a]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#f59e0b] animate-pulse"></span>
+              T3 · Dual-Sign Dual-Approval 审批中
+            </span>
+<span class="text-[10px] font-mono text-outline">REF: #OBLIG-SZ-99214</span>
+</div>
+</div>
+<!-- Amount Conversion Bento Block -->
+<div class="bg-[#fcfbf9] rounded-xl border border-[#e8e4da] p-3.5 space-y-2.5">
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
+<!-- Target Fee Amount -->
+<div class="space-y-0.5">
+<div class="flex items-center gap-1.5 text-label-sm font-label-sm text-outline">
+<span class="font-bold text-on-surface-variant">APPROVED DISBURSEMENT AMOUNT</span>
+<span class="bg-[#e2ded3] text-[#101c2e] text-[9px] px-1 rounded font-mono">SEMESTER 3</span>
+</div>
+<div class="flex items-baseline gap-1 text-[#0f1b2d]">
+<span class="text-sm font-bold text-outline">CNY ¥</span>
+<span class="text-tabular-amount-lg font-tabular-amount-lg font-mono">18,500.00</span>
+</div>
+<p class="text-[11px] text-on-surface-variant">Payable to: Tsinghua / Shenzhen University Treasury Account</p>
+</div>
+<!-- Sponsor Countervalue & Locked Oracle Rate -->
+<div class="sm:border-l sm:border-[#e2ded3] sm:pl-4 space-y-1">
+<span class="text-label-sm font-label-sm text-outline">SPONSOR DEBIT (BANGLADESH CORRIDOR)</span>
+<div class="flex items-baseline gap-1.5 text-[#125db2]">
+<span class="text-sm font-bold">BDT ৳</span>
+<span class="text-tabular-amount-md font-tabular-amount-md font-mono font-bold">352,000.00</span>
+</div>
+<div class="flex items-center gap-1.5 text-[11px] font-mono text-[#0b7a5a] bg-[#ecfdf5] px-2 py-0.5 rounded border border-[#a7f3d0] w-fit">
+<span class="material-symbols-outlined text-[13px]" data-icon="lock_clock">lock_clock</span>
+<span>1 CNY = 19.0270 BDT · Locked: 18m 42s</span>
+</div>
+</div>
+</div>
+<!-- Admission & Whitelist Verification Detail -->
+<div class="text-[11px] text-on-surface-variant pt-2 border-t border-[#eeebe2] flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[15px] text-[#0b7a5a]" data-icon="verified">verified</span>
+<span>Fall 2024 Tuition Instalment - Verified against Official Admission Notice &amp; University Account IBAN whitelist.</span>
+</div>
+</div>
+<!-- Required Multi-Signature Steps (Student + Family Approver) -->
+<div class="space-y-2">
+<div class="flex items-center justify-between text-label-sm font-label-sm">
+<span class="text-outline uppercase tracking-wider">Multi-Signature Consensus Progress (1 of 2 Complete)</span>
+<span class="font-mono text-[#0b7a5a] font-bold">50% QUORUM</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+<!-- Signer 1: Student (Completed) -->
+<div class="flex items-center gap-2.5 p-2.5 rounded-lg bg-[#ecfdf5] border border-[#a7f3d0]">
+<div class="w-6 h-6 rounded-full bg-[#0b7a5a] text-white flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[15px]" data-icon="check">check</span>
+</div>
+<div class="leading-tight">
+<div class="text-label-md font-label-md font-bold text-[#065f46] flex items-center gap-1">
+<span>Student TOTP (本人动态口令)</span>
+</div>
+<span class="text-[10px] font-mono text-[#047857]">Signed 2024-10-24 14:02:18 · Device Verified</span>
+</div>
+</div>
+<!-- Signer 2: Sponsor Guardian (Action Required) -->
+<div class="flex items-center gap-2.5 p-2.5 rounded-lg bg-[#fffbeb] border border-[#fde68a]">
+<div class="w-6 h-6 rounded-full bg-[#f59e0b] text-white flex items-center justify-center shrink-0 animate-pulse">
+<span class="material-symbols-outlined text-[15px]" data-icon="hourglass_top">hourglass_top</span>
+</div>
+<div class="leading-tight">
+<div class="text-label-md font-label-md font-bold text-[#92400e] flex items-center gap-1">
+<span>Family approver (家长签字/审批)</span>
+<span class="text-[9px] px-1 bg-[#fef3c7] rounded border border-[#fde68a] text-[#b45309]">PENDING YOU</span>
+</div>
+<span class="text-[10px] text-[#b45309]">Awaiting Sponsor authorization code</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Interactive Verification & Cooling-off Area -->
+<div class="bg-[#f9f8f5] rounded-xl p-3.5 border border-[#e2ded3] space-y-3">
+<div class="flex flex-wrap items-center justify-between gap-2">
+<div class="space-y-0.5">
+<label class="text-label-md font-label-md font-bold text-[#0f1b2d] flex items-center gap-1.5">
+<span>Enter Sponsor 6-Digit TOTP Key</span>
+<span class="text-xs font-normal text-on-surface-variant font-sans">输入监护人授权码</span>
+</label>
+<p class="text-[11px] text-outline">Check your Setu Authenticator app or registered SMS device.</p>
+</div>
+<!-- Cooling-off fraud prevention chip -->
+<div class="flex items-center gap-1 text-[11px] font-mono text-[#b45309] bg-[#fffbeb] px-2.5 py-1 rounded-full border border-[#fde68a]">
+<span class="material-symbols-outlined text-[14px]" data-icon="alarm">alarm</span>
+<span>Cooling-off ends 23:41:05 (冷静期倒计时)</span>
+</div>
+</div>
+<!-- 6-box TOTP passcode input -->
+<div class="flex items-center justify-start gap-2 sm:gap-3 py-1">
+<div class="w-10 sm:w-12 h-12 rounded-lg bg-white border-2 border-[#125db2] flex items-center justify-center text-lg font-mono font-bold text-[#0f1b2d] shadow-sm">
+              4
+            </div>
+<div class="w-10 sm:w-12 h-12 rounded-lg bg-white border-2 border-[#125db2] flex items-center justify-center text-lg font-mono font-bold text-[#0f1b2d] shadow-sm">
+              8
+            </div>
+<div class="w-10 sm:w-12 h-12 rounded-lg bg-white border-2 border-[#125db2] flex items-center justify-center text-lg font-mono font-bold text-[#0f1b2d] shadow-sm">
+              2
+            </div>
+<div class="w-10 sm:w-12 h-12 rounded-lg bg-white border-2 border-[#125db2] flex items-center justify-center text-lg font-mono text-outline animate-pulse">
+<span class="w-2.5 h-0.5 bg-[#125db2]"></span>
+</div>
+<div class="w-10 sm:w-12 h-12 rounded-lg bg-white border border-[#e2ded3] flex items-center justify-center text-lg font-mono text-outline/40">
+              ·
+            </div>
+<div class="w-10 sm:w-12 h-12 rounded-lg bg-white border border-[#e2ded3] flex items-center justify-center text-lg font-mono text-outline/40">
+              ·
+            </div>
+<button class="ml-2 text-xs text-[#125db2] hover:underline font-medium text-left">
+              Resend Code<br/><span class="text-[10px] text-outline font-mono">54s left</span>
+</button>
+</div>
+<!-- Decision Action CTA Group -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+<button class="sm:col-span-2 h-12 rounded-xl bg-[#0b7a5a] hover:bg-[#085d44] active:scale-[0.98] text-white font-label-lg font-label-lg flex items-center justify-center gap-2 shadow-sm transition-all duration-150">
+<span class="material-symbols-outlined text-[18px]" data-icon="fingerprint">fingerprint</span>
+<span>Approve &amp; Sign 签署并批准</span>
+</button>
+<button class="h-12 rounded-xl bg-white border border-[#dc2626]/40 hover:bg-[#ffdad6]/20 active:scale-[0.98] text-[#dc2626] font-label-md font-label-md flex items-center justify-center gap-1.5 transition-all duration-150">
+<span class="material-symbols-outlined text-[16px]" data-icon="cancel">cancel</span>
+<span>Reject 驳回 / Escalate</span>
+</button>
+</div>
+<!-- Guarantees Note -->
+<div class="flex items-center gap-2 pt-1 text-[11px] text-outline">
+<span class="material-symbols-outlined text-[15px] text-[#0b7a5a]" data-icon="security">security</span>
+<p>Funds are protected by smart escrow and released only to verified institutional bank rails upon dual sign-off.</p>
+</div>
+</div>
+</div>
+</article>
+<!-- SECONDARY PENDING CARD (Collapsed / Secondary Obligation) -->
+<article class="bg-white rounded-xl border border-[#e2ded3] shadow-[0_1px_3px_rgba(15,27,45,0.04)] overflow-hidden">
+<!-- 4px Bridge Blue Left Strip for In-Transit / Student Approval -->
+<div class="relative pl-4 p-3.5 sm:p-4">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-[#125db2]"></div>
+<div class="flex flex-wrap items-center justify-between gap-2">
+<div class="space-y-0.5">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[#125db2] text-[18px]" data-icon="apartment">apartment</span>
+<h3 class="text-body-lg font-body-lg font-bold text-[#0f1b2d]">Shenzhen University Housing Service</h3>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant">
+              Dormitory Q3 Maintenance &amp; Utility Deposit · 留学生公寓宿费
+            </p>
+</div>
+<div class="text-right">
+<div class="flex items-baseline justify-end gap-1 font-mono text-[#0f1b2d]">
+<span class="text-xs font-bold text-outline">CNY</span>
+<span class="text-tabular-amount-md font-tabular-amount-md font-bold">3,200.00</span>
+</div>
+<span class="text-[11px] font-mono text-outline">≈ 60,886.40 BDT</span>
+</div>
+</div>
+<div class="mt-3 pt-2.5 border-t border-[#f0eee6] flex flex-wrap items-center justify-between gap-2 text-xs">
+<div class="flex items-center gap-1.5">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-[#eff6ff] text-[#1e40af] border border-[#bfdbfe]">
+              T1 · Single Sign 待学生确认
+            </span>
+<span class="text-[11px] text-outline font-mono">Due in 4 days</span>
+</div>
+<button class="text-xs font-label-md font-label-md text-[#125db2] hover:underline flex items-center gap-0.5">
+<span>View Lease Agreement 查阅合同</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</article>
+<!-- HISTORICAL EXECUTION AUDIT SECTION -->
+<section class="space-y-space-xs pt-2">
+<div class="flex items-center justify-between">
+<h2 class="text-label-lg font-label-lg text-on-surface font-bold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px] text-[#0b7a5a]" data-icon="history">history</span>
+<span>Recent Execution Audit 历史审批与存证</span>
+</h2>
+<a class="text-xs font-label-md font-label-md text-[#125db2] hover:underline" href="#full-history">
+          View All Logs 查看全链记录
+        </a>
+</div>
+<!-- Executed Item Card -->
+<div class="bg-white rounded-xl border border-[#e2ded3] p-4 shadow-sm space-y-3">
+<div class="flex flex-wrap items-start justify-between gap-2">
+<div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[#0b7a5a] text-[18px]" data-icon="school">school</span>
+<h4 class="text-body-md font-body-md font-bold text-[#0f1b2d]">Tsinghua University (清华大学)</h4>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Spring Semester Tuition &amp; Laboratory Deposit</p>
+</div>
+<div class="flex flex-col items-end">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#ecfdf5] text-[#065f46] border border-[#a7f3d0]">
+<span class="material-symbols-outlined text-[12px]" data-icon="verified">verified</span>
+              EXECUTED · 已结清
+            </span>
+<span class="text-[10px] font-mono text-outline">Oct 15, 2024 · 11:28 GMT+8</span>
+</div>
+</div>
+<div class="flex items-baseline justify-between bg-[#fbf9f5] rounded-lg p-2.5 border border-[#eeebe2]">
+<div class="space-y-0.5">
+<span class="text-[10px] text-outline font-medium">DISBURSED VIA GUANGZHOU SWIFT</span>
+<div class="font-mono text-body-md font-bold text-[#0f1b2d]">CNY ¥ 18,500.00</div>
+</div>
+<div class="text-right space-y-0.5">
+<span class="text-[10px] text-outline font-medium">DEBITED FROM BRAC BANK BD</span>
+<div class="font-mono text-body-md font-bold text-on-surface-variant">352,000.00 BDT</div>
+</div>
+</div>
+<!-- Merkle Proof & Cryptographic Certificate Data -->
+<div class="pt-1 space-y-1.5 text-[11px] font-mono border-t border-[#f0eee6]">
+<div class="flex items-center justify-between text-outline">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]" data-icon="data_object">data_object</span>
+<span>Merkle Root:</span>
+</span>
+<span class="text-[#0f1b2d] font-bold">0x8a9f...b012</span>
+</div>
+<div class="flex items-center justify-between text-outline">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]" data-icon="receipt_long">receipt_long</span>
+<span>Audit Hash:</span>
+</span>
+<div class="flex items-center gap-1 text-[#125db2] hover:underline cursor-pointer">
+<span>tx_0x9b42e...88f1</span>
+<span class="material-symbols-outlined text-[12px]" data-icon="content_copy">content_copy</span>
+</div>
+</div>
+<div class="pt-1 flex items-center justify-end">
+<a class="text-xs text-[#0b7a5a] font-label-md font-label-md hover:underline flex items-center gap-1" href="#cert">
+<span class="material-symbols-outlined text-[14px]" data-icon="download">download</span>
+<span>Download Signed Legal Escrow Certificate (PDF · 盖章凭证)</span>
+</a>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Sticky Bottom Action Bar with Safe Area Padding -->
+<footer class="fixed bottom-0 left-0 right-0 w-full z-40 bg-white/95 backdrop-blur-md border-t border-[#e2ded3] shadow-[0_-4px_16px_rgba(16,28,46,0.06)]">
+<div class="max-w-[440px] md:max-w-[768px] mx-auto px-margin py-2.5 pb-[env(safe-area-inset-bottom,0.75rem)] flex items-center justify-between gap-3">
+<!-- Quick Summary -->
+<div class="min-w-0">
+<div class="flex items-center gap-1 text-label-sm font-label-sm text-[#b45309] font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-[#f59e0b] animate-ping"></span>
+<span>1 URGENT APPROVAL</span>
+</div>
+<p class="text-body-sm font-body-sm font-bold text-[#0f1b2d] truncate">
+          Shenzhen Univ · CNY 18,500.00
+        </p>
+<span class="text-[10px] text-outline truncate block">Requires Sponsor dual sign-off</span>
+</div>
+<!-- Action Buttons Cluster -->
+<div class="flex items-center gap-2 shrink-0">
+<button class="h-10 px-3 rounded-lg border border-[#dc2626]/40 text-[#dc2626] font-label-md font-label-md hover:bg-[#ffdad6]/20 transition-all active:scale-95">
+          Reject 驳回
+        </button>
+<button class="h-10 px-4 rounded-lg bg-[#0b7a5a] hover:bg-[#085d44] text-white font-label-md font-label-md font-bold flex items-center gap-1.5 shadow-sm transition-all active:scale-95">
+<span class="material-symbols-outlined text-[16px]" data-icon="verified_user">verified_user</span>
+<span>Approve 签署并授权</span>
+</button>
+</div>
+</div>
+</footer>
+</body></html>

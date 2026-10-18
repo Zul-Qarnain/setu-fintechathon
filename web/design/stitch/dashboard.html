@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Setu 桥 · Guarded Cross-Border Student Payments</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container": "#e7eeff",
+            "on-tertiary-container": "#ffe9db",
+            "on-primary": "#ffffff",
+            "background": "#f9f9ff",
+            "on-tertiary-fixed": "#2f1500",
+            "surface-container-high": "#dee8ff",
+            "on-surface-variant": "#3e4943",
+            "error": "#ba1a1a",
+            "secondary-fixed": "#d6e3ff",
+            "secondary": "#125db2",
+            "on-secondary": "#ffffff",
+            "on-error": "#ffffff",
+            "on-secondary-fixed": "#001b3d",
+            "tertiary-container": "#a45800",
+            "tertiary": "#804300",
+            "on-secondary-container": "#003b77",
+            "on-tertiary-fixed-variant": "#6e3900",
+            "inverse-surface": "#253144",
+            "surface-container-highest": "#d7e3fc",
+            "outline": "#6e7a73",
+            "inverse-on-surface": "#ecf1ff",
+            "primary": "#005f45",
+            "tertiary-fixed-dim": "#ffb77d",
+            "on-secondary-fixed-variant": "#00468c",
+            "surface-container-low": "#f0f3ff",
+            "on-primary-container": "#a7ffd9",
+            "on-tertiary": "#ffffff",
+            "surface": "#f9f9ff",
+            "primary-container": "#0b7a5a",
+            "primary-fixed-dim": "#7bd8b2",
+            "outline-variant": "#bdc9c2",
+            "error-container": "#ffdad6",
+            "surface-tint": "#006c4f",
+            "on-error-container": "#93000a",
+            "inverse-primary": "#7bd8b2",
+            "tertiary-fixed": "#ffdcc3",
+            "on-surface": "#101c2e",
+            "secondary-container": "#6ea6ff",
+            "primary-fixed": "#98f5cd",
+            "on-primary-fixed": "#002115",
+            "on-primary-fixed-variant": "#00513a",
+            "surface-dim": "#cfdaf3",
+            "surface-variant": "#d7e3fc",
+            "surface-container-lowest": "#ffffff",
+            "secondary-fixed-dim": "#a9c7ff",
+            "on-background": "#101c2e"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "margin": "1rem",
+            "margin-desktop": "2rem",
+            "space-xl": "2rem",
+            "gutter": "1rem",
+            "space-lg": "1.5rem",
+            "space-sm": "0.5rem",
+            "gutter-mobile": "0.75rem",
+            "space-xs": "0.25rem",
+            "space-md": "1rem"
+          },
+          "fontFamily": {
+            "tabular-amount-lg": ["Noto Sans"],
+            "label-sm": ["Noto Sans"],
+            "headline-sm": ["Noto Sans"],
+            "headline-lg-mobile": ["Noto Sans"],
+            "label-lg": ["Noto Sans"],
+            "body-lg": ["Noto Sans"],
+            "body-md": ["Noto Sans"],
+            "headline-lg": ["Noto Sans"],
+            "body-sm": ["Noto Sans"],
+            "label-md": ["Noto Sans"],
+            "tabular-amount-md": ["Noto Sans"],
+            "headline-md": ["Noto Sans"]
+          },
+          "fontSize": {
+            "tabular-amount-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "headline-sm": ["18px", { "lineHeight": "26px", "fontWeight": "600" }],
+            "headline-lg-mobile": ["26px", { "lineHeight": "34px", "fontWeight": "700" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }],
+            "tabular-amount-md": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "headline-md": ["22px", { "lineHeight": "30px", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .tnum {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      display: none;
+    }
+    .custom-scroll {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-[#f6f4ef] text-on-surface antialiased selection:bg-primary selection:text-white font-body-md text-body-md min-h-screen">
+<!-- Slim Amber Sandbox Environment Banner -->
+<header class="fixed top-0 left-0 right-0 z-[60] bg-[#fef3c7] border-b border-[#fde68a] text-[#92400e] text-[11px] leading-tight px-3 py-1 flex items-center justify-between font-mono max-w-[440px] md:max-w-[768px] mx-auto tracking-tight select-none">
+<div class="flex items-center space-x-1.5 truncate">
+<span class="inline-block w-2 h-2 rounded-full bg-[#d97706] animate-pulse shrink-0"></span>
+<span class="font-bold truncate">SYNTHETIC DATA · SANDBOX BANK · 演示数据 · SAMPLE FX</span>
+</div>
+<span class="text-[9px] bg-[#fde68a]/70 px-1.5 py-0.5 rounded font-mono shrink-0 ml-1">CN-BD #482</span>
+</header>
+<!-- TopAppBar (From Shared Component JSON Specifications) -->
+<nav class="fixed top-[27px] left-0 right-0 w-full z-50 flex items-center justify-between px-margin max-w-[440px] md:max-w-[768px] mx-auto bg-inverse-surface py-2.5 shadow-sm">
+<div class="flex items-center space-x-2">
+<div class="w-8 h-8 rounded-lg bg-surface-container-highest/20 flex items-center justify-center text-primary-fixed">
+<span class="material-symbols-outlined text-[20px]" data-icon="shield">shield</span>
+</div>
+<div>
+<div class="flex items-center space-x-1.5">
+<span class="text-headline-sm font-headline-sm font-bold text-inverse-on-surface tracking-tight">Setu 桥</span>
+<span class="text-[10px] font-mono uppercase bg-primary-container/80 text-on-primary px-1.5 py-0.2 rounded tracking-wider">Escrow</span>
+</div>
+<p class="text-[11px] text-inverse-on-surface/70 leading-none">Dashboard 总览</p>
+</div>
+</div>
+<div class="flex items-center space-x-2">
+<!-- Trailing Action Locale Toggle -->
+<button class="bg-surface-variant/20 hover:bg-surface-variant/30 text-inverse-on-surface text-label-md font-label-md px-2.5 py-1 rounded-full border border-outline-variant/30 flex items-center space-x-1 transition-all active:scale-[0.98]" type="button">
+<span class="material-symbols-outlined text-[14px]" data-icon="language">language</span>
+<span>EN / 简</span>
+</button>
+<!-- Notifications/History Icon -->
+<button class="w-7 h-7 rounded-full bg-surface-variant/10 text-inverse-on-surface flex items-center justify-center hover:bg-surface-variant/20 transition-all" type="button">
+<span class="material-symbols-outlined text-[17px]" data-icon="notifications">notifications</span>
+</button>
+</div>
+</nav>
+<!-- Main Scrollable Canvas Container -->
+<main class="max-w-[440px] md:max-w-[768px] mx-auto pt-[86px] pb-24 px-margin space-y-space-md">
+<!-- Corridor Guarantee Header Card -->
+<section class="bg-surface-container-lowest rounded-xl border border-[#e2ded3] p-3.5 shadow-[0_1px_3px_rgba(15,27,45,0.05)]">
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-2">
+<span class="flex h-2.5 w-2.5 relative">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0b7a5a] opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#0b7a5a]"></span>
+</span>
+<span class="text-label-sm font-label-sm text-[#0b7a5a] uppercase tracking-wider">Live Guaranteed Corridor · 跨境托管锁汇</span>
+</div>
+<span class="text-[11px] font-mono text-outline bg-background px-2 py-0.5 rounded border border-[#e2ded3]">BN-ESCROW-V3</span>
+</div>
+<div class="mt-2 flex items-baseline justify-between">
+<div>
+<span class="text-label-md font-label-md text-on-surface-variant">Tsinghua Univ · International Student Reg</span>
+<p class="text-body-sm font-body-sm text-outline">Account Holder: Tanvir Ahmed · 国际留学生</p>
+</div>
+<div class="text-right">
+<span class="text-[11px] font-mono text-[#0b7a5a] font-semibold bg-[#ecfdf5] border border-[#a7f3d0] px-2 py-0.5 rounded-full">KYC Tier-2 Verified</span>
+</div>
+</div>
+</section>
+<!-- Bento Grid: Four Stat Cards with 4px left accent borders -->
+<section class="grid grid-cols-2 gap-2.5">
+<!-- Card 1: Next Due (Jade Stripe) -->
+<div class="bg-surface-container-lowest rounded-xl border border-[#e2ded3] relative overflow-hidden p-3.5 flex flex-col justify-between shadow-[0_1px_3px_rgba(15,27,45,0.05)]">
+<div class="absolute left-0 top-0 bottom-0 w-[4px] bg-[#0b7a5a]"></div>
+<div>
+<div class="flex items-center justify-between pl-1">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase">Next Due · 即将到期</span>
+<span class="material-symbols-outlined text-[#0b7a5a] text-[18px]" data-icon="event_upcoming">event_upcoming</span>
+</div>
+<div class="mt-2 pl-1">
+<div class="text-[18px] md:text-[20px] font-bold tracking-tight text-on-surface tnum font-mono">CNY 18,500.00</div>
+</div>
+</div>
+<p class="text-[11px] text-outline leading-tight mt-3 pl-1">
+          Upcoming tuition instalment · 即将到期学费
+        </p>
+</div>
+<!-- Card 2: BDT Needed (Bridge-Blue Stripe) -->
+<div class="bg-surface-container-lowest rounded-xl border border-[#e2ded3] relative overflow-hidden p-3.5 flex flex-col justify-between shadow-[0_1px_3px_rgba(15,27,45,0.05)]">
+<div class="absolute left-0 top-0 bottom-0 w-[4px] bg-[#1d63b8]"></div>
+<div>
+<div class="flex items-center justify-between pl-1">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase">BDT Needed · 所需金额</span>
+<span class="material-symbols-outlined text-[#1d63b8] text-[18px]" data-icon="currency_exchange">currency_exchange</span>
+</div>
+<div class="mt-2 pl-1">
+<div class="text-[18px] md:text-[20px] font-bold tracking-tight text-[#1d63b8] tnum font-mono">352,000 BDT</div>
+</div>
+</div>
+<p class="text-[10px] text-outline leading-tight mt-3 pl-1 font-mono">
+          1 CNY = 19.03 BDT · SAMPLE · fees incl.
+        </p>
+</div>
+<!-- Card 3: Safe to Spend (Jade Stripe) -->
+<div class="bg-surface-container-lowest rounded-xl border border-[#e2ded3] relative overflow-hidden p-3.5 flex flex-col justify-between shadow-[0_1px_3px_rgba(15,27,45,0.05)]">
+<div class="absolute left-0 top-0 bottom-0 w-[4px] bg-[#0b7a5a]"></div>
+<div>
+<div class="flex items-center justify-between pl-1">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase">Safe to Spend · 可支取</span>
+<span class="material-symbols-outlined text-[#0b7a5a] text-[18px]" data-icon="lock_open">lock_open</span>
+</div>
+<div class="mt-2 pl-1">
+<div class="text-[18px] md:text-[20px] font-bold tracking-tight text-on-surface tnum font-mono">CNY 4,820.00</div>
+</div>
+</div>
+<p class="text-[10px] text-outline leading-tight mt-3 pl-1">
+          ≈ 91,724.60 BDT disposable buffer · 安全可支配
+        </p>
+</div>
+<!-- Card 4: Pending Approvals (Amber Stripe) -->
+<div class="bg-surface-container-lowest rounded-xl border border-[#e2ded3] relative overflow-hidden p-3.5 flex flex-col justify-between shadow-[0_1px_3px_rgba(15,27,45,0.05)]">
+<div class="absolute left-0 top-0 bottom-0 w-[4px] bg-[#d97706]"></div>
+<div>
+<div class="flex items-center justify-between pl-1">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase">Approvals · 待批核</span>
+<span class="material-symbols-outlined text-[#d97706] text-[18px]" data-icon="rule">rule</span>
+</div>
+<div class="mt-2 pl-1 flex items-baseline space-x-1.5">
+<span class="text-[24px] font-bold tracking-tight text-[#d97706] tnum font-mono">2</span>
+<span class="text-[11px] text-[#b45309] font-medium bg-[#fffbeb] border border-[#fde68a] px-1.5 py-0.2 rounded">Actions Req.</span>
+</div>
+</div>
+<p class="text-[10px] text-outline leading-tight mt-3 pl-1">
+          Requires guardian / sponsor sign-off · 待家长核准
+        </p>
+</div>
+</section>
+<!-- Obligations Timeline Section -->
+<section class="bg-surface-container-lowest rounded-xl border border-[#e2ded3] p-4 shadow-[0_1px_3px_rgba(15,27,45,0.05)]">
+<!-- Timeline Header -->
+<div class="flex items-center justify-between border-b border-[#e2ded3] pb-3 mb-4">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="schedule">schedule</span>
+<h2 class="text-headline-sm font-headline-sm text-on-surface font-semibold tracking-tight">
+            Obligations Timeline · 待付账单时间轴
+          </h2>
+</div>
+<span class="text-[11px] font-bold bg-[#ecfdf5] text-[#0b7a5a] border border-[#a7f3d0] px-2 py-0.5 rounded-full font-mono">
+          3 items
+        </span>
+</div>
+<!-- Timeline Milestone List -->
+<div class="relative space-y-4">
+<!-- Connecting Vertical Dotted Line -->
+<div class="absolute left-[13px] top-4 bottom-4 w-[2px] border-l-2 border-dotted border-[#cbd5e1] pointer-events-none"></div>
+<!-- Row 1: Dormitory -->
+<div class="relative pl-9 flex flex-col space-y-1.5 group">
+<!-- Milestone Circle Marker -->
+<div class="absolute left-0 top-0.5 w-[28px] h-[28px] rounded-full bg-white border-2 border-[#d97706] flex items-center justify-center z-10 shadow-sm">
+<span class="w-2 h-2 rounded-full bg-[#d97706]"></span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-2">
+<span class="font-mono text-[12px] font-semibold text-on-surface">Oct 28, 2024</span>
+<!-- Urgency Chip Amber -->
+<span class="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#fffbeb] text-[#b45309] border border-[#fde68a]">
+<span class="material-symbols-outlined text-[11px]" data-icon="alarm">alarm</span>
+<span>Due in 6 days / 6 天后到期</span>
+</span>
+</div>
+<span class="text-[15px] font-bold text-on-surface font-mono tnum">CNY 12,000.00</span>
+</div>
+<!-- Payee & Verification -->
+<div class="flex items-center space-x-1.5">
+<p class="text-body-sm font-body-sm font-medium text-on-surface truncate">
+              Tsinghua University (International Dormitory) · 清华大学留学生公寓
+            </p>
+<span class="inline-flex items-center text-[10px] bg-[#ecfdf5] text-[#0b7a5a] border border-[#a7f3d0] px-1.5 py-0.2 rounded font-medium shrink-0">
+<span class="material-symbols-outlined text-[10px] mr-0.5" data-icon="check_circle" data-weight="fill">check_circle</span>
+              Verified
+            </span>
+</div>
+<!-- Bottom Row: Action & Hash -->
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center space-x-1 text-[11px] font-mono text-outline">
+<span>Hash: <span class="text-on-surface font-semibold">a1b2c3d4</span></span>
+<button class="text-outline hover:text-on-surface p-0.5" title="Copy document hash" type="button">
+<span class="material-symbols-outlined text-[13px]" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+<a class="text-[12px] font-semibold text-[#1d63b8] hover:underline flex items-center" href="#plan">
+              Plan payment →
+            </a>
+</div>
+</div>
+<!-- Row 2: Insurance -->
+<div class="relative pl-9 flex flex-col space-y-1.5 group pt-2">
+<!-- Milestone Circle Marker -->
+<div class="absolute left-0 top-2.5 w-[28px] h-[28px] rounded-full bg-white border-2 border-[#1d63b8] flex items-center justify-center z-10 shadow-sm">
+<span class="w-2 h-2 rounded-full bg-[#1d63b8]"></span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-2">
+<span class="font-mono text-[12px] font-semibold text-on-surface">Nov 04, 2024</span>
+<!-- Urgency Chip Blue/Neutral -->
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-surface-container text-[#125db2] border border-[#a9c7ff]">
+<span>Due in 13 days / 13 天后到期</span>
+</span>
+</div>
+<span class="text-[15px] font-bold text-on-surface font-mono tnum">CNY 800.00</span>
+</div>
+<!-- Payee & Verification -->
+<div class="flex items-center space-x-1.5">
+<p class="text-body-sm font-body-sm font-medium text-on-surface truncate">
+              Beijing Health Insurance Bureau · 留学生综合医保
+            </p>
+<span class="inline-flex items-center text-[10px] bg-[#ecfdf5] text-[#0b7a5a] border border-[#a7f3d0] px-1.5 py-0.2 rounded font-medium shrink-0">
+<span class="material-symbols-outlined text-[10px] mr-0.5" data-icon="check_circle" data-weight="fill">check_circle</span>
+              Verified
+            </span>
+</div>
+<!-- Bottom Row: Action & Hash -->
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center space-x-1 text-[11px] font-mono text-outline">
+<span>Hash: <span class="text-on-surface font-semibold">e5f6g7h8</span></span>
+<button class="text-outline hover:text-on-surface p-0.5" title="Copy document hash" type="button">
+<span class="material-symbols-outlined text-[13px]" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+<a class="text-[12px] font-semibold text-[#1d63b8] hover:underline flex items-center" href="#plan">
+              Plan payment →
+            </a>
+</div>
+</div>
+<!-- Row 3: Lab & Materials -->
+<div class="relative pl-9 flex flex-col space-y-1.5 group pt-2">
+<!-- Milestone Circle Marker -->
+<div class="absolute left-0 top-2.5 w-[28px] h-[28px] rounded-full bg-white border-2 border-outline-variant flex items-center justify-center z-10 shadow-sm">
+<span class="w-2 h-2 rounded-full bg-outline-variant"></span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-2">
+<span class="font-mono text-[12px] font-semibold text-on-surface">Nov 15, 2024</span>
+<!-- Urgency Chip Neutral -->
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-background text-outline border border-[#e2ded3]">
+<span>Due in 24 days / 24 天后到期</span>
+</span>
+</div>
+<span class="text-[15px] font-bold text-on-surface font-mono tnum">CNY 5,700.00</span>
+</div>
+<!-- Payee -->
+<div class="flex items-center space-x-1.5">
+<p class="text-body-sm font-body-sm font-medium text-on-surface truncate">
+              Fall Semester Lab &amp; Materials Fee · 实验材料费
+            </p>
+</div>
+<!-- Bottom Row: Action & Hash -->
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center space-x-1 text-[11px] font-mono text-outline">
+<span>Hash: <span class="text-on-surface font-semibold">9i0j1k2l</span></span>
+<button class="text-outline hover:text-on-surface p-0.5" title="Copy document hash" type="button">
+<span class="material-symbols-outlined text-[13px]" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+<a class="text-[12px] font-semibold text-[#1d63b8] hover:underline flex items-center" href="#plan">
+              Plan payment →
+            </a>
+</div>
+</div>
+</div>
+</section>
+<!-- Budget Donut Module -->
+<section class="bg-surface-container-lowest rounded-xl border border-[#e2ded3] p-4 shadow-[0_1px_3px_rgba(15,27,45,0.05)]">
+<div class="flex items-center justify-between mb-3">
+<div>
+<h2 class="text-headline-sm font-headline-sm text-on-surface font-semibold tracking-tight">
+            Monthly Guarded Budget · 月度托管预算
+          </h2>
+<p class="text-body-sm font-body-sm text-outline">Term cap: CNY 36,100.00 (Protected Corridor)</p>
+</div>
+<span class="material-symbols-outlined text-outline" data-icon="pie_chart">pie_chart</span>
+</div>
+<div class="flex items-center flex-col sm:flex-row gap-4 pt-1">
+<!-- SVG Donut Graphic -->
+<div class="relative w-36 h-36 shrink-0 flex items-center justify-center">
+<svg class="w-full h-full -rotate-90" viewbox="0 0 100 100">
+<!-- Background circle track -->
+<circle cx="50" cy="50" fill="transparent" r="40" stroke="#f0f3ff" stroke-width="11"></circle>
+<!-- Spent arc: 65% (circumference ~ 251.3) => dasharray = 163.3, 251.3 -->
+<circle cx="50" cy="50" fill="transparent" r="40" stroke="#0b7a5a" stroke-dasharray="163.3 251.3" stroke-linecap="round" stroke-width="11"></circle>
+<!-- Remaining Protected arc: 35% starting at offset 163.3 -->
+<circle cx="50" cy="50" fill="transparent" r="40" stroke="#1d63b8" stroke-dasharray="88 251.3" stroke-dashoffset="-163.3" stroke-linecap="round" stroke-width="11"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center text-center leading-none">
+<span class="text-[10px] text-outline font-semibold tracking-wider uppercase">Allocated</span>
+<span class="text-[18px] font-bold text-on-surface font-mono mt-0.5 tnum">65%</span>
+<span class="text-[9px] text-[#0b7a5a] font-semibold mt-0.5">Guarded 托管</span>
+</div>
+</div>
+<!-- Breakdown Details & Status Pills -->
+<div class="flex-1 w-full space-y-2.5">
+<!-- Spent Pill Row -->
+<div class="p-2.5 rounded-lg bg-background border border-[#e2ded3] flex items-center justify-between">
+<div class="flex items-center space-x-2">
+<span class="w-3 h-3 rounded-full bg-[#0b7a5a]"></span>
+<div>
+<span class="text-[12px] font-bold text-on-surface block leading-tight">Spent / Disbursed 已结算</span>
+<span class="text-[10px] text-outline">Tuition &amp; Living stipend</span>
+</div>
+</div>
+<div class="text-right font-mono">
+<span class="text-[13px] font-bold text-on-surface block tnum">CNY 23,480.00</span>
+<span class="text-[10px] text-outline">65.0%</span>
+</div>
+</div>
+<!-- Remaining Protected Pill Row -->
+<div class="p-2.5 rounded-lg bg-background border border-[#e2ded3] flex items-center justify-between">
+<div class="flex items-center space-x-2">
+<span class="w-3 h-3 rounded-full bg-[#1d63b8]"></span>
+<div>
+<span class="text-[12px] font-bold text-on-surface block leading-tight">Remaining Protected 托管结余</span>
+<span class="text-[10px] text-outline">Reserved in escrow pool</span>
+</div>
+</div>
+<div class="text-right font-mono">
+<span class="text-[13px] font-bold text-[#1d63b8] block tnum">CNY 12,620.00</span>
+<span class="text-[10px] text-outline">35.0%</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Quick Action Guarded Transfer CTA -->
+<div class="pt-1">
+<button class="w-full h-12 bg-[#0b7a5a] hover:bg-[#085d44] active:scale-[0.99] text-white font-semibold rounded-xl flex items-center justify-center space-x-2 shadow-sm transition-all duration-150" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="add_circle">add_circle</span>
+<span class="text-label-lg font-label-lg tracking-wide">New Guarded Transfer · 发起托管支付</span>
+</button>
+<div class="flex items-center justify-center space-x-1.5 mt-2 text-outline text-[11px]">
+<span class="material-symbols-outlined text-[13px]" data-icon="verified_user">verified_user</span>
+<span>Escrow funds released only upon student physical arrival check-in verification</span>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Shared Component Execution, Filter applied: Dashboard is Top-Level Destination -> RENDER) -->
+<nav class="fixed bottom-0 left-0 right-0 w-full z-50 flex justify-around items-center px-gutter-mobile py-space-xs pb-[env(safe-area-inset-bottom,0.5rem)] max-w-[440px] md:max-w-[768px] mx-auto bg-surface-container-lowest shadow-[0_-2px_10px_rgba(16,28,46,0.06)]">
+<!-- Tab 1: Overview (ACTIVE state per JSON & logic protocol) -->
+<button aria-current="page" class="flex flex-col items-center justify-center bg-surface-container text-primary rounded-xl px-3 py-1.5 font-bold active:scale-95 transition-all duration-150" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="account_balance" data-weight="fill">account_balance</span>
+<span class="text-label-sm font-label-sm mt-0.5">Overview · 概览</span>
+</button>
+<!-- Tab 2: Escrow -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1.5 font-medium hover:text-primary hover:bg-surface-container-low active:scale-95 transition-all duration-150" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="verified_user">verified_user</span>
+<span class="text-label-sm font-label-sm mt-0.5">Escrow · 托管</span>
+</button>
+<!-- Tab 3: Obligations -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1.5 font-medium hover:text-primary hover:bg-surface-container-low active:scale-95 transition-all duration-150 relative" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="schedule">schedule</span>
+<span class="text-label-sm font-label-sm mt-0.5">Obligations · 账单</span>
+<!-- Little Badge for pending items -->
+<span class="absolute top-1 right-2.5 w-1.5 h-1.5 rounded-full bg-[#d97706]"></span>
+</button>
+<!-- Tab 4: Corridor -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1.5 font-medium hover:text-primary hover:bg-surface-container-low active:scale-95 transition-all duration-150" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="currency_exchange">currency_exchange</span>
+<span class="text-label-sm font-label-sm mt-0.5">Corridor · 汇率</span>
+</button>
+</nav>
+<!-- Interactive micro-feedback script -->
+<script>
+    document.querySelectorAll('button, a').forEach(el => {
+      el.addEventListener('click', function(e) {
+        if (this.getAttribute('href') === '#plan') {
+          e.preventDefault();
+        }
+      });
+    });
+  </script>
+</body></html>
