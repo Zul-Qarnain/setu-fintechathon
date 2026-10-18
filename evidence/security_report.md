@@ -209,7 +209,7 @@
 
 ## Security audit addendum (18 Oct 2026)
 Scope: dependency audit, secrets scan, authn/authz/IDOR, headers, CORS, validation.
-- `npm audit --omit=dev` server: 0 vulnerabilities. web: advisories in next 14.2.35 / next-intl 3 / postcss (upgrade to next 16.4.2 + next-intl 4 is breaking; scheduled separately, see docs/SECURITY_SELF_ASSESSMENT.md §4 item 17).
+- `npm audit --omit=dev` server: 0 vulnerabilities. web: advisories in next 14.2.35 / next-intl 3 / postcss were fixed by upgrading to Next 16.4.2 + React 19 + next-intl 4; `npm audit --omit=dev` now reports 0 vulnerabilities for both packages.
 - Secrets: working tree + all commits scanned for the project's provider keys and common key patterns: 0 hits; no `.env` committed (only `.env.example`).
 - New regression tests (`server/tests/api/security_authz.test.ts`, 9 tests) cover 401 on all protected routes, `alg=none`, IDOR, self-approval, demo-route gating, TOTP lockout, headers, CORS, malformed input.
 - Fixes: API security headers (nosniff, DENY framing, no-referrer, CSP, no-store, HSTS); web CSP and security headers via `next.config.mjs`.

@@ -38,7 +38,7 @@ Caveat: the notice corpus and the attack scenarios were written by the same team
 - **Availability**: per-client-IP-and-path sliding-window rate limit, request size caps.
 
 - **Verified by tests (`server/tests/api/security_authz.test.ts`)**: every protected route returns 401 for missing/garbage/`alg=none`/tampered JWTs; cross-user (IDOR) read/approve/reject of actions, payees and obligations is denied; a student cannot self-approve the family-approver step; `/demo/*` is closed without `DEMO_MODE`; TOTP brute force locks out; security headers present; CORS allows only configured origins; malformed bodies are 4xx, never 500.
-- **Residual**: the JWT is kept in `localStorage` (readable by any XSS; mitigated by CSP and no `dangerouslySetInnerHTML`, but an httpOnly-cookie session would be stronger).
+- **Residual**: the JWT is kept in `localStorage` (readable by any XSS; mitigated by CSP; the only `dangerouslySetInnerHTML` is a fixed, constant theme-init script, but an httpOnly-cookie session would be stronger).
 
 ## 4. KNOWN RISKS and limitations (read before trusting this)
 1. **Not a licensed payment service.** Setu never holds funds; the bank is a sandbox. No real money movement was tested.
@@ -57,7 +57,7 @@ Caveat: the notice corpus and the attack scenarios were written by the same team
 14. **TOTP UX limitation**: replay protection means one user cannot approve two actions within the same 30-second window; the second attempt must wait for the next code.
 15. **Fee and FX numbers are illustrative.** Offline rates are SAMPLE values; sandbox channel fees are made up. World Bank RPW rows in `data/channel_costs.csv` are marked VERIFY before citing.
 16. **Glossary and Chinese UI strings are drafts** pending native-speaker review.
-17. **Dependency and supply-chain scanning**: `npm audit --omit=dev` is clean for `server/`; for `web/` it reports advisories against Next 14.2 / next-intl 3 / PostCSS (fixes need Next 16 + next-intl 4, a breaking upgrade tracked separately; the DoS/SSRF/RCE classes mostly concern features this app does not use: Image Optimizer, Server Actions, rewrites, Pages-Router i18n, Windows hosting). A full secrets scan of the working tree and all git history found no keys. No SAST or container scanning. The Docker images were written but not built in the development environment (no Docker daemon available).
+17. **Dependency and supply-chain scanning**: `npm audit --omit=dev` is clean for both `server/` and `web/` (web upgraded to Next 16.4.2, React 19, next-intl 4 on 18 Oct 2026). A full secrets scan of the working tree and all git history found no keys. No SAST or container scanning.
 18. **Fixed regex-based PII redaction** can miss unusual formats (e.g. spaced phone numbers in other countries).
 
 ## 5. What we would do next
