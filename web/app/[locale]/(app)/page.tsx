@@ -66,7 +66,7 @@ export default function DashboardPage() {
           <span className="mt-0.5 block text-xs font-normal text-ink-600">{t("stats.safeBdt")}</span>
         </Stat>
         <Stat label={t("stats.pending")} tone={data.pending_actions > 0 ? "warn" : "default"} foot={t("stats.pendingHint")}>
-          <Link href="/approvals" className="underline decoration-dotted underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600">{data.pending_actions}</Link>
+          <Link href="/approvals" className="inline-flex min-h-9 items-center underline decoration-dotted underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600">{data.pending_actions}</Link>
         </Stat>
       </section>
 
@@ -95,7 +95,7 @@ export default function DashboardPage() {
                     <p className="mt-1 text-sm text-ink-700">{o.payee_name}</p>
                     <div className="mt-1 flex flex-wrap items-center gap-3">
                       <Cny value={o.amount_cny} className="text-lg font-bold" />
-                      <Link href="/agent" className="text-sm font-semibold text-bridge-700 underline">{t("timeline.planPayment")}</Link>
+                      <Link href="/agent" className="inline-flex min-h-9 items-center text-sm font-semibold text-bridge-700 underline">{t("timeline.planPayment")}</Link>
                       {o.doc_hash ? <span className="text-xs text-ink-600" title={o.doc_hash}>{t("timeline.docHash")}: <code>{shortHash(o.doc_hash.replace("sha256:", ""), 8)}</code></span> : null}
                     </div>
                   </li>

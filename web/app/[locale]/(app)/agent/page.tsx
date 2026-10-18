@@ -70,7 +70,7 @@ export default function AgentPage() {
             {err ? <Banner tone="danger" className="mb-3">{err}</Banner> : null}
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink-600">{t("try")}</p>
             <ul className="mb-3 flex flex-wrap gap-2">
-              {PROMPTS.map((p) => <li key={p}><button type="button" disabled={busy} onClick={() => void send(t(`prompts.${p}`))} className="rounded-full border border-line bg-surface px-3 py-1.5 text-left text-xs font-medium text-ink hover:bg-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600 disabled:opacity-50" data-testid={`prompt-${p}`}>{t(`prompts.${p}`)}</button></li>)}
+              {PROMPTS.map((p) => <li key={p}><button type="button" disabled={busy} onClick={() => void send(t(`prompts.${p}`))} className="min-h-9 rounded-full border border-line bg-surface px-3 py-1.5 text-left text-xs font-medium text-ink hover:bg-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600 disabled:opacity-50" data-testid={`prompt-${p}`}>{t(`prompts.${p}`)}</button></li>)}
             </ul>
             <form onSubmit={onSubmit} className="space-y-3">
               <div>

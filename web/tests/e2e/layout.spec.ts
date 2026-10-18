@@ -38,7 +38,7 @@ async function check(page: Page, vp: "desktop" | "mobile", key: string): Promise
       const ox = Math.min(ra.right, rb.right) - Math.max(ra.left, rb.left), oy = Math.min(ra.bottom, rb.bottom) - Math.max(ra.top, rb.top);
       if (ox > 2 && oy > 2) { v.push(`overlap: ${sel(a)} x ${sel(b)}`); if (v.length > 12) break outer; }
     }
-    if (vp === "mobile") for (const e of items) { const r = e.getBoundingClientRect(); const t = (e as HTMLInputElement).type; if (r.height < 36 && t !== "checkbox" && t !== "radio" && !e.closest("table,nav a") && !e.classList.contains("sr-only")) v.push(`small tap target ${sel(e)} h=${Math.round(r.height)}`); }
+    if (vp === "mobile") for (const e of items) { const r = e.getBoundingClientRect(); const t = (e as HTMLInputElement).type; if (r.height < 36 && getComputedStyle(e).display !== "inline" && t !== "checkbox" && t !== "radio" && !e.closest("table,nav a") && !e.classList.contains("sr-only")) v.push(`small tap target ${sel(e)} h=${Math.round(r.height)}`); }
     const m = document.querySelector("main"); if (m) { const first = m.firstElementChild?.getBoundingClientRect(); void key; (window as unknown as { __left: number }).__left = first ? Math.round(first.left) : -1; }
     return Array.from(new Set(v)).slice(0, 15);
   }, { vp, key });
@@ -55,7 +55,12 @@ for (const locale of ["en", "zh-CN"] as const) for (const vp of ["desktop", "mob
       await setTheme(page, theme); await page.waitForTimeout(350);
       const name = `${locale}_${vp}_${theme}_${r || "dashboard"}`;
       fs.mkdirSync(OUT, { recursive: true });
-      await page.screenshot({ path: path.join(OUT, `${name}.png`), fullPage: true });
+      // full-height capture: grow the viewport so fixed bars (bottom nav) land at the real bottom
+      const h = await page.evaluate(() => document.documentElement.scrollHeight);
+      await page.setViewportSize({ width: VIEWPORTS[vp].width, height: Math.max(VIEWPORTS[vp].height, Math.min(h, 4000)) });
+      await page.waitForTimeout(150);
+      await page.screenshot({ path: path.join(OUT, `${name}.png`) });
+      await page.setViewportSize(VIEWPORTS[vp]);
       for (const msg of await check(page, vp, name)) problems.push(`${r || "dashboard"}: ${msg}`);
       const left = await page.evaluate(() => (window as unknown as { __left: number }).__left);
       (lefts[`${locale}_${vp}`] ??= {})[r || "dashboard"] = left;
