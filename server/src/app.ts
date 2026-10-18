@@ -100,6 +100,15 @@ export async function buildApp(opts: BuildOptions = {}): Promise<FastifyInstance
 
   app.addHook('onSend', async (req, reply) => {
     reply.header('x-request-id', req.id);
+    // Security headers (JSON API: nothing here is ever meant to be framed, sniffed, cached or executed)
+    reply.header('x-content-type-options', 'nosniff');
+    reply.header('x-frame-options', 'DENY');
+    reply.header('referrer-policy', 'no-referrer');
+    reply.header('cross-origin-resource-policy', 'same-site');
+    reply.header('content-security-policy', "default-src 'none'; frame-ancestors 'none'");
+    reply.header('permissions-policy', 'camera=(), microphone=(), geolocation=()');
+    reply.header('cache-control', 'no-store');
+    reply.header('strict-transport-security', 'max-age=15552000; includeSubDomains');
   });
   app.setErrorHandler(errorHandler);
   // Parity with the Python backend: unknown routes bypass the error envelope (FastAPI's default {"detail":"Not Found"}).
