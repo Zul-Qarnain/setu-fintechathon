@@ -194,7 +194,8 @@ export async function runChat(
     planId = persistPlan(ctx, user, state);
   for (const prop of state.proposals) {
     const params = { ...prop.params };
-    if (gblocked && prop.atype === 'payment') params._guardian_blocked = true;
+    if (gblocked && (prop.atype === 'payment' || prop.atype === 'verify_payee'))
+      params._guardian_blocked = true;
     rows.push(
       propose(
         ctx,

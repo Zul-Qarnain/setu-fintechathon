@@ -25,6 +25,15 @@ export function payeeState(p: PayeeRow | undefined): policy.PayeeState | null {
   };
 }
 
+/** Decimal that never throws: unparseable -> NaN (policy rejects non-finite amounts). */
+function safeDec(v: unknown): Decimal {
+  try {
+    return new Decimal(String(v));
+  } catch {
+    return new Decimal(NaN);
+  }
+}
+
 function policyContext(
   ctx: AppContext,
   action: ActionRow,
@@ -32,6 +41,15 @@ function policyContext(
   approvals: Set<string>
 ): policy.Context {
   let recent = new Decimal(0);
+  let recentOwner = new Decimal(0);
+  const amt = (v: unknown): Decimal => {
+    try {
+      const d = new Decimal(String(v));
+      return d.isFinite() ? d : new Decimal(Infinity);
+    } catch {
+      return new Decimal(Infinity);
+    }
+  };
   if (action.type === 'payment' && params.payee_id) {
     const since = tsFromMs(Date.now() - 24 * 3_600_000);
     const rows = ctx.db
@@ -41,13 +59,17 @@ function policyContext(
       .all(action.owner_id, ...ACTIVE, since, action.id) as { params_json: string }[];
     for (const r of rows) {
       const op = JSON.parse(r.params_json) as Params;
-      if (op.payee_id === params.payee_id) recent = recent.plus(new Decimal(String(op.amount_cny)));
+      // owner-wide: only sub-cap payments count (over-cap ones are already T3 on their own)
+      const a = amt(op.amount_cny);
+      if (!a.gt(new Decimal(ctx.config.T2_CAP_CNY))) recentOwner = recentOwner.plus(a);
+      if (op.payee_id === params.payee_id) recent = recent.plus(amt(op.amount_cny));
     }
   }
   return {
     now: new Date(),
     guardian_blocked: Boolean(params._guardian_blocked),
     recent_same_payee_cny: recent,
+    recent_owner_cny: recentOwner,
     approvals,
     t2_cap: new Decimal(ctx.config.T2_CAP_CNY),
     cooling_off_hours: ctx.config.COOLING_OFF_HOURS,
@@ -63,7 +85,7 @@ export function policyAction(ctx: AppContext, action: ActionRow): policy.Action 
   return {
     type: action.type as policy.ActionType,
     owner_id: action.owner_id,
-    amount_cny: params.amount_cny ? new Decimal(String(params.amount_cny)) : null,
+    amount_cny: params.amount_cny ? safeDec(params.amount_cny) : null,
     payee: payeeState(payee),
     source: action.source,
     bulk: Boolean(params.bulk),

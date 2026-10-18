@@ -99,8 +99,10 @@ export function scanText(text: string, parsed: ParsedFields | null = null): Guar
   const flags: GuardianFlag[] = [];
   const seen = new Set<string>();
   const norm = text.normalize('NFKC');
+  const squeezed = norm.replace(/\s{2,}/g, ' ');
   for (const { c, sev, rx, msg } of COMPILED) {
-    if (!seen.has(c) && rx.test(norm)) {
+    // collapse whitespace runs for the multi-\s rule: bounds its backtracking (ReDoS) without changing matches
+    if (!seen.has(c) && rx.test(c === 'PAYEE_CHANGE_NOTICE' ? squeezed : norm)) {
       seen.add(c);
       flags.push(flag(c, sev, msg));
     }

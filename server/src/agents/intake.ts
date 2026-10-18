@@ -61,11 +61,27 @@ export function detectLanguage(text: string): string {
   return zh * 3 > en ? 'zh' : 'en';
 }
 
+/** Parse a money amount. Never truncates silently: >2dp, negatives and unparseable input return null (fail-closed). */
 export function parseAmount(s: string): Decimal | null {
-  const m = /(\d[\d,，]*(?:\.\d{1,2})?)/.exec(s.normalize('NFKC'));
-  if (!m?.[1]) return null;
+  const n = s.normalize('NFKC');
+  // European "12.345,67" -> 12345.67
+  const eu = /(?<![\d.,])(\d{1,3}(?:\.\d{3})+),(\d{1,2})(?![\d,])/.exec(n);
+  let raw: string;
+  let idx: number;
+  if (eu) {
+    raw = `${eu[1]!.replaceAll('.', '')}.${eu[2]}`;
+    idx = eu.index;
+  } else {
+    const m = /(\d[\d,，]*(?:\.\d+)?)/.exec(n);
+    if (!m?.[1]) return null;
+    raw = m[1].replaceAll(',', '').replaceAll('，', '');
+    idx = m.index;
+  }
+  if (idx > 0 && /[-−–]/.test(n[idx - 1]!)) return null; // negative amount
   try {
-    return new Decimal(m[1].replaceAll(',', '').replaceAll('，', ''));
+    const d = new Decimal(raw);
+    if (!d.isFinite() || d.decimalPlaces() > 2) return null;
+    return d;
   } catch {
     return null;
   }
@@ -91,7 +107,7 @@ export function parseDate(raw: string): string | null {
 }
 
 function field(text: string, labels: string): string | null {
-  const m = new RegExp(`^[ \\t]*${labels}${SEP}(.+?)\\s*$`, 'im').exec(text);
+  const m = new RegExp(`^[ \\t]*${labels}${SEP}(.+)$`, 'im').exec(text);
   return m?.[1] !== undefined ? m[1].trim() : null;
 }
 

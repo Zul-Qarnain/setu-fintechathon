@@ -65,6 +65,7 @@ export interface Context {
   now: Date;
   guardian_blocked?: boolean;
   recent_same_payee_cny: Decimal; // executed + pending in last 24h (split detection)
+  recent_owner_cny?: Decimal; // same, across ALL of the owner's payees (payee-rotation split detection)
   approvals: Set<string>; // satisfied: "totp", "family_approver"
   t2_cap?: Decimal;
   cooling_off_hours?: number;
@@ -160,7 +161,13 @@ function _decide_money(action: Action, ctx: Context): Decision {
   }
 
   const amount = action.amount_cny;
-  if (amount === null || amount === undefined || amount.lte(ZERO)) {
+  if (
+    amount === null ||
+    amount === undefined ||
+    !amount.isFinite() ||
+    amount.lte(ZERO) ||
+    amount.decimalPlaces() > 2
+  ) {
     return _block(['INVALID_AMOUNT'], 'Amount must be positive: blocked.');
   }
   if (
@@ -183,7 +190,10 @@ function _decide_money(action: Action, ctx: Context): Decision {
   let tier = Tier.T2;
 
   const t2_cap = ctx.t2_cap ?? T2_CAP;
-  const aggregate = amount.add(ctx.recent_same_payee_cny);
+  let recent = ctx.recent_same_payee_cny;
+  if (ctx.recent_owner_cny && ctx.recent_owner_cny.gt(recent)) recent = ctx.recent_owner_cny;
+  if (!recent.isFinite()) recent = new Decimal(Infinity); // fail closed
+  const aggregate = amount.add(recent);
 
   if (amount.gt(t2_cap)) {
     tier = Tier.T3;
