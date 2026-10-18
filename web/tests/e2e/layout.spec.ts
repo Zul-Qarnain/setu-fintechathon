@@ -38,7 +38,7 @@ async function check(page: Page, vp: "desktop" | "mobile", key: string): Promise
       const ox = Math.min(ra.right, rb.right) - Math.max(ra.left, rb.left), oy = Math.min(ra.bottom, rb.bottom) - Math.max(ra.top, rb.top);
       if (ox > 2 && oy > 2) { v.push(`overlap: ${sel(a)} x ${sel(b)}`); if (v.length > 12) break outer; }
     }
-    if (vp === "mobile") for (const e of items) { const r = e.getBoundingClientRect(); const t = (e as HTMLInputElement).type; if (r.height < 36 && t !== "checkbox" && t !== "radio" && !e.closest("table,nav a")) v.push(`small tap target ${sel(e)} h=${Math.round(r.height)}`); }
+    if (vp === "mobile") for (const e of items) { const r = e.getBoundingClientRect(); const t = (e as HTMLInputElement).type; if (r.height < 36 && t !== "checkbox" && t !== "radio" && !e.closest("table,nav a") && !e.classList.contains("sr-only")) v.push(`small tap target ${sel(e)} h=${Math.round(r.height)}`); }
     const m = document.querySelector("main"); if (m) { const first = m.firstElementChild?.getBoundingClientRect(); void key; (window as unknown as { __left: number }).__left = first ? Math.round(first.left) : -1; }
     return Array.from(new Set(v)).slice(0, 15);
   }, { vp, key });

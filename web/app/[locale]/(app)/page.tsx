@@ -83,10 +83,10 @@ export default function DashboardPage() {
               {sorted.map((o) => {
                 const d = daysUntil(o.due_date);
                 const u = urgency(d);
-                const chip = u === "urgent" ? "bg-cinnabar-50 text-cinnabar-700 border-cinnabar-600/50" : u === "soon" ? "bg-amber-50 text-amber-700 border-amber-600/50" : "bg-slate-100 text-ink-700 border-slate-300";
+                const chip = u === "urgent" ? "bg-cinnabar-50 text-cinnabar-700 border-cinnabar-600/50" : u === "soon" ? "bg-amber-50 text-amber-700 border-amber-600/50" : "bg-sunken text-ink-700 border-line-strong";
                 return (
                   <li key={o.id} className="relative">
-                    <span aria-hidden="true" className={`absolute -left-[1.95rem] top-1.5 h-3 w-3 rounded-full border-2 border-white ${u === "urgent" ? "bg-cinnabar-600" : u === "soon" ? "bg-amber-600" : "bg-jade-600"}`} />
+                    <span aria-hidden="true" className={`absolute -left-[1.95rem] top-1.5 h-3 w-3 rounded-full border-2 border-surface ${u === "urgent" ? "bg-cinnabar-600" : u === "soon" ? "bg-amber-600" : "bg-jade-600"}`} />
                     <div className="flex flex-wrap items-center gap-2">
                       <time dateTime={o.due_date} className="font-semibold">{formatDate(o.due_date, locale)}</time>
                       <span className={`rounded-md border px-2 py-0.5 text-xs font-semibold ${chip}`}>{d < 0 ? t("timeline.overdue", { days: -d }) : t("timeline.dueIn", { days: d })}</span>

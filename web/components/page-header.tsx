@@ -13,5 +13,5 @@ export function PageHeader({ title, subtitle, actions }: { title: string; subtit
 }
 
 export function Card({ children, className = "", as: Tag = "section", ...rest }: { children: ReactNode; className?: string; as?: "section" | "div" | "article" | "li" } & React.HTMLAttributes<HTMLElement>) {
-  return <Tag className={`rounded-xl border border-line bg-white p-4 shadow-card sm:p-5 ${className}`} {...rest}>{children}</Tag>;
+  return <Tag className={`rounded-xl border border-line bg-surface p-4 shadow-card sm:p-5 ${className}`} {...rest}>{children}</Tag>;
 }

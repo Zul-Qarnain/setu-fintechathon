@@ -50,12 +50,12 @@ export default function AgentPage() {
     <>
       <PageHeader title={t("title")} subtitle={t("subtitle")} />
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,28rem)]">
-        <section aria-label={t("chat")} className="flex min-h-[32rem] flex-col rounded-xl border border-line bg-white shadow-card">
+        <section aria-label={t("chat")} className="flex min-h-[32rem] flex-col rounded-xl border border-line bg-surface shadow-card">
           <div className="flex-1 space-y-4 overflow-y-auto p-4" role="log" aria-live="polite" aria-relevant="additions" aria-label={t("log")} style={{ maxHeight: "34rem" }}>
             {msgs.length === 0 ? <p className="text-sm text-ink-600">{t("emptyChat")}</p> : null}
             {msgs.map((m, i) => (
               <div key={i} className={m.role === "user" ? "flex justify-end" : "flex justify-start"}>
-                <div className={`max-w-[92%] space-y-3 rounded-2xl px-4 py-2.5 text-sm ${m.role === "user" ? "bg-ink text-white" : "border border-line bg-paper text-ink"}`}>
+                <div className={`max-w-[92%] space-y-3 rounded-2xl px-4 py-2.5 text-sm ${m.role === "user" ? "bg-primary text-white" : "border border-line bg-paper text-ink"}`}>
                   <p className="sr-only">{m.role === "user" ? t("you") : t("agentName")}:</p>
                   <p className="whitespace-pre-wrap">{m.text}</p>
                   {m.turn?.plan ? <PlanCard plan={m.turn.plan} /> : null}
@@ -70,7 +70,7 @@ export default function AgentPage() {
             {err ? <Banner tone="danger" className="mb-3">{err}</Banner> : null}
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink-600">{t("try")}</p>
             <ul className="mb-3 flex flex-wrap gap-2">
-              {PROMPTS.map((p) => <li key={p}><button type="button" disabled={busy} onClick={() => void send(t(`prompts.${p}`))} className="rounded-full border border-line bg-white px-3 py-1.5 text-left text-xs font-medium text-ink hover:bg-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600 disabled:opacity-50" data-testid={`prompt-${p}`}>{t(`prompts.${p}`)}</button></li>)}
+              {PROMPTS.map((p) => <li key={p}><button type="button" disabled={busy} onClick={() => void send(t(`prompts.${p}`))} className="rounded-full border border-line bg-surface px-3 py-1.5 text-left text-xs font-medium text-ink hover:bg-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600 disabled:opacity-50" data-testid={`prompt-${p}`}>{t(`prompts.${p}`)}</button></li>)}
             </ul>
             <form onSubmit={onSubmit} className="space-y-3">
               <div>

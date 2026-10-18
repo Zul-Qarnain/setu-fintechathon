@@ -10,5 +10,12 @@
   "menu": "菜单",
   "closeMenu": "关闭菜单",
   "main": "主导航",
-  "signedInAs": "当前账号：{email}"
+  "signedInAs": "当前账号：{email}",
+  "more": "更多",
+  "moreMenu": "更多页面",
+  "theme": "主题",
+  "themeLight": "浅色",
+  "themeDark": "深色",
+  "themeSystem": "跟随系统",
+  "bottom": "底部导航"
 }

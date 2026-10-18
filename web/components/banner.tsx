@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 type Tone = "info" | "success" | "warning" | "danger";
 const TONE: Record<Tone, { box: string; icon: string }> = {
-  info: { box: "border-blue-300 bg-bridge-50 text-ink", icon: "ℹ" },
+  info: { box: "border-bridge-600/30 bg-bridge-50 text-ink", icon: "ℹ" },
   success: { box: "border-jade-600/40 bg-jade-50 text-jade-800", icon: "✓" },
   warning: { box: "border-amber-600/50 bg-amber-50 text-amber-700", icon: "⚠" },
   danger: { box: "border-cinnabar-600/50 bg-cinnabar-50 text-cinnabar-700", icon: "⛔" },

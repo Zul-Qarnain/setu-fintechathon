@@ -14,7 +14,7 @@ const ICON: Record<TraceStep["status"], string> = { ok: "✓", blocked: "⛔", s
 const TONE: Record<TraceStep["status"], string> = {
   ok: "border-jade-600/50 bg-jade-50 text-jade-800",
   blocked: "border-cinnabar-600 bg-cinnabar-50 text-cinnabar-700",
-  skipped: "border-slate-300 bg-slate-100 text-ink-600",
+  skipped: "border-line-strong bg-sunken text-ink-600",
   rejected: "border-cinnabar-600 bg-cinnabar-50 text-cinnabar-700",
 };
 
@@ -41,7 +41,7 @@ export function TracePanel({ turn }: { turn: ChatResponse | null }) {
   const [open, setOpen] = useState<string | null>(null);
   if (!turn) {
     return (
-      <aside aria-label={t("title")} className="rounded-xl border border-dashed border-line bg-white p-5 text-sm text-ink-600">
+      <aside aria-label={t("title")} className="rounded-xl border border-dashed border-line bg-surface p-5 text-sm text-ink-600">
         <h2 className="text-lg font-semibold text-ink">{t("title")}</h2>
         <p className="mt-2">{t("empty")}</p>
         <ol className="mt-3 flex flex-wrap gap-1.5 text-xs">{(["intake", "planner", "tools", "guardian", "policy", "executor", "validator"] as const).map((s, i) => <li key={s} className="rounded-md border border-line bg-paper px-2 py-0.5">{i + 1}. {t(`steps.${s}`)}</li>)}</ol>
@@ -57,7 +57,7 @@ export function TracePanel({ turn }: { turn: ChatResponse | null }) {
   const frame = blocked ? "border-cinnabar-600 ring-2 ring-cinnabar-600/30" : cooling ? "border-amber-600 ring-2 ring-amber-600/30" : "border-line";
 
   return (
-    <aside aria-label={t("title")} aria-live="polite" className={`rounded-xl border-2 bg-white p-4 shadow-card ${frame}`}>
+    <aside aria-label={t("title")} aria-live="polite" className={`rounded-xl border-2 bg-surface p-4 shadow-card ${frame}`}>
       <div className="flex flex-wrap items-center gap-2">
         <h2 className="text-lg font-semibold">{t("title")}</h2>
         <span className="rounded-md border border-line bg-paper px-2 py-0.5 text-xs">{t("llmMode")}: <code>{tc.llm_mode}</code></span>
@@ -113,7 +113,7 @@ export function TracePanel({ turn }: { turn: ChatResponse | null }) {
       <div className="mt-4 rounded-lg border border-line bg-paper p-3">
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-sm font-semibold">{t("finalTier")}</span><TierBadge tier={tc.tier} />
-          <span className="rounded-md border border-line bg-white px-2 py-0.5 text-xs font-semibold">{t(`decision.${tc.decision}`)}</span>
+          <span className="rounded-md border border-line bg-surface px-2 py-0.5 text-xs font-semibold">{t(`decision.${tc.decision}`)}</span>
         </div>
         {act && !blocked ? <div className="mt-2"><ReasonList reasons={act.decision.reasons} /></div> : null}
         {act && act.decision.required.length ? <div className="mt-2"><p className="mb-1 text-xs font-semibold uppercase tracking-wide text-ink-600">{t("required")}</p><RequiredChips required={act.decision.required} /></div> : null}

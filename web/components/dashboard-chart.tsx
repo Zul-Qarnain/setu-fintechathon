@@ -7,18 +7,18 @@ import { formatCny } from "@/lib/format";
 export function BudgetChart({ budget, spent, remaining }: { budget: string; spent: string; remaining: string }) {
   const t = useTranslations("dashboard.chart");
   const rows = [
-    { name: t("budget"), value: Number(budget), label: budget, fill: "#1d4ed8" },
-    { name: t("spent"), value: Number(spent), label: spent, fill: "#9a5b00" },
-    { name: t("remaining"), value: Math.max(0, Number(remaining)), label: remaining, fill: "#0b7a5a" },
+    { name: t("budget"), value: Number(budget), label: budget, fill: "rgb(var(--bridge-600))" },
+    { name: t("spent"), value: Number(spent), label: spent, fill: "rgb(var(--amber-600))" },
+    { name: t("remaining"), value: Math.max(0, Number(remaining)), label: remaining, fill: "rgb(var(--jade-600))" },
   ];
   return (
     <figure>
       <div role="img" aria-label={t("alt", { budget: formatCny(budget), spent: formatCny(spent) })} className="h-56 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={rows} margin={{ top: 8, right: 8, bottom: 0, left: 8 }}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2ded3" />
-            <XAxis dataKey="name" tick={{ fill: "#26364d", fontSize: 12 }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fill: "#26364d", fontSize: 12 }} axisLine={false} tickLine={false} width={56} tickFormatter={(v: number) => `¥${v}`} />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgb(var(--line))" />
+            <XAxis dataKey="name" tick={{ fill: "rgb(var(--ink-700))", fontSize: 12 }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fill: "rgb(var(--ink-700))", fontSize: 12 }} axisLine={false} tickLine={false} width={56} tickFormatter={(v: number) => `¥${v}`} />
             <Tooltip formatter={(_v, _n, item) => formatCny((item.payload as { label: string }).label)} cursor={{ fill: "rgba(15,27,45,0.05)" }} />
             <Bar dataKey="value" radius={[6, 6, 0, 0]} isAnimationActive={false}>
               {rows.map((r) => <Cell key={r.name} fill={r.fill} />)}

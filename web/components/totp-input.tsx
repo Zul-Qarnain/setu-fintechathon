@@ -21,7 +21,7 @@ export function TotpInput({ value, onChange, label, disabled, hint, id }: { valu
         disabled={disabled}
         aria-describedby={hint ? `${inputId}-hint` : undefined}
         placeholder="••••••"
-        className="w-40 rounded-lg border border-line bg-white px-3 py-2 text-center font-mono text-lg tracking-[0.35em] tabular-nums focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600 disabled:bg-slate-100"
+        className="w-40 rounded-lg border border-line bg-surface px-3 py-2 text-center font-mono text-lg tracking-[0.35em] tabular-nums focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600 disabled:bg-sunken"
       />
       {hint ? <p id={`${inputId}-hint`} className="mt-1 text-xs text-ink-500">{hint}</p> : null}
     </div>

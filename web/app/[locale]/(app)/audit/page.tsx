@@ -119,7 +119,7 @@ export default function AuditPage() {
       </Card>
       {entries && broken !== null && !entries.some((e) => e.seq === broken) ? <Banner tone="warning" className="mt-3">{t("hiddenBreak", { seq: broken })}</Banner> : null}
 
-      <details className="mt-6 rounded-xl border border-dashed border-line bg-white p-4">
+      <details className="mt-6 rounded-xl border border-dashed border-line bg-surface p-4">
         <summary className="cursor-pointer text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600">{t("demo.title")}</summary>
         <p className="mt-2 text-xs text-ink-600">{t("demo.body")}</p>
         <div className="mt-3 flex flex-wrap items-end gap-3">

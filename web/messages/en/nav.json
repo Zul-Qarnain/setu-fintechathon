@@ -10,5 +10,12 @@
   "menu": "Menu",
   "closeMenu": "Close menu",
   "main": "Main navigation",
-  "signedInAs": "Signed in as {email}"
+  "signedInAs": "Signed in as {email}",
+  "more": "More",
+  "moreMenu": "More pages",
+  "theme": "Theme",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  "themeSystem": "System",
+  "bottom": "Primary navigation"
 }

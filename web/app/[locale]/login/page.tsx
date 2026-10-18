@@ -59,7 +59,7 @@ export default function LoginPage() {
         <button type="submit" disabled={busy || !email || !password} className={`${button("primary")} w-full`}>{busy ? t("login.submitting") : t("login.submit")}</button>
         <p className="text-sm text-ink-600">{t("login.noAccount")} <Link href="/register" className="font-semibold text-bridge-700 underline">{t("login.register")}</Link></p>
       </form>
-      <section aria-labelledby="demo-h" className="mt-8 rounded-xl border border-dashed border-line bg-white p-4">
+      <section aria-labelledby="demo-h" className="mt-8 rounded-xl border border-dashed border-line bg-surface p-4">
         <h2 id="demo-h" className="text-sm font-semibold">{t("login.demoTitle")}</h2>
         <p className="mt-1 text-xs text-ink-600">{t("login.demoHint")}</p>
         <ul className="mt-3 grid gap-2">

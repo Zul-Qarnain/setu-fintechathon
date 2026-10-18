@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  darkMode: "class",
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./lib/**/*.{ts,tsx}"],
   theme: {
     extend: {
@@ -9,16 +10,22 @@ const config: Config = {
         mono: ["ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace"],
       },
       colors: {
-        // Setu palette: "bridge" ink-navy + jade, with warm amber/cinnabar signals. All pairs checked for AA on paper/white.
-        ink: { DEFAULT: "#0f1b2d", 700: "#26364d", 600: "#3b4d66", 500: "#4f627c" },
-        paper: "#f6f4ef",
-        line: "#e2ded3",
-        jade: { 50: "#e8f5f0", 100: "#cfeadf", 600: "#0b7a5a", 700: "#086247", 800: "#064d38" },
-        amber: { 50: "#fff6e0", 100: "#fde9b3", 600: "#9a5b00", 700: "#7c4900" },
-        cinnabar: { 50: "#fdecea", 100: "#f9cfc9", 600: "#b3261e", 700: "#8f1d17" },
-        bridge: { 50: "#eaf0fa", 600: "#1d4ed8", 700: "#1e40af" },
+        // Semantic tokens: RGB channels live in app/globals.css (:root = light, .dark = dark). All text/surface pairs checked for AA.
+        ink: { DEFAULT: "rgb(var(--ink) / <alpha-value>)", 700: "rgb(var(--ink-700) / <alpha-value>)", 600: "rgb(var(--ink-600) / <alpha-value>)", 500: "rgb(var(--ink-500) / <alpha-value>)" },
+        paper: "rgb(var(--paper) / <alpha-value>)",
+        surface: "rgb(var(--surface) / <alpha-value>)",
+        sunken: "rgb(var(--sunken) / <alpha-value>)",
+        line: { DEFAULT: "rgb(var(--line) / <alpha-value>)", strong: "rgb(var(--line-strong) / <alpha-value>)" },
+        chrome: "rgb(var(--chrome) / <alpha-value>)",
+        primary: { DEFAULT: "rgb(var(--primary) / <alpha-value>)", hover: "rgb(var(--primary-hover) / <alpha-value>)" },
+        danger: "rgb(var(--danger) / <alpha-value>)",
+        jade: { 50: "rgb(var(--jade-50) / <alpha-value>)", 100: "rgb(var(--jade-100) / <alpha-value>)", 600: "rgb(var(--jade-600) / <alpha-value>)", 700: "rgb(var(--jade-700) / <alpha-value>)", 800: "rgb(var(--jade-800) / <alpha-value>)" },
+        amber: { 50: "rgb(var(--amber-50) / <alpha-value>)", 100: "rgb(var(--amber-100) / <alpha-value>)", 600: "rgb(var(--amber-600) / <alpha-value>)", 700: "rgb(var(--amber-700) / <alpha-value>)" },
+        cinnabar: { 50: "rgb(var(--cinnabar-50) / <alpha-value>)", 100: "rgb(var(--cinnabar-100) / <alpha-value>)", 600: "rgb(var(--cinnabar-600) / <alpha-value>)", 700: "rgb(var(--cinnabar-700) / <alpha-value>)" },
+        bridge: { 50: "rgb(var(--bridge-50) / <alpha-value>)", 600: "rgb(var(--bridge-600) / <alpha-value>)", 700: "rgb(var(--bridge-700) / <alpha-value>)" },
       },
-      boxShadow: { card: "0 1px 2px rgba(15,27,45,.06), 0 4px 16px rgba(15,27,45,.05)" },
+      boxShadow: { card: "var(--shadow-card)" },
+      spacing: { safe: "env(safe-area-inset-bottom)" },
     },
   },
   plugins: [],

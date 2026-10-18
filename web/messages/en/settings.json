@@ -45,5 +45,9 @@
     "seconds": "Cooling-off seconds (0 = real 24h)",
     "set": "Apply"
   },
-  "notice": "All data is synthetic. Bank is a sandbox. Setu never holds funds."
+  "notice": "All data is synthetic. Bank is a sandbox. Setu never holds funds.",
+  "theme": {
+    "title": "Appearance",
+    "help": "Choose a light or dark theme, or follow your device setting."
+  }
 }

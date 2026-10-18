@@ -5,6 +5,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { PageHeader, Card } from "@/components/page-header";
 import { Banner } from "@/components/banner";
 import { LocaleToggle } from "@/components/locale-toggle";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { TotpInput } from "@/components/totp-input";
 import { useApiError } from "@/components/use-api-error";
 import { useAuth } from "@/components/auth-provider";
@@ -105,6 +106,12 @@ export default function SettingsPage() {
             <p className="mt-2 text-sm text-ink-600" lang={locale}>{t("language.help")}</p>
           </Card>
 
+          <Card aria-labelledby="theme-h">
+            <h2 id="theme-h" className="text-lg font-semibold">{t("theme.title")}</h2>
+            <div className="mt-3"><ThemeToggle /></div>
+            <p className="mt-2 text-sm text-ink-600">{t("theme.help")}</p>
+          </Card>
+
           <Card aria-labelledby="consent-h">
             <h2 id="consent-h" className="text-lg font-semibold">{t("consent.title")}</h2>
             <p className="mt-1 text-sm text-ink-600">{t("consent.help")}</p>
@@ -142,7 +149,7 @@ export default function SettingsPage() {
 
       {confirmErase ? (
         <div className="fixed inset-0 z-50 grid place-items-center bg-black/50 p-4" role="alertdialog" aria-modal="true" aria-labelledby="er-t" aria-describedby="er-d">
-          <div className="w-full max-w-md rounded-xl bg-white p-5 shadow-xl">
+          <div className="w-full max-w-md rounded-xl bg-surface p-5 shadow-xl">
             <h2 id="er-t" className="text-lg font-bold">{t("data.eraseConfirmTitle")}</h2>
             <p id="er-d" className="mt-2 text-sm">{t("data.eraseConfirmBody")}</p>
             <div className="mt-4 flex justify-end gap-2">

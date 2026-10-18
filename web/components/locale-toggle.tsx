@@ -15,14 +15,14 @@ export function LocaleToggle({ dark = false }: { dark?: boolean }) {
         lang={lang}
         aria-current={active ? "true" : undefined}
         onClick={() => { if (!active) router.replace(pathname, { locale: value }); }}
-        className={`px-3 py-1 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600 ${active ? (dark ? "bg-white text-ink" : "bg-ink text-white") : dark ? "text-white/80 hover:bg-white/10" : "text-ink hover:bg-slate-100"}`}
+        className={`h-9 px-3 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600 ${active ? (dark ? "bg-surface text-ink" : "bg-primary text-white") : dark ? "text-white/80 hover:bg-white/10" : "text-ink hover:bg-sunken"}`}
       >
         {text}
       </button>
     );
   };
   return (
-    <div role="group" aria-label={t("language")} className={`inline-flex overflow-hidden rounded-lg border ${dark ? "border-white/30" : "border-line bg-white"}`}>
+    <div role="group" aria-label={t("language")} className={`inline-flex overflow-hidden rounded-lg border ${dark ? "border-white/30" : "border-line bg-surface"}`}>
       {opt("en", "EN", "en")}
       {opt("zh-CN", "简体中文", "zh-CN")}
     </div>

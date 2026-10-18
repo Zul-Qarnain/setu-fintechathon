@@ -89,7 +89,7 @@ export function ActionCard({ action, onChange, studentLabel, compact = false }: 
   const border = a.tier === "T4" ? "border-cinnabar-600/60" : a.status === "cooling_off" ? "border-amber-600/60" : "border-line";
   const idp = `act-${a.id}`;
   return (
-    <article aria-labelledby={`${idp}-t`} className={`rounded-xl border-2 bg-white p-4 shadow-card ${border}`}>
+    <article aria-labelledby={`${idp}-t`} className={`rounded-xl border-2 bg-surface p-4 shadow-card ${border}`}>
       <div className="flex flex-wrap items-center gap-2">
         <h3 id={`${idp}-t`} className="font-semibold">{t(`type.${a.type}`)}{amount ? <> · <Cny value={amount} /></> : null}</h3>
         <TierBadge tier={a.tier} />

@@ -35,9 +35,9 @@ export default function ApprovalsPage() {
       <PageHeader title={t("title")} subtitle={isApprover ? t("subtitleApprover") : t("subtitleStudent")} actions={<button type="button" className={button("ghost")} onClick={() => { setTouched([]); void load(); }}>{t("refresh")}</button>} />
       {isApprover ? <Banner tone="info" className="mb-4">{t("approverBanner")}</Banner> : null}
       {err ? <Banner tone="danger" className="mb-4">{err}</Banner> : null}
-      <div role="tablist" aria-label={t("title")} className="mb-4 inline-flex overflow-hidden rounded-lg border border-line bg-white">
+      <div role="tablist" aria-label={t("title")} className="mb-4 inline-flex overflow-hidden rounded-lg border border-line bg-surface">
         {(["pending", "history"] as const).map((k) => (
-          <button key={k} role="tab" type="button" id={`tab-${k}`} aria-selected={tab === k} aria-controls="panel" onClick={() => setTab(k)} className={`px-4 py-2 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600 ${tab === k ? "bg-ink text-white" : "text-ink hover:bg-paper"}`}>
+          <button key={k} role="tab" type="button" id={`tab-${k}`} aria-selected={tab === k} aria-controls="panel" onClick={() => setTab(k)} className={`px-4 py-2 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600 ${tab === k ? "bg-primary text-white" : "text-ink hover:bg-paper"}`}>
             {t(`tabs.${k}`)} ({k === "pending" ? pending.length : history.length})
           </button>
         ))}
