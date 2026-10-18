@@ -6,6 +6,8 @@ South Asian students in China pay tuition, dorm fees and insurance across border
 
 > **Honesty box.** All data is **SYNTHETIC** (personas, notices, SMS, accounts). The bank is a **SANDBOX**. Setu **never holds funds**. Offline FX rates are labelled **SAMPLE** (not live). Channel fees are illustrative. Optional LLM adapters are **untested live**; the default planner is a deterministic scripted one. Chinese strings and the glossary are drafts awaiting native review. See [KNOWN RISKS](docs/SECURITY_SELF_ASSESSMENT.md#4-known-risks-and-limitations-read-before-trusting-this).
 
+Source: https://github.com/Zul-Qarnain/setu-fintechathon
+
 ## How it is safe (one paragraph)
 The LLM (or the scripted planner) may only emit JSON calls to an allowlist of tools. Every number comes from deterministic code, never the model. Fee notices and SMS are *data*: they are wrapped as untrusted, scanned by a rule-based guardian, and can never be the source of a payee or amount. One pure function, `policy.decide`, assigns tiers T0–T4 and is re-run at propose, approve and execute time; the executor accepts only `ALLOW`. Payments over CNY 2,000, or to new/changed payees, need the student's TOTP **and** the family approver's TOTP (plus 24 h cooling-off for new payees). Details: [ARCHITECTURE](docs/ARCHITECTURE.md).
 
