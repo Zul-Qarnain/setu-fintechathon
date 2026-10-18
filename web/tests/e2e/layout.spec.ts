@@ -97,6 +97,9 @@ for (const locale of ["en", "zh-CN"] as const) for (const vp of ["desktop", "mob
     await uploadAndConfirmTuition(page, locale);
     await go("agent"); await page.getByTestId("prompt-pay").click(); await page.getByRole("article").first().waitFor(W); await snap(page, vp, n("agent-t3-awaiting"), problems);
     await go("approvals"); await page.getByRole("article").first().waitFor(W); await snap(page, vp, n("approvals-pending"), problems);
+    await login(page, "father", locale); await setTheme(page, theme);
+    await go("approvals"); await page.getByRole("article").first().waitFor(W); await snap(page, vp, n("approvals-approver"), problems);
+    await login(page, "aisha", locale); await setTheme(page, theme);
     await go("documents"); await page.getByTestId("load-injected").click(); await page.getByTestId("analyse").click(); await page.getByTestId("doc-blocked").waitFor(W); await snap(page, vp, n("doc-blocked"), problems);
     await go("audit"); await page.getByTestId("verify-chain").click(); await page.getByTestId("chain-ok").waitFor(W); await snap(page, vp, n("audit-ok"), problems);
     const seq = (await page.locator('[data-testid^="audit-row-"] th, [data-testid^="audit-card-"] .font-mono').nth(1).innerText()).replace(/\D/g, "");
