@@ -8,6 +8,15 @@ South Asian students in China pay tuition, dorm fees and insurance across border
 
 Source: https://github.com/Zul-Qarnain/setu-fintechathon
 
+## FinTechathon submission summary
+- **Track:** International AI Track · Topic C — Cross-border & Student Finance Assistant
+- **Team name:** [TEAM NAME]
+- **Project name:** Setu 桥
+- **One-line summary:** Setu reads a fee notice, explains it in English or 简体中文, shows the real total cost and prepares the payment — but never moves money on a model's say-so.
+- **GitHub repository:** https://github.com/Zul-Qarnain/setu-fintechathon
+- **Demo video:** https://github.com/Zul-Qarnain/setu-fintechathon/blob/main/submission/Setu_Demo.mp4 (3 min 26 s)
+- **Live demo:** not hosted; run locally with `make install && make demo` (offline, no keys)
+
 ## How it is safe (one paragraph)
 The LLM (or the scripted planner) may only emit JSON calls to an allowlist of tools. Every number comes from deterministic code, never the model. Fee notices and SMS are *data*: they are wrapped as untrusted, scanned by a rule-based guardian, and can never be the source of a payee or amount. One pure function, `policy.decide`, assigns tiers T0–T4 and is re-run at propose, approve and execute time; the executor accepts only `ALLOW`. Payments over CNY 2,000, or to new/changed payees, need the student's TOTP **and** the family approver's TOTP (plus 24 h cooling-off for new payees). Details: [ARCHITECTURE](docs/ARCHITECTURE.md).
 
@@ -18,6 +27,38 @@ The LLM (or the scripted planner) may only emit JSON calls to an allowlist of to
 | T2 | ≤ CNY 2,000 to a **verified** payee | student TOTP |
 | T3 | > CNY 2,000, split payments, new/changed payee | student TOTP + family approver TOTP (+ 24 h cooling-off for new payees) |
 | T4 | unverified payee, document-only source, bulk PII export, injection | **blocked** |
+
+## System architecture
+```mermaid
+flowchart LR
+  UI["web/ Next.js (EN / 简体中文)"] -->|JSON + JWT| API["Fastify API (server/src/routes)"]
+  API --> AG["agents/graph.ts: intake → planner → tools → guardian"]
+  AG --> POL["policy.decide (T0–T4)"]
+  API -->|approve with TOTP| POL
+  POL -->|ALLOW only| EX[executor] --> SBX[(sandbox bank)]
+  API --> DB[(SQLite: AES-256-GCM fields, hash-chained audit)]
+```
+- **Models:** deterministic scripted planner (default, offline); optional Gemini / Groq adapters behind the same allowlist (tokenised text only, untested live).
+- **Tools (allowlist):** get_obligation, list_obligations_due, fx_quote, compute_costs, budget_summary, propose_payment, propose_verify_payee, draft_message — none moves money.
+- **Data sources:** `data/` — SYNTHETIC personas, 33 fee notices, 12 SMS, SAMPLE FX fixture, illustrative channel costs.
+- **External services:** none by default; optional live FX (open.er-api.com, `FX_MODE=live`).
+
+## Environment and dependencies
+- **Operating system:** Linux x86_64 (Debian-based, kernel 6.12; tested 19 Oct 2026 with Node 20.19.2 / npm 11.21). macOS and WSL2 are expected to work but were not tested.
+- **Runtime:** Node 20+ (`.nvmrc` = 20); no Python, no API keys, no network needed
+- **Server:** TypeScript (strict), Fastify, Zod, better-sqlite3 12.4.1, decimal.js, jose, @node-rs/argon2, pino; tests: vitest
+- **Web:** Next.js 16.4.2, React 19, next-intl 4; tests: vitest, Playwright
+- **Environment variables:** copy `.env.example` to `.env`; `JWT_SECRET`, `HMAC_KEY`, `AES_KEY_B64` ship with public dev defaults and must be replaced outside a demo. Never commit real secrets.
+
+## Installation and execution (clean environment)
+```bash
+git clone https://github.com/Zul-Qarnain/setu-fintechathon && cd setu-fintechathon
+cp .env.example .env            # optional; defaults run offline
+make install                    # or: (cd server && npm ci) && (cd web && npm install)
+make api                        # or: cd server && DEMO_MODE=true npm start   → http://localhost:8000
+make web                        # or: cd web && npm run dev                   → http://localhost:3000
+```
+Sign in as `aisha@demo.setu.test` / `demo-password-123` (SYNTHETIC).
 
 ## Run it (one command)
 
@@ -32,7 +73,7 @@ make api                         # backend on http://localhost:8000 (DEMO_MODE=t
 make web                         # Next.js UI on http://localhost:3000
 ```
 
-`DEMO_MODE` now defaults to **off** (the `/demo/*` helpers return 404 unless `DEMO_MODE=true` or a valid `X-Admin-Token`). Set `DEMO_MODE=true` for the judges' demo (`docker-compose.yml` does).
+`DEMO_MODE` now defaults to **off** (the `/demo/*` helpers return 404 unless `DEMO_MODE=true` or a valid `X-Admin-Token`). Set `DEMO_MODE=true` for the judges' demo (`docker-compose.yml` does). `.env.example` ships with `DEMO_MODE=true`, so copying it to `.env` turns the demo helpers on; the code default stays off.
 
 Docker (not available where this was developed, so **the images were written by reading but never built here**; please report any issue):
 
@@ -80,6 +121,16 @@ TOTP: with `DEMO_MODE=true` the API exposes `GET /demo/totp/{email}` (current 6-
 
 Honest note: the golden tasks and attacks were authored by the same team as the rules, so they demonstrate coverage of known patterns, not generalisation. During development G19 (zh-CN FX question) failed on its first run and was fixed; the report shows the final run.
 
+## Testing
+| Command | Expected result (latest run) |
+|---|---|
+| `cd server && npx vitest run` (= `make test`) | 24 test files, 524 tests passed (19 Oct 2026) |
+| `make evidence` → `evidence/eval_report.md` | 25/25 golden tasks passed; notice corpus 33/33 verdicts, 33/33 field parsing |
+| `make evidence` → `evidence/security_report.md` | 17/17 adversarial scenarios blocked |
+| `make demo` → `evidence/audit_export.json` | `verify.ok = true`; prints the audit `head_hash` |
+Web: `cd web && npm run lint && npx tsc --noEmit && npx vitest run && npx playwright test --project=smoke` → lint 0 errors, 16 vitest tests, 9/9 Playwright smoke (needs the API on :8000 with `DEMO_MODE=true`).
+Test suites: `server/tests/unit`, `api`, `golden`, `security`, `parity`.
+
 ## Repository map
 ```
 server/src/        Fastify app: routes/, domain/ (policy, fx, costs, crypto, audit), agents/, sandboxBank/, evalkit/ (golden + attacks)
@@ -97,6 +148,13 @@ web/                Next.js front end (EN / 简体中文)
 
 ## Documents
 [API](docs/API.md) · [Architecture](docs/ARCHITECTURE.md) · [Data flow](docs/DATA_FLOW.md) · [Threat model](docs/THREAT_MODEL.md) · [Security self-assessment + known risks](docs/SECURITY_SELF_ASSESSMENT.md) · [EN↔ZH glossary](docs/GLOSSARY_EN_ZH.md)
+
+## Security notes
+### Data handling
+AES-256-GCM (with AAD) at rest for payee account numbers, TOTP secrets and notice text; HMAC-SHA256 account tokens so plaintext accounts never reach a planner; PII redacted in logs and before audit hashing; `DELETE /me` erasure; offline by default, no third-party scripts. Known risks: docs/SECURITY_SELF_ASSESSMENT.md §4.
+
+### Production checklist
+`NODE_ENV=production`, `DEMO_MODE=false`, fresh `JWT_SECRET` / `HMAC_KEY` / `AES_KEY_B64`, TLS at a reverse proxy, `CORS_ORIGINS` restricted to the web origin, persistent and backed-up SQLite volume, periodic publication of the audit `head_hash`.
 
 ## Limitations (short list)
 No OCR and no PDF upload in the TypeScript backend (typed/pasted text and .txt only; PDF uploads return 422) · no real payments · scripted planner has narrow EN/ZH coverage and ignores free-form amounts in chat · guardian is rule-based · approver linking has no consent handshake · PIPL consent screens not built · single-process SQLite, in-memory rate limiter · Docker images not built in the dev environment. Full list: [SECURITY_SELF_ASSESSMENT](docs/SECURITY_SELF_ASSESSMENT.md).

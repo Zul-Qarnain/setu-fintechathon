@@ -33,8 +33,8 @@ export function ThemeToggle({ onDark = false }: { onDark?: boolean }) {
     <div className="inline-flex items-center gap-1.5">
       <button type="button" data-testid="theme-light" aria-label={t("themeLight")} title={t("themeLight")} aria-pressed={!dark} onClick={() => pick("light")} className={`grid h-9 w-9 place-items-center rounded-lg ${muted} hover:bg-sunken/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600`}><Icon name="sun" className="h-[18px] w-[18px]" /></button>
       <button type="button" role="switch" aria-checked={dark} aria-label={t("theme")} onClick={() => pick(dark ? "light" : "dark")} data-testid="theme-switch"
-        className={`relative h-6 w-11 rounded-full transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600 ${dark ? "bg-cta" : "bg-chrome"}`}>
-        <span aria-hidden="true" className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${dark ? "left-[1.375rem]" : "left-0.5"}`} />
+        className="group grid h-9 w-12 place-items-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600">
+        <span aria-hidden="true" className={`relative block h-6 w-11 rounded-full transition ${dark ? "bg-cta" : "bg-chrome"}`}><span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${dark ? "left-[1.375rem]" : "left-0.5"}`} /></span>
       </button>
       <button type="button" data-testid="theme-dark" aria-label={t("themeDark")} title={t("themeDark")} aria-pressed={dark} onClick={() => pick("dark")} className={`grid h-9 w-9 place-items-center rounded-lg ${muted} hover:bg-sunken/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600`}><Icon name="moon" className="h-[18px] w-[18px]" /></button>
     </div>

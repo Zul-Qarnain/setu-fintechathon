@@ -15,7 +15,7 @@ function CopyHash({ value }: { value: string }) {
   const [ok, setOk] = useState(false);
   return (
     <span className="inline-flex items-center gap-1">
-      <code title={value} className="whitespace-nowrap font-mono text-xs">{shortHash(value, 4)}</code>
+      <code title={value} className="whitespace-nowrap text-xs">{shortHash(value, 4)}</code>
       <button type="button" className="inline-flex min-h-9 items-center rounded px-2 text-xs text-bridge-700 underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600" aria-label={`${t("copy")} ${value.slice(0, 8)}`} onClick={() => { void navigator.clipboard?.writeText(value).then(() => { setOk(true); window.setTimeout(() => setOk(false), 1500); }); }}>{ok ? t("copied") : t("copy")}</button>
     </span>
   );
@@ -126,7 +126,7 @@ export default function AuditPage() {
         <table className="w-full min-w-[40rem] text-left text-sm">
           <caption className="sr-only">{t("title")}</caption>
           <thead className="text-xs text-ink-600">
-            <tr className="border-b border-line"><th scope="col" className="px-4 py-3 font-semibold">{t("cols.seq")}</th><th scope="col" className="px-3 py-2">{t("cols.time")}</th><th scope="col" className="px-3 py-2">{t("cols.actor")}</th><th scope="col" className="px-3 py-2">{t("cols.event")}</th><th scope="col" className="hidden px-3 py-2 lg:table-cell">{t("cols.summary")}</th><th scope="col" className="px-3 py-2">{t("cols.hash")}</th><th scope="col" className="px-3 py-2"><span className="sr-only">{t("cols.details")}</span></th></tr>
+            <tr className="border-b border-line"><th scope="col" className="px-4 py-3 font-semibold">{t("cols.seq")}</th><th scope="col" className="px-3 py-2">{t("cols.time")}</th><th scope="col" className="px-3 py-2">{t("cols.actor")}</th><th scope="col" className="px-3 py-2">{t("cols.event")}</th><th scope="col" className="hidden px-3 py-2 2xl:table-cell">{t("cols.summary")}</th><th scope="col" className="px-3 py-2">{t("cols.hash")}</th><th scope="col" className="px-3 py-2"><span className="sr-only">{t("cols.details")}</span></th></tr>
           </thead>
           <tbody>
             {entries === null && !err ? <tr><td colSpan={7} className="px-3 py-6 text-center text-ink-600" role="status">{tc("loading")}</td></tr> : null}
@@ -142,10 +142,10 @@ export default function AuditPage() {
                       <span className={`relative z-10 grid h-7 min-w-7 place-items-center rounded-full border-2 px-1 font-mono text-xs font-bold ${hit ? "border-cinnabar-600 bg-cinnabar-50 text-cinnabar-700" : "border-jade-600 bg-surface text-jade-800"}`}>{e.seq}</span>
                       {hit ? <span className="mt-1 block font-sans text-[11px] font-bold text-cinnabar-700">⚠ {t("tamperedRow")}</span> : null}
                     </th>
-                    <td className="whitespace-nowrap px-3 py-3 text-xs tabular-nums text-ink-700">{formatDateTime(e.ts, locale)}</td>
-                    <td className="px-3 py-3"><span className={`inline-flex max-w-[10rem] items-center gap-1 truncate rounded-md px-2 py-1 text-xs font-medium ${actorKind(e.actor) === "system" ? "bg-sunken text-ink-700" : "bg-bridge-50 text-bridge-700"}`} title={e.actor}><Icon name={actorKind(e.actor) === "system" ? "settings" : "user"} className="h-3.5 w-3.5 shrink-0" /><span className="truncate">{e.actor}</span></span></td>
+                    <td className="w-36 px-3 py-3 text-xs tabular-nums text-ink-700">{formatDateTime(e.ts, locale)}</td>
+                    <td className="px-3 py-3"><span className={`inline-flex max-w-[8.5rem] items-center gap-1 truncate rounded-md px-2 py-1 text-xs font-medium ${actorKind(e.actor) === "system" ? "bg-sunken text-ink-700" : "bg-bridge-50 text-bridge-700"}`} title={e.actor}><Icon name={actorKind(e.actor) === "system" ? "settings" : "user"} className="h-3.5 w-3.5 shrink-0" /><span className="truncate">{e.actor}</span></span></td>
                     <td className="px-3 py-3"><code className="rounded-md bg-sunken px-2 py-1 font-mono text-xs text-ink">{e.event}</code></td>
-                    <td className="hidden max-w-[16rem] px-3 py-3 text-xs text-ink-600 lg:table-cell"><span className="line-clamp-2 break-words">{summarise(e.payload)}</span></td>
+                    <td className="hidden max-w-[16rem] px-3 py-3 text-xs text-ink-600 2xl:table-cell"><span className="line-clamp-2 break-words">{summarise(e.payload)}</span></td>
                     <td className="px-3 py-3"><CopyHash value={e.hash} /></td>
                     <td className="px-3 py-3 text-right"><button type="button" aria-expanded={isOpen} aria-controls={`pl-${e.seq}`} onClick={() => setOpen(isOpen ? null : e.seq)} aria-label={isOpen ? t("hide") : t("details")} className="grid h-9 w-9 place-items-center rounded-lg text-ink-600 hover:bg-sunken focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600"><Icon name="chevron" className={`h-4 w-4 transition ${isOpen ? "rotate-90" : ""}`} /></button></td>
                   </tr>

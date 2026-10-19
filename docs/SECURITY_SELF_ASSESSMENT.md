@@ -31,7 +31,7 @@ Caveat: the notice corpus and the attack scenarios were written by the same team
 - **AuthN**: argon2id; JWT HS256 with the algorithm pinned, `exp/sub/iat` required, role re-read from the database each request; TOTP (RFC 6238, ±1 step) with replay protection and 5-failure / 300 s lockout (`TOTP_LOCKED`).
 - **AuthZ**: role checks; owner-scoped queries; cross-user ids return 404 (no existence leak).
 - **Crypto at rest**: AES-256-GCM with AAD for payee accounts, TOTP secrets, uploaded text; keyed HMAC for lookups.
-- **Input handling**: size caps, text-layer PDFs only (malformed → 422), NFKC normalisation, homoglyph/lookalike detection, `<untrusted>` wrapping.
+- **Input handling**: size caps (2 MB upload), pasted text or .txt files only (PDF and other types → 422 UNSUPPORTED_DOCUMENT), NFKC normalisation, homoglyph/lookalike detection, `<untrusted>` wrapping.
 - **Agent safety**: allowlisted tools, strict schemas, no tool executes money movement, server-side payee/amount resolution, reply validator.
 - **Audit**: SHA-256 hash chain, PII redacted before storage; verify endpoint; export with `head_hash`.
 - **Privacy**: PII-redacting logs, `DELETE /me` erasure, no third-party scripts, offline by default.
@@ -49,7 +49,7 @@ Caveat: the notice corpus and the attack scenarios were written by the same team
 6. **LLM adapters (Gemini, Groq) are untested live.** They are optional, receive only tokenised text, and fall back to the scripted planner. Enabling a foreign provider is a cross-border transfer under PIPL.
 7. **No OCR.** Scanned or image-only notices are rejected, not read.
 8. **Scripted planner coverage is narrow** (EN/ZH regexes). Unusual phrasing becomes `unknown` and gets a capabilities reply. Free-form amounts in chat are deliberately ignored: "Pay the university 5000 yuan" proposes the first open confirmed obligation, not 5000.
-9. **Guardian is rule-based.** Novel injection phrasings, other languages, or text hidden in PDF structure can evade it; this is why the policy engine, not the guardian, is the authority (document-sourced actions are T4 regardless of verdict).
+9. **Guardian is rule-based.** Novel injection phrasings, other languages, or text hidden in unusual encodings can evade it; this is why the policy engine, not the guardian, is the authority (document-sourced actions are T4 regardless of verdict).
 10. **Dev-default secrets.** `JWT_SECRET`, `HMAC_KEY`, `AES_KEY_B64` have publicly visible dev defaults so the demo runs with zero setup. They **must** be replaced in any real deployment, and there is no key rotation.
 11. **Demo endpoints** (`/demo/*`: TOTP peek, audit tamper, reset) exist only when `DEMO_MODE=true` (the TypeScript default is **off**; the judges' demo/compose sets it on) and would be a serious hole in production. Keep `DEMO_MODE=false` outside demos; production start-up also refuses the dev-default secrets (`NODE_ENV=production`).
 12. **SQLite**, single node, no backups, no migrations tooling.

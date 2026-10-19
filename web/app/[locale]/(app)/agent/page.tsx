@@ -60,7 +60,7 @@ export default function AgentPage() {
       <PageHeader icon={<Icon name="agent" />} title={t("title")} subtitle={t("subtitle")}
         actions={<button type="button" onClick={newChat} className={button("ghost")} data-testid="new-chat"><Icon name="plus" className="h-4 w-4" />{t("newChat")}</button>} />
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]">
-        <section aria-label={t("chat")} className="flex min-h-[32rem] flex-col rounded-2xl border border-line bg-surface shadow-card">
+        <section aria-label={t("chat")} className="flex min-h-[32rem] min-w-0 flex-col rounded-2xl border border-line bg-surface shadow-card">
           <div className="h-[min(40rem,calc(100dvh-17rem))] min-h-72 flex-1 space-y-5 overflow-y-auto overscroll-contain p-4 sm:p-5" role="log" aria-live="polite" aria-relevant="additions" aria-label={t("log")}>
             {msgs.length === 0 ? (
               <div className="grid h-full place-content-center justify-items-center gap-3 text-center">
@@ -72,7 +72,7 @@ export default function AgentPage() {
               <div key={i} className="flex items-start justify-end gap-2.5">
                 <div className="max-w-[85%] rounded-2xl rounded-tr-md bg-bridge-50 px-4 py-2.5 text-sm text-ink">
                   <p className="sr-only">{t("you")}:</p>
-                  <p className="whitespace-pre-wrap">{m.text}</p>
+                  <p className="whitespace-pre-wrap [overflow-wrap:anywhere]">{m.text}</p>
                 </div>
                 <span aria-hidden="true" className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-chrome text-xs font-semibold text-white dark:bg-cta">{initial}</span>
               </div>
@@ -80,9 +80,9 @@ export default function AgentPage() {
               <div key={i} className="flex items-start gap-2.5">
                 <span aria-hidden="true" className={`grid h-8 w-8 shrink-0 place-items-center rounded-full ${m.turn?.trace.tier === "T4" ? "bg-cinnabar-50 text-cinnabar-600" : "bg-bridge-50 text-bridge-600"}`}><Icon name={m.turn?.trace.tier === "T4" ? "shieldAlert" : "agent"} className="h-[18px] w-[18px]" /></span>
                 <div className="min-w-0 max-w-[92%] flex-1 space-y-3">
-                  <div className="inline-block rounded-2xl rounded-tl-md bg-sunken px-4 py-2.5 text-sm text-ink">
+                  <div className="inline-block max-w-full rounded-2xl rounded-tl-md bg-sunken px-4 py-2.5 text-sm text-ink">
                     <p className="sr-only">{t("agentName")}:</p>
-                    <p className="whitespace-pre-wrap">{m.text}</p>
+                    <p className="whitespace-pre-wrap [overflow-wrap:anywhere]">{m.text}</p>
                   </div>
                   {m.turn?.plan ? <PlanCard plan={m.turn.plan} /> : null}
                   {m.turn?.proposed_actions.map((a) => <ActionCard key={a.id} action={a} compact={false} />)}
@@ -116,7 +116,7 @@ export default function AgentPage() {
             </form>
           </div>
         </section>
-        <div className="xl:sticky xl:top-20 xl:self-start"><TracePanel turn={latest} /></div>
+        <div className="min-w-0 xl:sticky xl:top-20 xl:self-start"><TracePanel turn={latest} /></div>
       </div>
     </>
   );

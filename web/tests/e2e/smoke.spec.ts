@@ -6,7 +6,7 @@ test.beforeEach(async ({ page }) => { await resetMock(page); });
 test("login lands on dashboard with synthetic banner and SAMPLE rate label", async ({ page }) => {
   await login(page, "aisha");
   await expect(page.getByRole("note").first()).toContainText("SYNTHETIC");
-  await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Welcome back, Aisha/ })).toBeVisible();
   await expect(page.getByText("SAMPLE rate — not live").first()).toBeVisible();
   await expect(page.getByText(/¥[\d,]+\.\d{2}/).first()).toBeVisible();
 });
@@ -89,7 +89,7 @@ test("language toggle switches to zh-CN, saves cookie, and formats ¥", async ({
   await login(page, "aisha");
   await page.getByRole("button", { name: "简体中文" }).click();
   await expect(page).toHaveURL(/\/zh-CN/);
-  await expect(page.getByRole("heading", { name: "总览" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /欢迎回来，Aisha/ })).toBeVisible();
   await expect(page.getByText(/¥(1,350|18,500)\.00/).first()).toBeVisible();
   const cookies = await context.cookies();
   expect(cookies.find((c) => c.name === "NEXT_LOCALE")?.value).toBe("zh-CN");

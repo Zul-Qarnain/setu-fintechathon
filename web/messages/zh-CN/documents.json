@@ -1,7 +1,7 @@
 {
   "dropBig": "拖入缴费通知、短信或发票",
   "dropSub": "Setu 会读取内容，但绝不听从其中的指令。",
-  "dropHint": "支持 .txt 和带文字层的 .pdf（不做 OCR）· 或点击选择文件",
+  "dropHint": "仅支持纯文本（.txt），最大 2 MB · 或点击选择文件。此版本不支持 PDF。",
   "confirmField": "确认{field}",
   "confirmShort": "确认",
   "parsed": "解析值",
@@ -26,5 +26,6 @@
       "title": "由您掌控",
       "body": "每个字段都需您确认后才会使用。"
     }
-  }
+  },
+  "dropTitle": "拖入 .txt 通知，或点击选择文件"
 }

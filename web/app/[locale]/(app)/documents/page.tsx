@@ -101,11 +101,10 @@ export default function DocumentsPage() {
   const verdictTone = !doc ? "info" : doc.guardian.verdict === "blocked" ? "danger" : doc.guardian.verdict === "suspicious" ? "warning" : "success";
 
   const fieldRow = (k: Field, icon: string, lbl: string, control: React.ReactNode, help?: React.ReactNode) => (
-    <div className="grid grid-cols-[2.25rem_minmax(0,1fr)] items-start gap-x-3 gap-y-1 sm:grid-cols-[2.25rem_6.5rem_minmax(0,1fr)_auto]">
-      <span className="mt-1 grid h-9 w-9 place-items-center rounded-lg bg-bridge-50 text-bridge-600"><Icon name={icon} className="h-[18px] w-[18px]" /></span>
-      <span className="mt-2.5 text-sm font-medium text-ink-700 max-sm:hidden" aria-hidden="true">{lbl}</span>
-      <div className="min-w-0">{control}{help ? <p className="mt-1 text-xs text-ink-600">{help}</p> : null}</div>
-      <label className="col-start-2 inline-flex min-h-10 items-center gap-2 text-sm text-ink-700 sm:col-start-auto"><input type="checkbox" className="h-[18px] w-[18px] rounded accent-cta" checked={fields[k]} onChange={(e) => setFields((f) => ({ ...f, [k]: e.target.checked }))} disabled={blocked} aria-label={t("confirmField", { field: lbl })} />{t("confirmShort")}</label>
+    <div className="grid grid-cols-[2.25rem_minmax(0,1fr)] items-start gap-x-3 gap-y-1 sm:grid-cols-[2.25rem_minmax(0,1fr)_auto]">
+      <span className="mt-6 grid h-9 w-9 place-items-center rounded-lg bg-bridge-50 text-bridge-600"><Icon name={icon} className="h-[18px] w-[18px]" /></span>
+      <div className="min-w-0"><span className="mb-1 block text-xs font-semibold text-ink-700" aria-hidden="true">{lbl}</span>{control}{help ? <p className="mt-1 text-xs text-ink-600">{help}</p> : null}</div>
+      <label className="col-start-2 inline-flex min-h-10 items-center gap-2 text-sm text-ink-700 sm:col-start-auto sm:mt-5"><input type="checkbox" className="h-[18px] w-[18px] rounded accent-cta" checked={fields[k]} onChange={(e) => setFields((f) => ({ ...f, [k]: e.target.checked }))} disabled={blocked} aria-label={t("confirmField", { field: lbl })} />{t("confirmShort")}</label>
     </div>
   );
 
@@ -125,7 +124,7 @@ export default function DocumentsPage() {
               <span className="text-lg font-semibold text-ink">{t("dropBig")}</span>
               <span className="text-sm text-ink-600">{t("dropSub")}</span>
               <span className="text-xs text-ink-600">{t("dropHint")}</span>
-              <input id="file" ref={fileRef} type="file" accept=".txt,.pdf,text/plain,application/pdf" className="sr-only" aria-label={t("upload")} onChange={(e) => void onFile(e.target.files?.[0])} />
+              <input id="file" ref={fileRef} type="file" accept=".txt,text/plain" className="sr-only" aria-label={t("upload")} onChange={(e) => void onFile(e.target.files?.[0])} />
             </label>
 
             <div className="flex flex-wrap items-center gap-2">
@@ -205,7 +204,7 @@ export default function DocumentsPage() {
                   <div><h3 id="conf-h" className="text-base font-semibold text-ink">{t("confirmTitle")}</h3><p className="text-sm text-ink-600">{t("confirmHelp")}</p></div>
                   {fieldRow("payee", "building", t("payee"), <><label htmlFor="c-payee" className="sr-only">{t("payee")}</label><input id="c-payee" className={input} value={payee} onChange={(e) => setPayee(e.target.value)} disabled={blocked} required /></>, <>{t("parsed")}: {doc.parsed.payee_name ?? t("notFound")}</>)}
                   {fieldRow("amount", "database", t("amount"), <><label htmlFor="c-amt" className="sr-only">{t("amount")}</label><input id="c-amt" inputMode="decimal" className={input} value={amount} onChange={(e) => setAmount(e.target.value)} disabled={blocked} aria-describedby="c-amt-h" required /></>, <span id="c-amt-h">{t("parsed")}: {doc.parsed.amount_cny ? formatCny(doc.parsed.amount_cny) : t("notFound")} · {t("mismatchHelp")}</span>)}
-                  {fieldRow("due", "calendar", t("due"), <><label htmlFor="c-due" className="sr-only">{t("due")}</label><input id="c-due" type="date" className={input} value={due} onChange={(e) => setDue(e.target.value)} disabled={blocked} required /></>, <>{t("parsed")}: {doc.parsed.due_date ? formatDate(doc.parsed.due_date, locale) : t("notFound")}</>)}
+                  {fieldRow("due", "calendar", t("due"), <><label htmlFor="c-due" className="sr-only">{t("due")}</label><input id="c-due" type="date" className={`${input} min-w-0`} value={due} onChange={(e) => setDue(e.target.value)} disabled={blocked} required /></>, <>{t("parsed")}: {doc.parsed.due_date ? formatDate(doc.parsed.due_date, locale) : t("notFound")}</>)}
                   {fieldRow("reference", "file", t("reference"), <><label htmlFor="c-ref" className="sr-only">{t("reference")}</label><input id="c-ref" className={input} value={reference} onChange={(e) => setReference(e.target.value)} disabled={blocked} /></>, <>{t("parsed")}: {doc.parsed.reference ?? t("notFound")}</>)}
                   <details className="rounded-xl border border-line p-3">
                     <summary className="flex min-h-8 cursor-pointer items-center text-sm font-medium text-ink-700">{t("account")} · <code className="ml-1">{doc.parsed.account_masked ?? t("notFound")}</code></summary>
