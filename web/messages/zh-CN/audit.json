@@ -16,7 +16,8 @@
     "actor": "操作者",
     "event": "事件",
     "hash": "哈希",
-    "details": "详情"
+    "details": "详情",
+    "summary": "详情"
   },
   "empty": "暂无审计记录。",
   "details": "详情",
@@ -33,5 +34,20 @@
     "tamper": "篡改该记录",
     "done": "记录 #{seq} 已被修改。现在请点击“验证审计链”。",
     "unavailable": "此服务器未提供篡改演示功能。"
-  }
+  },
+  "entriesOk": "{n} 条记录，未被篡改",
+  "okSub": "所有审计记录均已哈希链接并验证，未发现修改。",
+  "verifyAgain": "重新验证",
+  "notVerified": "验证哈希链",
+  "notVerifiedSub": "重新计算每条记录的哈希，并检查其与前一条的链接。",
+  "exportTitle": "导出证据（JSON）",
+  "exportBody": "下载包含哈希的完整审计日志，任何人都可离线重新验证。",
+  "howTitle": "哈希链如何工作",
+  "howBody": "每条记录都保存上一条记录的哈希，形成链条。任何记录被修改，之后的哈希都将不再匹配。",
+  "block": "记录 #{seq}",
+  "data": "数据",
+  "prev": "前一哈希",
+  "hashShort": "哈希",
+  "tamperTitle": "防篡改",
+  "tamperBody": "对任何记录的改动都会破坏链条，并在下次验证时被发现。"
 }

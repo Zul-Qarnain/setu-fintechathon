@@ -16,7 +16,8 @@
     "actor": "Actor",
     "event": "Event",
     "hash": "Hash",
-    "details": "Details"
+    "details": "Details",
+    "summary": "Details"
   },
   "empty": "No audit entries yet.",
   "details": "Details",
@@ -33,5 +34,20 @@
     "tamper": "Tamper with entry",
     "done": "Entry #{seq} was modified. Now press “Verify chain”.",
     "unavailable": "Tamper helper is not available on this server."
-  }
+  },
+  "entriesOk": "{n} entries, no tampering",
+  "okSub": "All audit entries are hash-linked and verified. No modifications detected.",
+  "verifyAgain": "Verify again",
+  "notVerified": "Verify the hash chain",
+  "notVerifiedSub": "Recompute every hash and check each entry links to the one before it.",
+  "exportTitle": "Export evidence (JSON)",
+  "exportBody": "Download the full audit log with its hashes so anyone can re-verify the chain offline.",
+  "howTitle": "How hash chaining works",
+  "howBody": "Each entry stores the hash of the previous entry, forming a chain. If any entry is modified, every later hash stops matching.",
+  "block": "Entry #{seq}",
+  "data": "Data",
+  "prev": "Prev hash",
+  "hashShort": "Hash",
+  "tamperTitle": "Tamper evident",
+  "tamperBody": "Any change to an entry breaks the chain and is detected on the next verification."
 }

@@ -187,6 +187,8 @@ export function obligationOut(ctx: AppContext, o: ObligationRow) {
     : undefined;
   return {
     id: o.id,
+    title: o.title ?? null,
+    reference: o.reference ?? null,
     amount_cny: new Decimal(o.amount_cny).toFixed(2),
     due_date: o.due_date,
     payee_id: o.payee_id,

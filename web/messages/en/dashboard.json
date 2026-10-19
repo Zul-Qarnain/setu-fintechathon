@@ -3,8 +3,8 @@
   "subtitle": "Your upcoming obligations and what is safe to spend. All figures are synthetic.",
   "welcome": "Welcome, {email}",
   "stats": {
-    "nextDue": "Next tuition / fee due",
-    "bdtNeeded": "BDT needed for it",
+    "nextDue": "Next fee due",
+    "bdtNeeded": "BDT needed",
     "safeToSpend": "Safe to spend this month",
     "pending": "Pending approvals",
     "noneDue": "Nothing due",
@@ -15,7 +15,9 @@
     "viewApprovals": "View approvals",
     "rate": "Exchange rate",
     "rateLine": "1 CNY = {rate} BDT",
-    "negative": "Over budget this month"
+    "negative": "Over budget this month",
+    "basedOn": "Based on 1 CNY = {rate} BDT",
+    "caughtUp": "All caught up!"
   },
   "timeline": {
     "title": "Obligation timeline",
@@ -24,7 +26,9 @@
     "planPayment": "Plan payment",
     "dueIn": "{days, plural, =0 {Due today} =1 {Due tomorrow} other {Due in # days}}",
     "overdue": "{days, plural, =1 {1 day overdue} other {# days overdue}}",
-    "docHash": "Document hash"
+    "docHash": "Document hash",
+    "sub": "Your upcoming fees, rent and other payments",
+    "planPrompt": "Plan the payment for {title}"
   },
   "deadlines": {
     "title": "Upcoming deadlines",
@@ -34,11 +38,12 @@
     "none": "No deadlines in the next 30 days."
   },
   "chart": {
-    "title": "This month: budget vs spent",
+    "title": "Budget vs spent",
     "budget": "Budget",
     "spent": "Spent",
     "remaining": "Remaining",
-    "alt": "Bar chart: monthly budget {budget}, spent {spent}"
+    "alt": "Donut chart: monthly budget {budget}, spent {spent}",
+    "thisMonth": "This month"
   },
   "fx": {
     "title": "Exchange rate",
@@ -51,5 +56,19 @@
       "fixture-sample": "Offline fixture (sample)"
     }
   },
-  "approverNote": "You are viewing as a family approver. Approvals waiting for you appear under Approvals."
+  "approverNote": "You are viewing as a family approver. Approvals waiting for you appear under Approvals.",
+  "welcomeBack": "Welcome back, {name}",
+  "overview": "Here's an overview of your upcoming payments and budget. All figures are synthetic.",
+  "kinds": {
+    "tuition": "Tuition",
+    "rent": "Rent",
+    "insurance": "Insurance",
+    "fee": "Fee"
+  },
+  "security": {
+    "title": "Security levels",
+    "totpOn": "TOTP is on for this account",
+    "totpOff": "TOTP is not set up yet",
+    "totpHint": "Every payment is checked against these tiers by the policy engine."
+  }
 }

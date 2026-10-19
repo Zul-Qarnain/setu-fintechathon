@@ -4,15 +4,19 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { PageHeader, Card } from "@/components/page-header";
 import { Banner } from "@/components/banner";
-import { Cny } from "@/components/money";
 import { StatusBadge } from "@/components/status-badge";
 import { useApiError } from "@/components/use-api-error";
 import { button, input, label } from "@/components/ui";
 import { api, ApiError } from "@/lib/api";
-import { formatDate, shortHash } from "@/lib/format";
+import { formatCny, formatDate, shortHash } from "@/lib/format";
+import { Icon } from "@/components/nav-icons";
 import { addSessionDoc, updateSessionDoc } from "@/lib/session-docs";
 import { GROUPS, noticeGroup, type Group } from "@/lib/notice-group";
 import type { ConfirmResponse, DemoNotice, DocumentOut } from "@/lib/types";
+
+type Field = "payee" | "amount" | "due" | "reference";
+const FIELDS: Field[] = ["payee", "amount", "due", "reference"];
+const NONE: Record<Field, boolean> = { payee: false, amount: false, due: false, reference: false };
 
 const FALLBACK_NOTICES: DemoNotice[] = [
   { id: "en_tuition_fallback.txt", label: "Spring tuition, EN (clean, SYNTHETIC)", text: "SYNTHETIC SAMPLE - Shenzhen Example University Finance Office\nSpring 2027 tuition: CNY 18,500.00. Due: 2027-03-01.\nPayee: Shenzhen Example University  Account: 6222 0000 0000 4821\nReference: 2027-SPRING-TUITION-0042" },
@@ -39,8 +43,11 @@ export default function DocumentsPage() {
   const [payee, setPayee] = useState("");
   const [account, setAccount] = useState("");
   const [showAcct, setShowAcct] = useState(false);
+  const [acctOpen, setAcctOpen] = useState(false);
   const [reference, setReference] = useState("");
-  const [checked, setChecked] = useState(false);
+  const [fields, setFields] = useState<Record<Field, boolean>>(NONE);
+  const allChecked = FIELDS.every((k) => fields[k]);
+  const setAll = (v: boolean) => setFields({ payee: v, amount: v, due: v, reference: v });
   const [confirming, setConfirming] = useState(false);
   const [result, setResult] = useState<ConfirmResponse | null>(null);
   const [localErr, setLocalErr] = useState<string | null>(null);
@@ -57,11 +64,11 @@ export default function DocumentsPage() {
     if (!n) return;
     setText(n.text); setFilename(n.id.endsWith(".txt") ? n.id : `${n.id}.txt`); reset();
   }
-  function reset() { setDoc(null); setResult(null); setChecked(false); setLocalErr(null); clear(); }
+  function reset() { setDoc(null); setResult(null); setFields(NONE); setLocalErr(null); clear(); }
   const pick = (prefix: string) => notices.find((n) => n.id.startsWith(prefix));
 
   function acceptDoc(d: DocumentOut) {
-    setDoc(d); setResult(null); setChecked(false); setShowText(false);
+    setDoc(d); setResult(null); setFields(NONE); setShowText(false);
     setAmount(d.parsed.amount_cny ?? ""); setDue(d.parsed.due_date ?? ""); setPayee(d.parsed.payee_name ?? ""); setReference(d.parsed.reference ?? ""); setAccount("");
     addSessionDoc({ id: d.id, filename: d.filename, status: d.status });
   }
@@ -94,52 +101,86 @@ export default function DocumentsPage() {
   const blocked = doc?.status === "blocked" || doc?.guardian.verdict === "blocked";
   const verdictTone = !doc ? "info" : doc.guardian.verdict === "blocked" ? "danger" : doc.guardian.verdict === "suspicious" ? "warning" : "success";
 
+  const fieldRow = (k: Field, icon: string, lbl: string, control: React.ReactNode, help?: React.ReactNode) => (
+    <div className="grid grid-cols-[2.25rem_minmax(0,1fr)] items-start gap-x-3 gap-y-1 sm:grid-cols-[2.25rem_minmax(0,1fr)_auto]">
+      <span className="mt-6 grid h-9 w-9 place-items-center rounded-lg bg-bridge-50 text-bridge-600"><Icon name={icon} className="h-[18px] w-[18px]" /></span>
+      <div className="min-w-0"><span className="mb-1 block text-xs font-semibold text-ink-700" aria-hidden="true">{lbl}</span>{control}{help ? <p className="mt-1 text-xs text-ink-600">{help}</p> : null}</div>
+      <label className="col-start-2 inline-flex min-h-10 items-center gap-2 text-sm text-ink-700 sm:col-start-auto sm:mt-5"><input type="checkbox" className="h-[18px] w-[18px] rounded accent-cta" checked={fields[k]} onChange={(e) => setFields((f) => ({ ...f, [k]: e.target.checked }))} disabled={blocked} aria-label={t("confirmField", { field: lbl })} />{t("confirmShort")}</label>
+    </div>
+  );
+
   return (
     <>
-      <PageHeader title={t("title")} subtitle={t("subtitle")} />
-      <div className="grid gap-6 lg:grid-cols-2">
-        <Card aria-labelledby="in-h">
-          <h2 id="in-h" className="text-lg font-semibold">{t("paste")}</h2>
-          <form onSubmit={(e) => void analyse(e)} className="mt-3 space-y-4">
-            <div>
-              <label htmlFor="sample" className={label}>{t("sample")}</label>
-              <select id="sample" className={input} value="" onChange={(e) => loadNotice(notices.find((n) => n.id === e.target.value))}>
+      <PageHeader icon={<Icon name="documents" />} title={t("title")} subtitle={t("subtitle")} />
+
+      <Card aria-labelledby="in-h" className="p-4 sm:p-5">
+        <h2 id="in-h" className="sr-only">{t("paste")}</h2>
+        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_20rem]">
+          <form onSubmit={(e) => void analyse(e)} className="space-y-4">
+            <label
+              htmlFor="file" onDragOver={(e) => { e.preventDefault(); setDrag(true); }} onDragLeave={() => setDrag(false)} onDrop={onDrop}
+              className={`grid min-h-48 cursor-pointer place-content-center justify-items-center gap-2 rounded-2xl border-2 border-dashed p-6 text-center focus-within:ring-2 focus-within:ring-bridge-600 ${drag ? "border-cta bg-bridge-50" : "border-bridge-600/40 bg-bridge-50/40"}`}
+            >
+              <span className="grid h-14 w-14 place-items-center rounded-full bg-bridge-50 text-bridge-600"><Icon name="upload" className="h-8 w-8" /></span>
+              <span className="text-lg font-semibold text-ink">{t("dropBig")}</span>
+              <span className="text-sm text-ink-600">{t("dropSub")}</span>
+              <span className="text-xs text-ink-600">{t("dropHint")}</span>
+              <input id="file" ref={fileRef} type="file" accept=".txt,text/plain" className="sr-only" aria-label={t("upload")} onChange={(e) => void onFile(e.target.files?.[0])} />
+            </label>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-sm font-medium text-ink-700">{t("sample")}:</span>
+              <button type="button" className={button("ghost")} onClick={() => loadNotice(pick("en_tuition"))} data-testid="load-clean"><Icon name="file" className="h-4 w-4" />{t("loadClean")}</button>
+              <button type="button" className={button("ghost")} onClick={() => loadNotice(pick("atk_injection_en"))} data-testid="load-injected"><Icon name="shieldAlert" className="h-4 w-4" />{t("loadInjected")}</button>
+              <label htmlFor="sample" className="sr-only">{t("sample")}</label>
+              <select id="sample" className={`${input} h-10 w-auto min-w-[11rem] flex-1 py-1.5`} value="" onChange={(e) => loadNotice(notices.find((n) => n.id === e.target.value))}>
                 <option value="">{t("sampleSelect")}</option>
                 {grouped.map(([g, list]) => <optgroup key={g} label={t(`groups.${g}`)}>{list.map((n) => <option key={n.id} value={n.id}>{n.label}</option>)}</optgroup>)}
               </select>
-              <div className="mt-2 flex flex-wrap gap-2">
-                <button type="button" className={button("ghost")} onClick={() => loadNotice(pick("en_tuition"))} data-testid="load-clean">{t("loadClean")}</button>
-                <button type="button" className={button("ghost")} onClick={() => loadNotice(pick("atk_injection_en"))} data-testid="load-injected">{t("loadInjected")}</button>
-              </div>
-              <p className="mt-1 text-xs text-ink-600">{t("sampleHint")}</p>
             </div>
-            <div><label htmlFor="fname" className={label}>{t("filename")}</label><input id="fname" className={input} value={filename} onChange={(e) => setFilename(e.target.value)} /></div>
-            <div><label htmlFor="txt" className={label}>{t("pasteLabel")}</label><textarea id="txt" rows={9} className={`${input} font-mono`} value={text} onChange={(e) => { setText(e.target.value); }} placeholder={t("pastePlaceholder")} data-testid="notice-text" /></div>
-            <label
-              htmlFor="file" onDragOver={(e) => { e.preventDefault(); setDrag(true); }} onDragLeave={() => setDrag(false)} onDrop={onDrop}
-              className={`grid min-h-28 cursor-pointer place-content-center gap-1 rounded-xl border-2 border-dashed p-4 text-center text-sm focus-within:ring-2 focus-within:ring-bridge-600 ${drag ? "border-bridge-600 bg-bridge-50" : "border-line bg-paper"}`}
-            >
-              <span className="font-semibold text-bridge-700 underline">{t("dropTitle")}</span>
-              <span className="text-xs text-ink-600">{t("dropHint")}</span>
-              <input id="file" ref={fileRef} type="file" accept=".txt,.pdf,text/plain,application/pdf" className="sr-only" aria-label={t("upload")} onChange={(e) => void onFile(e.target.files?.[0])} />
-            </label>
-            <button type="submit" disabled={busy} className={`${button("primary")} w-full sm:w-auto`} data-testid="analyse">{busy ? t("analysing") : t("analyse")}</button>
-          </form>
-          <p className="mt-3 text-xs text-ink-500">{tc("synthetic")} · {tc("sandbox")}</p>
-          <div aria-live="polite" className="mt-3 space-y-2">
-            {err ? <Banner tone="danger">{err}</Banner> : null}
-            {localErr ? <Banner tone="warning">{localErr}</Banner> : null}
-          </div>
-        </Card>
+            <p className="-mt-2 text-xs text-ink-600">{t("sampleHint")}</p>
 
-        <div className="space-y-6" aria-live="polite">
-          {doc ? (
-            <Card aria-labelledby="res-h">
-              <div className="flex flex-wrap items-center gap-2">
-                <h2 id="res-h" className="text-lg font-semibold">{t("result")}</h2>
-                <StatusBadge status={doc.status} />
+            <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_14rem]">
+              <div><label htmlFor="txt" className={label}>{t("pasteLabel")}</label><textarea id="txt" rows={5} className={`${input} font-mono text-xs`} value={text} onChange={(e) => { setText(e.target.value); }} placeholder={t("pastePlaceholder")} data-testid="notice-text" /></div>
+              <div className="flex flex-col gap-3">
+                <div><label htmlFor="fname" className={label}>{t("filename")}</label><input id="fname" className={input} value={filename} onChange={(e) => setFilename(e.target.value)} /></div>
+                <button type="submit" disabled={busy} className={`${button("primary")} mt-auto w-full`} data-testid="analyse"><Icon name="search" className="h-4 w-4" />{busy ? t("analysing") : t("analyse")}</button>
               </div>
-              <div className="mt-3">
+            </div>
+            <div aria-live="polite" className="space-y-2">
+              {err ? <Banner tone="danger">{err}</Banner> : null}
+              {localErr ? <Banner tone="warning">{localErr}</Banner> : null}
+            </div>
+          </form>
+
+          <ul className="space-y-3 rounded-2xl bg-sunken p-4">
+            {([["extract", "documents", "blue"], ["scan", "shield", "green"], ["control", "lock", "violet"]] as const).map(([k, ic, tone]) => (
+              <li key={k} className="flex gap-3">
+                <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-full ${tone === "blue" ? "bg-bridge-50 text-bridge-600" : tone === "green" ? "bg-jade-50 text-jade-600" : "bg-violet-50 text-violet-600"}`}><Icon name={ic} className="h-5 w-5" /></span>
+                <div className="text-sm"><p className="font-semibold text-ink">{t(`info.${k}.title`)}</p><p className="text-xs text-ink-600">{t(`info.${k}.body`)}</p></div>
+              </li>
+            ))}
+            <li className="border-t border-line pt-3 text-xs text-ink-600">{tc("synthetic")} · {tc("sandbox")}</li>
+          </ul>
+        </div>
+      </Card>
+
+      <div aria-live="polite" className="mt-6 space-y-4">
+        {doc ? (
+          <Card aria-labelledby="res-h">
+            <div className="flex flex-wrap items-start gap-3">
+              <span className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl ${blocked ? "bg-cinnabar-50 text-cinnabar-600" : "bg-bridge-50 text-bridge-600"}`}><Icon name="file" className="h-6 w-6" /></span>
+              <div className="min-w-0 flex-1">
+                <h2 id="res-h" className="text-lg font-semibold text-ink"><span className="sr-only">{t("result")}: </span>{doc.filename}</h2>
+                <p className="text-xs text-ink-600">{t("docHash")}: <code title={doc.doc_hash} className="font-mono">{shortHash(doc.doc_hash.replace("sha256:", ""), 10)}</code></p>
+              </div>
+              <div className="text-right">
+                <span className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-sm font-semibold ${blocked ? "bg-cinnabar-50 text-cinnabar-700" : doc.guardian.verdict === "suspicious" ? "bg-amber-50 text-amber-700" : "bg-jade-50 text-jade-800"}`}><Icon name={blocked ? "shieldAlert" : "shield"} className="h-4 w-4" />{t(`verdict.${blocked ? "blocked" : doc.guardian.verdict}`)}</span>
+                <p className="mt-1"><StatusBadge status={doc.status} /></p>
+              </div>
+            </div>
+            {blocked || doc.guardian.flags.length ? (
+              <div className="mt-4">
                 <Banner tone={verdictTone} title={`${t(`guardian.${doc.guardian.verdict}`)} (${t("guardian.score")} ${doc.guardian.score.toFixed(2)})`}>
                   {blocked ? <p className="font-medium" data-testid="doc-blocked">{t("blockedBody")}</p> : null}
                   {doc.guardian.flags.length ? (
@@ -149,63 +190,53 @@ export default function DocumentsPage() {
                   ) : null}
                 </Banner>
               </div>
-              <p className="mt-3 text-xs text-ink-600">{t("docHash")}: <code title={doc.doc_hash}>{shortHash(doc.doc_hash.replace("sha256:", ""), 12)}</code></p>
-              <p className="mt-1 text-xs text-ink-600">{t("untrustedNote")}</p>
-              <button type="button" className="mt-2 inline-flex min-h-11 items-center text-sm font-semibold text-bridge-700 underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600" aria-expanded={showText} onClick={() => setShowText((v) => !v)}>{showText ? t("hideText") : t("showText")}</button>
-              {showText ? <pre className="mt-2 max-h-56 overflow-auto whitespace-pre-wrap break-words rounded-lg bg-paper p-3 font-mono text-xs">{text}</pre> : null}
-            </Card>
-          ) : null}
+            ) : null}
 
-          {doc && !result ? (
-            <Card aria-labelledby="conf-h">
-              <h2 id="conf-h" className="text-lg font-semibold">{t("confirmTitle")}</h2>
-              <p className="mt-1 text-sm text-ink-600">{t("confirmHelp")}</p>
-              <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                <section aria-label={t("parsedCol")} className="rounded-lg border border-line bg-paper p-3 text-sm">
-                  <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink-600">{t("parsedCol")}</h3>
-                  <dl className="space-y-1">
-                    <div><dt className="text-xs text-ink-600">{t("amount")}</dt><dd>{doc.parsed.amount_cny ? <Cny value={doc.parsed.amount_cny} /> : t("notFound")}</dd></div>
-                    <div><dt className="text-xs text-ink-600">{t("due")}</dt><dd>{doc.parsed.due_date ? formatDate(doc.parsed.due_date, locale) : t("notFound")}</dd></div>
-                    <div><dt className="text-xs text-ink-600">{t("payee")}</dt><dd className="break-words">{doc.parsed.payee_name ?? t("notFound")}</dd></div>
-                    <div><dt className="text-xs text-ink-600">{t("account")}</dt><dd><code>{doc.parsed.account_masked ?? t("notFound")}</code></dd></div>
-                    <div><dt className="text-xs text-ink-600">{t("reference")}</dt><dd className="break-words">{doc.parsed.reference ?? t("notFound")}</dd></div>
-                  </dl>
-                </section>
-                <form onSubmit={(e) => void confirm(e)} aria-label={t("confirmCol")} className="space-y-3">
-                  <h3 className="text-xs font-semibold uppercase tracking-wide text-ink-600">{t("confirmCol")}</h3>
-                  <div><label htmlFor="c-amt" className={label}>{t("amount")}</label><input id="c-amt" inputMode="decimal" className={input} value={amount} onChange={(e) => setAmount(e.target.value)} disabled={blocked} aria-describedby="c-amt-h" required /><p id="c-amt-h" className="mt-1 text-xs text-ink-600">{t("mismatchHelp")}</p></div>
-                  <div><label htmlFor="c-due" className={label}>{t("due")}</label><input id="c-due" type="date" className={input} value={due} onChange={(e) => setDue(e.target.value)} disabled={blocked} required /></div>
-                  <div><label htmlFor="c-payee" className={label}>{t("payee")}</label><input id="c-payee" className={input} value={payee} onChange={(e) => setPayee(e.target.value)} disabled={blocked} required /></div>
-                  <div>
-                    <label htmlFor="c-acct" className={label}>{t("account")}</label>
-                    <div className="flex gap-2"><input id="c-acct" type={showAcct ? "text" : "password"} autoComplete="off" inputMode="numeric" className={input} value={account} onChange={(e) => setAccount(e.target.value)} disabled={blocked} aria-describedby="c-acct-h" placeholder={doc.parsed.account_masked ?? ""} /><button type="button" className={button("ghost")} onClick={() => setShowAcct((v) => !v)} aria-pressed={showAcct}>{showAcct ? t("hide") : t("show")}</button></div>
-                    <p id="c-acct-h" className="mt-1 text-xs text-ink-600">{t("accountHint", { masked: doc.parsed.account_masked ?? "—" })}</p>
+            <div className="mt-4 grid gap-5 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+              <section aria-label={t("parsedCol")} className="rounded-2xl border border-line bg-sunken p-3">
+                <p className="mb-2 flex items-center justify-between gap-2 text-xs font-semibold text-ink-600"><span>{t("previewTitle")}</span><span className="rounded bg-amber-50 px-1.5 py-0.5 text-amber-700">{t("untrustedChip")}</span></p>
+                <pre className="max-h-80 overflow-auto whitespace-pre-wrap break-words rounded-xl bg-surface p-4 font-mono text-xs leading-5 text-ink shadow-card" data-testid="doc-preview">{showText || text.length < 1200 ? text : text.slice(0, 1200) + "…"}</pre>
+                <p className="mt-2 text-xs text-ink-600">{t("untrustedNote")}</p>
+                {text.length >= 1200 ? <button type="button" className="mt-1 inline-flex min-h-11 items-center text-sm font-semibold text-bridge-700 underline" aria-expanded={showText} onClick={() => setShowText((v) => !v)}>{showText ? t("hideText") : t("showText")}</button> : null}
+              </section>
+
+              {!result ? (
+                <form onSubmit={(e) => void confirm(e)} aria-labelledby="conf-h" className="space-y-3">
+                  <div><h3 id="conf-h" className="text-base font-semibold text-ink">{t("confirmTitle")}</h3><p className="text-sm text-ink-600">{t("confirmHelp")}</p></div>
+                  {fieldRow("payee", "building", t("payee"), <><label htmlFor="c-payee" className="sr-only">{t("payee")}</label><input id="c-payee" className={input} value={payee} onChange={(e) => setPayee(e.target.value)} disabled={blocked} required /></>, <>{t("parsed")}: {doc.parsed.payee_name ?? t("notFound")}</>)}
+                  {fieldRow("amount", "database", t("amount"), <><label htmlFor="c-amt" className="sr-only">{t("amount")}</label><input id="c-amt" inputMode="decimal" className={input} value={amount} onChange={(e) => setAmount(e.target.value)} disabled={blocked} aria-describedby="c-amt-h" required /></>, <span id="c-amt-h">{t("parsed")}: {doc.parsed.amount_cny ? formatCny(doc.parsed.amount_cny) : t("notFound")} · {t("mismatchHelp")}</span>)}
+                  {fieldRow("due", "calendar", t("due"), <><label htmlFor="c-due" className="sr-only">{t("due")}</label><input id="c-due" type="date" className={`${input} min-w-0`} value={due} onChange={(e) => setDue(e.target.value)} disabled={blocked} required /></>, <>{t("parsed")}: {doc.parsed.due_date ? formatDate(doc.parsed.due_date, locale) : t("notFound")}</>)}
+                  {fieldRow("reference", "file", t("reference"), <><label htmlFor="c-ref" className="sr-only">{t("reference")}</label><input id="c-ref" className={input} value={reference} onChange={(e) => setReference(e.target.value)} disabled={blocked} /></>, <>{t("parsed")}: {doc.parsed.reference ?? t("notFound")}</>)}
+                  <details className="rounded-xl border border-line p-3" onToggle={(e) => setAcctOpen((e.currentTarget as HTMLDetailsElement).open)}>
+                    <summary className="flex min-h-8 cursor-pointer items-center text-sm font-medium text-ink-700">{t("account")} · <code className="ml-1">{doc.parsed.account_masked ?? t("notFound")}</code></summary>
+                    {acctOpen ? <><div className="mt-2 flex gap-2"><label htmlFor="c-acct" className="sr-only">{t("account")}</label><input id="c-acct" type={showAcct ? "text" : "password"} autoComplete="off" inputMode="numeric" className={input} value={account} onChange={(e) => setAccount(e.target.value)} disabled={blocked} aria-describedby="c-acct-h" placeholder={doc.parsed.account_masked ?? ""} /><button type="button" className={button("ghost")} onClick={() => setShowAcct((v) => !v)} aria-pressed={showAcct}>{showAcct ? t("hide") : t("show")}</button></div>
+                    <p id="c-acct-h" className="mt-1 text-xs text-ink-600">{t("accountHint", { masked: doc.parsed.account_masked ?? "—" })}</p></> : null}
+                  </details>
+                  <div className="rounded-xl bg-bridge-50 p-3">
+                    <label className="flex min-h-10 items-start gap-2 text-sm text-ink"><input type="checkbox" className="mt-0.5 h-[18px] w-[18px] rounded accent-cta" checked={allChecked} onChange={(e) => setAll(e.target.checked)} disabled={blocked} />{t("checked")}</label>
                   </div>
-                  <div><label htmlFor="c-ref" className={label}>{t("reference")}</label><input id="c-ref" className={input} value={reference} onChange={(e) => setReference(e.target.value)} disabled={blocked} /></div>
-                  <label className="flex items-start gap-2 text-sm"><input type="checkbox" className="mt-0.5 h-4 w-4 rounded accent-jade-700" checked={checked} onChange={(e) => setChecked(e.target.checked)} disabled={blocked} />{t("checked")}</label>
-                  <button type="submit" className={button("jade")} disabled={blocked || !checked || confirming} data-testid="confirm-doc">{confirming ? t("confirming") : t("confirm")}</button>
+                  <div className="flex flex-wrap justify-end gap-2">
+                    <button type="button" className={button("ghost")} onClick={() => { reset(); setText(""); }}>{t("discard")}</button>
+                    <button type="submit" className={button("primary")} disabled={blocked || !allChecked || confirming} data-testid="confirm-doc">{confirming ? t("confirming") : t("confirm")}</button>
+                  </div>
                 </form>
-              </div>
-            </Card>
-          ) : null}
-
-          {result ? (
-            result.blocked ? (
-              <div role="alert" className="rounded-xl border-2 border-cinnabar-600 bg-cinnabar-50 p-4 text-cinnabar-700" data-testid="confirm-blocked">
-                <p className="text-lg font-extrabold">⛔ {t("blockedConfirm", { seq: result.audit_seq })}</p>
-                <Link href="/audit" className="mt-2 inline-block font-semibold underline">{t("viewAudit")}</Link>
-              </div>
-            ) : (
-              <Banner tone="success" title={t("confirmedTitle")}>
-                {result.obligation ? <p>{t("confirmedBody", { amount: result.obligation.amount_cny, date: formatDate(result.obligation.due_date, locale), payee: result.obligation.payee_name })}</p> : null}
-                <p className="mt-2 flex flex-wrap gap-3">
-                  <Link href="/agent" className={button("primary")}>{t("planIt")}</Link>
-                  <Link href="/audit" className="self-center font-semibold underline">{t("viewAudit")} (#{result.audit_seq})</Link>
-                </p>
-              </Banner>
-            )
-          ) : null}
-        </div>
+              ) : result.blocked ? (
+                <div role="alert" className="rounded-2xl border-2 border-cinnabar-600 bg-cinnabar-50 p-4 text-cinnabar-700" data-testid="confirm-blocked">
+                  <p className="text-lg font-extrabold">⛔ {t("blockedConfirm", { seq: result.audit_seq })}</p>
+                  <Link href="/audit" className="mt-2 inline-block font-semibold underline">{t("viewAudit")}</Link>
+                </div>
+              ) : (
+                <Banner tone="success" title={t("confirmedTitle")}>
+                  {result.obligation ? <p>{t("confirmedBody", { amount: result.obligation.amount_cny, date: formatDate(result.obligation.due_date, locale), payee: result.obligation.payee_name })}</p> : null}
+                  <p className="mt-2 flex flex-wrap gap-3">
+                    <Link href="/agent" className={button("primary")}>{t("planIt")}</Link>
+                    <Link href="/audit" className="self-center font-semibold underline">{t("viewAudit")} (#{result.audit_seq})</Link>
+                  </p>
+                </Banner>
+              )}
+            </div>
+          </Card>
+        ) : null}
       </div>
     </>
   );

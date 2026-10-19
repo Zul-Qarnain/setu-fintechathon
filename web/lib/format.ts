@@ -1,7 +1,7 @@
 // Intl-based formatting. Money arrives as decimal STRINGS; Intl accepts strings (exact) so no parseFloat.
 type Intlish = Intl.NumberFormat;
 const cnyFmt: Intlish = new Intl.NumberFormat("zh-CN", { style: "currency", currency: "CNY" });
-const bdtFmt: Intlish = new Intl.NumberFormat("en-BD", { style: "currency", currency: "BDT" });
+const bdtFmt: Intlish = new Intl.NumberFormat("en-BD", { style: "currency", currency: "BDT", currencyDisplay: "narrowSymbol" });
 
 const fmt = (f: Intlish, v: string) => f.format(v as unknown as number);
 

@@ -44,5 +44,23 @@
   "rejectReason": "原因（可选）",
   "confirmReject": "确认拒绝",
   "waitingFamily": "正在等待您的家人审批人。",
-  "openApprovals": "前往审批"
+  "openApprovals": "前往审批",
+  "pillTotp": "需要您的 TOTP 验证码",
+  "pillFamily": "需要家人审批",
+  "amountCny": "金额（人民币）",
+  "equivBdt": "折合塔卡（不含费用）",
+  "steps": "审批步骤",
+  "step1": "第 1 步：学生 TOTP",
+  "step2": "第 2 步：家人审批",
+  "stepDone": "已批准",
+  "stepWaiting": "等待审批",
+  "hist": {
+    "date": "日期",
+    "type": "类型",
+    "payee": "收款方",
+    "amount": "金额（人民币）",
+    "tier": "等级",
+    "status": "状态",
+    "by": "审批人"
+  }
 }

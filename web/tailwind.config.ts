@@ -19,6 +19,7 @@ const config: Config = {
         chrome: "rgb(var(--chrome) / <alpha-value>)",
         cta: "rgb(var(--cta) / <alpha-value>)",
         primary: { DEFAULT: "rgb(var(--primary) / <alpha-value>)", hover: "rgb(var(--primary-hover) / <alpha-value>)" },
+        violet: { 50: "rgb(var(--violet-50) / <alpha-value>)", 600: "rgb(var(--violet-600) / <alpha-value>)" },
         danger: "rgb(var(--danger) / <alpha-value>)",
         jade: { 50: "rgb(var(--jade-50) / <alpha-value>)", 100: "rgb(var(--jade-100) / <alpha-value>)", 600: "rgb(var(--jade-600) / <alpha-value>)", 700: "rgb(var(--jade-700) / <alpha-value>)", 800: "rgb(var(--jade-800) / <alpha-value>)" },
         amber: { 50: "rgb(var(--amber-50) / <alpha-value>)", 100: "rgb(var(--amber-100) / <alpha-value>)", 600: "rgb(var(--amber-600) / <alpha-value>)", 700: "rgb(var(--amber-700) / <alpha-value>)" },

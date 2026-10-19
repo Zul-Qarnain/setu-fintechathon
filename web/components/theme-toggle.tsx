@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { Icon } from "./nav-icons";
 
 type Theme = "light" | "dark" | "system";
 export const THEME_KEY = "setu-theme";
@@ -13,38 +14,29 @@ export function applyTheme(t: Theme) {
 /** Inline, pre-hydration script (no flash): sets .dark from localStorage / system. */
 export const THEME_INIT = `try{var t=localStorage.getItem("${THEME_KEY}")||"system";var d=t==="dark"||(t==="system"&&matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.classList.toggle("dark",d)}catch(e){}`;
 
-const ICON: Record<Theme, string> = { light: "☀", dark: "☾", system: "◐" };
-
-export function ThemeToggle({ compact = false }: { compact?: boolean }) {
+/** Sun · switch · moon. Follows the OS until the user flips it. */
+export function ThemeToggle({ onDark = false }: { onDark?: boolean }) {
   const t = useTranslations("nav");
-  const [theme, setTheme] = useState<Theme>("system");
-  useEffect(() => { setTheme((localStorage.getItem(THEME_KEY) as Theme | null) ?? "system"); }, []);
+  const [dark, setDark] = useState(false);
   useEffect(() => {
-    if (theme !== "system") return;
+    const stored = localStorage.getItem(THEME_KEY) as Theme | null;
+    setDark(document.documentElement.classList.contains("dark"));
+    if (stored && stored !== "system") return;
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    const on = () => applyTheme("system");
+    const on = () => { applyTheme("system"); setDark(mq.matches); };
     mq.addEventListener("change", on);
     return () => mq.removeEventListener("change", on);
-  }, [theme]);
-  const pick = (v: Theme) => { setTheme(v); localStorage.setItem(THEME_KEY, v); applyTheme(v); };
-  const names: Record<Theme, string> = { light: t("themeLight"), dark: t("themeDark"), system: t("themeSystem") };
+  }, []);
+  const pick = (v: "light" | "dark") => { setDark(v === "dark"); localStorage.setItem(THEME_KEY, v); applyTheme(v); };
+  const muted = onDark ? "text-white/70" : "text-ink-600";
   return (
-    <div role="group" aria-label={t("theme")} className="inline-flex overflow-hidden rounded-lg border border-line bg-surface">
-      {(["light", "dark", "system"] as Theme[]).map((v) => (
-        <button
-          key={v}
-          type="button"
-          data-testid={`theme-${v}`}
-          aria-pressed={theme === v}
-          aria-label={names[v]}
-          title={names[v]}
-          onClick={() => pick(v)}
-          className={`flex h-9 items-center justify-center gap-1.5 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600 ${compact ? "w-9" : "px-3"} ${theme === v ? "bg-primary text-white" : "text-ink hover:bg-sunken"}`}
-        >
-          <span aria-hidden="true">{ICON[v]}</span>
-          {compact ? null : <span>{names[v]}</span>}
-        </button>
-      ))}
+    <div className="inline-flex items-center gap-1.5">
+      <button type="button" data-testid="theme-light" aria-label={t("themeLight")} title={t("themeLight")} aria-pressed={!dark} onClick={() => pick("light")} className={`grid h-9 w-9 place-items-center rounded-lg ${muted} hover:bg-sunken/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600`}><Icon name="sun" className="h-[18px] w-[18px]" /></button>
+      <button type="button" role="switch" aria-checked={dark} aria-label={t("theme")} onClick={() => pick(dark ? "light" : "dark")} data-testid="theme-switch"
+        className="group grid h-9 w-12 place-items-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600">
+        <span aria-hidden="true" className={`relative block h-6 w-11 rounded-full transition ${dark ? "bg-cta" : "bg-chrome"}`}><span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${dark ? "left-[1.375rem]" : "left-0.5"}`} /></span>
+      </button>
+      <button type="button" data-testid="theme-dark" aria-label={t("themeDark")} title={t("themeDark")} aria-pressed={dark} onClick={() => pick("dark")} className={`grid h-9 w-9 place-items-center rounded-lg ${muted} hover:bg-sunken/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600`}><Icon name="moon" className="h-[18px] w-[18px]" /></button>
     </div>
   );
 }

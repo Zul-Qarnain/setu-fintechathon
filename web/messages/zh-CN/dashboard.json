@@ -3,8 +3,8 @@
   "subtitle": "您即将到期的缴费事项与安全可支配金额。所有数字均为合成数据。",
   "welcome": "欢迎，{email}",
   "stats": {
-    "nextDue": "最近到期的学费/费用",
-    "bdtNeeded": "所需 BDT",
+    "nextDue": "下一笔学费/费用",
+    "bdtNeeded": "所需孟加拉塔卡",
     "safeToSpend": "本月安全可支配",
     "pending": "待审批",
     "noneDue": "暂无到期事项",
@@ -15,7 +15,9 @@
     "viewApprovals": "查看审批",
     "rate": "汇率",
     "rateLine": "1 CNY = {rate} BDT",
-    "negative": "本月已超出预算"
+    "negative": "本月已超出预算",
+    "basedOn": "基于 1 CNY = {rate} BDT",
+    "caughtUp": "一切正常！"
   },
   "timeline": {
     "title": "缴费时间线",
@@ -24,7 +26,9 @@
     "planPayment": "规划汇款",
     "dueIn": "{days, plural, =0 {今天到期} =1 {明天到期} other {还有 # 天到期}}",
     "overdue": "已逾期 {days} 天",
-    "docHash": "文档哈希"
+    "docHash": "文档哈希",
+    "sub": "您即将到期的学费、房租及其他付款",
+    "planPrompt": "为{title}制定付款计划"
   },
   "deadlines": {
     "title": "近期截止日期",
@@ -34,11 +38,12 @@
     "none": "未来 30 天内没有截止日期。"
   },
   "chart": {
-    "title": "本月：预算与支出",
+    "title": "预算与支出",
     "budget": "预算",
     "spent": "已花费",
     "remaining": "剩余",
-    "alt": "柱状图：本月预算 {budget}，已花费 {spent}"
+    "alt": "环形图：月度预算 {budget}，已支出 {spent}",
+    "thisMonth": "本月"
   },
   "fx": {
     "title": "汇率",
@@ -51,5 +56,19 @@
       "fixture-sample": "离线示例数据"
     }
   },
-  "approverNote": "您当前以家人审批人身份查看。等待您处理的审批会显示在“审批”页面。"
+  "approverNote": "您当前以家人审批人身份查看。等待您处理的审批会显示在“审批”页面。",
+  "welcomeBack": "欢迎回来，{name}",
+  "overview": "这是您即将到期的付款和预算概览。所有数据均为合成数据。",
+  "kinds": {
+    "tuition": "学费",
+    "rent": "房租",
+    "insurance": "保险",
+    "fee": "费用"
+  },
+  "security": {
+    "title": "安全等级",
+    "totpOn": "此账户已启用 TOTP",
+    "totpOff": "尚未设置 TOTP",
+    "totpHint": "每笔付款都由策略引擎按以下等级检查。"
+  }
 }

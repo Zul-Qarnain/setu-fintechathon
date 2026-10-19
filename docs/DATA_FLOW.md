@@ -13,7 +13,7 @@ sequenceDiagram
   participant F as Family approver
   participant B as Sandbox bank
   participant A as Audit chain
-  S->>API: POST /documents (text or text-layer PDF)
+  S->>API: POST /documents (pasted text or a .txt file; PDF → 422 UNSUPPORTED_DOCUMENT)
   API->>API: extract text, parse fields, wrap in <untrusted>
   API->>G: scan text + compare payee/account to registry
   G-->>API: clean | suspicious | blocked (+ flags)
@@ -43,7 +43,7 @@ sequenceDiagram
 | Uploaded notice text | `documents.text_enc` | AES-256-GCM at rest; size-capped; only a hash is kept in the audit log | deleted by `DELETE /me` |
 | Obligations, plans, actions | tables of the same name | owner-scoped queries | deleted by `DELETE /me` |
 | Audit log | `audit` | SHA-256 hash chain; **PII redacted before hashing and storing** (accounts → `****1234`, emails/phones → placeholders) | retained (accountability) but holds no raw PII |
-| Application logs | stdout (JSON) | structlog + stdlib redaction filter; request logs contain only method, path, status, request id | ephemeral |
+| Application logs | stdout (JSON) | pino (JSON) with a PII redaction serializer; request logs contain only method, path, status, request id | ephemeral |
 | Sandbox ledger | `sbx_accounts`, `sbx_txns` | synthetic only | reset by `/demo/reset` |
 
 ## 3. What may leave the system

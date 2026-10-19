@@ -31,14 +31,14 @@ Caveat: the notice corpus and the attack scenarios were written by the same team
 - **AuthN**: argon2id; JWT HS256 with the algorithm pinned, `exp/sub/iat` required, role re-read from the database each request; TOTP (RFC 6238, ±1 step) with replay protection and 5-failure / 300 s lockout (`TOTP_LOCKED`).
 - **AuthZ**: role checks; owner-scoped queries; cross-user ids return 404 (no existence leak).
 - **Crypto at rest**: AES-256-GCM with AAD for payee accounts, TOTP secrets, uploaded text; keyed HMAC for lookups.
-- **Input handling**: size caps, text-layer PDFs only (malformed → 422), NFKC normalisation, homoglyph/lookalike detection, `<untrusted>` wrapping.
+- **Input handling**: size caps (2 MB upload), pasted text or .txt files only (PDF and other types → 422 UNSUPPORTED_DOCUMENT), NFKC normalisation, homoglyph/lookalike detection, `<untrusted>` wrapping.
 - **Agent safety**: allowlisted tools, strict schemas, no tool executes money movement, server-side payee/amount resolution, reply validator.
 - **Audit**: SHA-256 hash chain, PII redacted before storage; verify endpoint; export with `head_hash`.
 - **Privacy**: PII-redacting logs, `DELETE /me` erasure, no third-party scripts, offline by default.
 - **Availability**: per-client-IP-and-path sliding-window rate limit, request size caps.
 
 - **Verified by tests (`server/tests/api/security_authz.test.ts`)**: every protected route returns 401 for missing/garbage/`alg=none`/tampered JWTs; cross-user (IDOR) read/approve/reject of actions, payees and obligations is denied; a student cannot self-approve the family-approver step; `/demo/*` is closed without `DEMO_MODE`; TOTP brute force locks out; security headers present; CORS allows only configured origins; malformed bodies are 4xx, never 500.
-- **Residual**: the JWT is kept in `localStorage` (readable by any XSS; mitigated by CSP; the only `dangerouslySetInnerHTML` is a fixed, constant theme-init script, but an httpOnly-cookie session would be stronger).
+- **Residual**: the JWT is kept in `localStorage` (readable by any XSS; mitigated by CSP; the only `dangerouslySetInnerHTML` is a fixed, constant theme-init script, but an httpOnly-cookie session would be stronger). Re-assessed 19 Oct 2026: moving to an httpOnly `SameSite=Strict` cookie plus a CSRF token needs credentialed CORS between :3000 and :8000, server-side cookie parsing on every route, and changes to the API test harness and demo recorder; it was deferred to the post-hackathon roadmap rather than rushed in before the deadline.
 
 ## 4. KNOWN RISKS and limitations (read before trusting this)
 1. **Not a licensed payment service.** Setu never holds funds; the bank is a sandbox. No real money movement was tested.
@@ -49,7 +49,7 @@ Caveat: the notice corpus and the attack scenarios were written by the same team
 6. **LLM adapters (Gemini, Groq) are untested live.** They are optional, receive only tokenised text, and fall back to the scripted planner. Enabling a foreign provider is a cross-border transfer under PIPL.
 7. **No OCR.** Scanned or image-only notices are rejected, not read.
 8. **Scripted planner coverage is narrow** (EN/ZH regexes). Unusual phrasing becomes `unknown` and gets a capabilities reply. Free-form amounts in chat are deliberately ignored: "Pay the university 5000 yuan" proposes the first open confirmed obligation, not 5000.
-9. **Guardian is rule-based.** Novel injection phrasings, other languages, or text hidden in PDF structure can evade it; this is why the policy engine, not the guardian, is the authority (document-sourced actions are T4 regardless of verdict).
+9. **Guardian is rule-based.** Novel injection phrasings, other languages, or text hidden in unusual encodings can evade it; this is why the policy engine, not the guardian, is the authority (document-sourced actions are T4 regardless of verdict).
 10. **Dev-default secrets.** `JWT_SECRET`, `HMAC_KEY`, `AES_KEY_B64` have publicly visible dev defaults so the demo runs with zero setup. They **must** be replaced in any real deployment, and there is no key rotation.
 11. **Demo endpoints** (`/demo/*`: TOTP peek, audit tamper, reset) exist only when `DEMO_MODE=true` (the TypeScript default is **off**; the judges' demo/compose sets it on) and would be a serious hole in production. Keep `DEMO_MODE=false` outside demos; production start-up also refuses the dev-default secrets (`NODE_ENV=production`).
 12. **SQLite**, single node, no backups, no migrations tooling.
@@ -57,7 +57,7 @@ Caveat: the notice corpus and the attack scenarios were written by the same team
 14. **TOTP UX limitation**: replay protection means one user cannot approve two actions within the same 30-second window; the second attempt must wait for the next code.
 15. **Fee and FX numbers are illustrative.** Offline rates are SAMPLE values; sandbox channel fees are made up. World Bank RPW rows in `data/channel_costs.csv` are marked VERIFY before citing.
 16. **Glossary and Chinese UI strings are drafts** pending native-speaker review.
-17. **Dependency and supply-chain scanning**: `npm audit --omit=dev` is clean for both `server/` and `web/` (web upgraded to Next 16.4.2, React 19, next-intl 4 on 18 Oct 2026). A full secrets scan of the working tree and all git history found no keys. No SAST or container scanning.
+17. **Dependency and supply-chain scanning**: `npm audit --omit=dev` is clean for both `server/` and `web/` (web upgraded to Next 16.4.2, React 19, next-intl 4 on 18 Oct 2026). A full secrets scan of the working tree and all git history found no keys (re-run 19 Oct 2026: none of the box's provider keys appear in any commit; no AWS/Google/GitHub/Slack/private-key patterns). Full `npm audit` (including dev tooling) on 19 Oct 2026: server 0; web 9 advisories (7 high, 2 moderate) all in **build-time dev dependencies** — `braces`/`micromatch`/`fast-glob` via Tailwind CSS 3 and eslint-config-next, `postcss-selector-parser` via Tailwind 3. They never ship to the browser or the server runtime; the fix is a Tailwind 4 migration (breaking) on the roadmap. No SAST or container scanning.
 18. **Fixed regex-based PII redaction** can miss unusual formats (e.g. spaced phone numbers in other countries).
 
 ## 5. What we would do next

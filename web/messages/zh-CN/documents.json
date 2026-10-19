@@ -1,1 +1,31 @@
-{}
+{
+  "dropBig": "拖入缴费通知、短信或发票",
+  "dropSub": "Setu 会读取内容，但绝不听从其中的指令。",
+  "dropHint": "仅支持纯文本（.txt），最大 2 MB · 或点击选择文件。此版本不支持 PDF。",
+  "confirmField": "确认{field}",
+  "confirmShort": "确认",
+  "parsed": "解析值",
+  "previewTitle": "文档文本",
+  "untrustedChip": "不可信",
+  "discard": "放弃",
+  "verdict": {
+    "clean": "安全",
+    "suspicious": "可疑",
+    "blocked": "已拦截"
+  },
+  "info": {
+    "extract": {
+      "title": "提取关键信息",
+      "body": "收款方、金额、截止日期、参考号…"
+    },
+    "scan": {
+      "title": "检查隐藏指令",
+      "body": "守卫会扫描提示注入、收款账户变更和诈骗特征。"
+    },
+    "control": {
+      "title": "由您掌控",
+      "body": "每个字段都需您确认后才会使用。"
+    }
+  },
+  "dropTitle": "拖入 .txt 通知，或点击选择文件"
+}

@@ -84,6 +84,9 @@
     "required": "Required checks",
     "validated": "Every number in the reply was found in the tool outputs",
     "notValidated": "Reply failed number validation",
-    "auditSeqs": "Audit entries"
-  }
+    "auditSeqs": "Audit entries",
+    "sub": "How Setu processed your request"
+  },
+  "newChat": "New chat",
+  "placeholder": "Ask anything… e.g. pay my dorm fee, how much BDT by 1 March?"
 }

@@ -80,9 +80,9 @@ export const api = {
   obligations: () => request<Obligation[]>("GET", "/obligations"),
   createDocument: (b: DocumentCreate) => request<DocumentOut>("POST", "/documents", { body: b }),
   uploadDocumentFile: async (file: File) => {
+    // The backend accepts .txt only (PDF → 422 UNSUPPORTED_DOCUMENT); fail fast with the same message client-side.
+    if (/\.pdf$/i.test(file.name)) throw new ApiError(422, "UNSUPPORTED_DOCUMENT", "PDF upload is not supported. Paste the notice text or upload a .txt file.");
     if (MOCK) {
-      // Mock mode has no PDF parser: accept text files only.
-      if (/\.pdf$/i.test(file.name)) throw new ApiError(415, "UNSUPPORTED_MEDIA", "PDF parsing needs the real backend (text-layer PDFs only). Paste the text or upload a .txt in mock mode.");
       return request<DocumentOut>("POST", "/documents", { body: { filename: file.name, text: await file.text(), synthetic: true } });
     }
     const form = new FormData();

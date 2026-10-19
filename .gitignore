@@ -18,3 +18,12 @@ server/coverage/
 server/data/*.db
 server/setu.db-shm
 server/setu.db-wal
+
+# graphify
+graphify-out/
+
+# local agent tooling (not part of the submission)
+.claude/
+AGENTS.md
+CLAUDE.md
+GROK.md
