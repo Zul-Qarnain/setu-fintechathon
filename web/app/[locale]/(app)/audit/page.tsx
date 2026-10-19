@@ -36,6 +36,7 @@ export default function AuditPage() {
   const [err, fail, clear] = useApiError();
   const [tamperSeq, setTamperSeq] = useState("2");
   const [demoMsg, setDemoMsg] = useState<string | null>(null);
+  const [demoOpen, setDemoOpen] = useState(false);
 
   const load = useCallback(async () => { clear(); try { const r = await api.audit(false); setEntries(r.entries); } catch (e) { fail(e); } }, [fail, clear]);
   useEffect(() => { void load(); }, [load]);
@@ -68,7 +69,7 @@ export default function AuditPage() {
     <>
       <PageHeader icon={<Icon name="shield" />} title={t("title")} subtitle={t("subtitle")} />
       {err ? <Banner tone="danger" className="mb-4">{err}</Banner> : null}
-      <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]">
+      <div className="grid items-start gap-6 2xl:grid-cols-[minmax(0,1fr)_22rem]">
         <div className="min-w-0 space-y-4">
           <div aria-live="polite">
             {verify?.ok ? (
@@ -169,7 +170,7 @@ export default function AuditPage() {
 
         </div>
 
-        <aside className="space-y-4">
+        <aside className="grid gap-4 lg:grid-cols-2 2xl:grid-cols-1">
           <Card aria-labelledby="ex-h">
             <CardHead id="ex-h" icon={<Icon name="file" />} title={t("exportTitle")} />
             <p className="mt-3 text-sm text-ink-600">{t("exportBody")}</p>
@@ -198,15 +199,17 @@ export default function AuditPage() {
             ) : null}
             <div className="mt-3 flex gap-2 rounded-xl border border-jade-600/30 bg-jade-50 p-3 text-xs text-jade-800"><Icon name="shield" className="h-4 w-4 shrink-0" /><p><strong className="block">{t("tamperTitle")}</strong>{t("tamperBody")}</p></div>
           </Card>
-      <details className="rounded-2xl border border-dashed border-line-strong bg-surface p-4">
+      <details className="rounded-2xl border border-dashed border-line-strong bg-surface p-4" onToggle={(e) => setDemoOpen((e.currentTarget as HTMLDetailsElement).open)}>
         <summary className="cursor-pointer text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bridge-600">{t("demo.title")}</summary>
+        {demoOpen ? <>
         <p className="mt-2 text-xs text-ink-600">{t("demo.body")}</p>
         <div className="mt-3 flex flex-wrap items-end gap-3">
           <div><label htmlFor="tseq" className={label}>{t("demo.seq")}</label><input id="tseq" inputMode="numeric" value={tamperSeq} onChange={(e) => setTamperSeq(e.target.value.replace(/\D/g, ""))} className={`${input} w-28`} /></div>
           <button type="button" className={button("danger")} onClick={() => void tamper()} disabled={!tamperSeq} data-testid="tamper">{t("demo.tamper")}</button>
         </div>
         <p role="status" className="mt-2 text-sm">{demoMsg}</p>
-      </details>
+      </> : null}
+        </details>
         </aside>
       </div>
     </>

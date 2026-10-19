@@ -18,7 +18,7 @@ fs.mkdirSync(AUDIO, { recursive: true });
 
 const WEB = process.env.WEB ?? "http://localhost:3000";
 const API = process.env.API ?? "http://localhost:8000";
-const VW = Number(process.env.VW ?? 1280), VH = Number(process.env.VH ?? 720);
+const VW = Number(process.env.VW ?? 1440), VH = Number(process.env.VH ?? 810);
 const PIPER = "/workspace/tts/venv/bin/piper", VOICE = "/workspace/tts/voices/en_US-lessac-medium.onnx";
 const HAVE_TTS = fs.existsSync(PIPER) && fs.existsSync(VOICE);
 const PASSWORD = "demo-password-123";
@@ -49,12 +49,12 @@ const OVERLAY = `(() => {
   if (window.__demoInstalled) return; window.__demoInstalled = true;
   const css = document.createElement('style');
   css.textContent = \`
-  #__cap{position:fixed;left:0;right:0;bottom:0;z-index:2147483646;pointer-events:none;display:none;
-    background:linear-gradient(0deg,rgba(10,18,40,.94),rgba(10,18,40,.86));color:#fff;padding:9px 20px 11px;
-    font-family:"Noto Sans","Noto Sans SC","Noto Sans CJK SC","DejaVu Sans",sans-serif;border-top:3px solid #2dd4a3}
+  #__cap{position:fixed;left:0;right:0;top:0;z-index:2147483646;pointer-events:none;display:none;
+    background:linear-gradient(0deg,rgba(10,18,40,.94),rgba(10,18,40,.86));color:#fff;padding:8px 20px 9px;
+    font-family:"Noto Sans","Noto Sans SC","Noto Sans CJK SC","DejaVu Sans",sans-serif;border-bottom:3px solid #2dd4a3}
   #__cap .t{font-size:21px;font-weight:700;line-height:1.25} #__cap .s{font-size:15px;opacity:.88;margin-top:2px;line-height:1.3}
-  #__cap .chip{position:absolute;right:14px;top:-26px;background:#f59e0b;color:#1a1200;font-size:12px;font-weight:800;
-    padding:3px 10px;border-radius:8px 8px 0 0;letter-spacing:.04em}
+  #__cap .chip{position:absolute;right:14px;bottom:-26px;background:#f59e0b;color:#1a1200;font-size:12px;font-weight:800;
+    padding:3px 10px;border-radius:0 0 8px 8px;letter-spacing:.04em}
   #__card{position:fixed;inset:0;z-index:2147483647;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;
     background:radial-gradient(circle at 30% 20%,#1d3a6e,#0a1228 70%);color:#fff;font-family:"Noto Sans","Noto Sans SC","Noto Sans CJK SC","DejaVu Sans",sans-serif;padding:40px}
   #__card .t{font-size:58px;font-weight:800;letter-spacing:.01em} #__card .s{font-size:25px;margin-top:16px;opacity:.92;max-width:1000px;line-height:1.35}
@@ -95,7 +95,7 @@ const evServer = http.createServer((req, res) => {
 // ---------- run ----------
 await fetch(`${API}/demo/reset`, { method: "POST" });
 const browser = await chromium.launch({ channel: "chrome", headless: true, args: ["--force-device-scale-factor=1"] });
-const ctx = await browser.newContext({ viewport: { width: VW, height: VH }, recordVideo: { dir: path.join(OUT, "vid"), size: { width: 1280, height: 720 } }, locale: "en-US" });
+const ctx = await browser.newContext({ viewport: { width: VW, height: VH }, recordVideo: { dir: path.join(OUT, "vid"), size: { width: 1920, height: 1080 } }, locale: "en-US" });
 await ctx.addInitScript(OVERLAY);
 const t0 = Date.now();
 const page = await ctx.newPage();
@@ -156,7 +156,7 @@ async function login(email) {
   await page.waitForURL(/\/en\/?$/);
 }
 async function nav(href) { await click(page.locator(`nav a[href="${href}"]`).first()); await sleep(900); }
-async function logout() { await click(page.getByRole("button", { name: "Log out" })); await page.waitForURL(/login/); await sleep(500); }
+async function logout() { await click(page.getByTestId("account-menu")); await sleep(400); await click(page.getByRole("menuitem", { name: "Log out" })); await page.waitForURL(/login/); await sleep(500); }
 async function chat(text) {
   await type(page.locator("#msg"), text, 38);
   await sleep(300);
@@ -174,6 +174,8 @@ const AISHA = "aisha@demo.setu.test", FATHER = "father.rahman@demo.setu.test";
 await page.goto(`${WEB}/en/login`);
 await scene(null, "This is Setu, a bridge for international students paying fees abroad. Everything in this video is the real application, recorded live, using synthetic data and a sandbox bank.",
   async () => {}, { card: ["Setu 桥", "A safe agent for cross-border student fee payments. Real UI, recorded live."], minTail: 0.8 });
+state = { card: [process.env.TEAM_NAME ?? "[TEAM NAME]", "2026 FinTechathon · International AI Track · Topic C — Cross-border & Student Finance Assistant"] }; await apply();
+timeline.push({ start: now(), text: "", audio: null, dur: 3.2, caption: null }); await sleep(3200);
 state = {}; await apply();
 
 // 1. Login + dashboard
@@ -295,7 +297,7 @@ await scene(["界面支持简体中文 · Simplified Chinese UI", "总览 · 智
     await click(page.getByRole("button", { name: "简体中文" }));
     await page.waitForURL(/zh-CN/); await page.getByRole("heading", { name: "审计日志" }).waitFor();
     await nav("/zh-CN");
-    await page.getByRole("heading", { name: "总览" }).waitFor(); await sleep(1800); await shot("zh-dashboard");
+    await page.getByRole("heading", { name: /欢迎回来/ }).waitFor(); await sleep(1800); await shot("zh-dashboard");
     await nav("/zh-CN/agent");
     await click(page.getByTestId("prompt-bdt"));
     await page.locator("aside[aria-live=polite]").getByText(/\u2713|\u2705|\u76d1|\u62a4/).first().waitFor({ timeout: 8000 }).catch(() => {});
