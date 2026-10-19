@@ -44,5 +44,14 @@
   "rejectReason": "Reason (optional)",
   "confirmReject": "Confirm rejection",
   "waitingFamily": "Waiting for your family approver.",
-  "openApprovals": "Open approvals"
+  "openApprovals": "Open approvals",
+  "pillTotp": "Needs your TOTP code",
+  "pillFamily": "Family approval required",
+  "amountCny": "Amount (CNY)",
+  "equivBdt": "Equivalent (BDT, before fees)",
+  "steps": "Approval steps",
+  "step1": "Step 1. Student TOTP",
+  "step2": "Step 2. Family approver",
+  "stepDone": "Approved",
+  "stepWaiting": "Waiting for approval"
 }

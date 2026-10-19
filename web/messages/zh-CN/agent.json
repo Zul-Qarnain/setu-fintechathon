@@ -84,6 +84,9 @@
     "required": "所需验证",
     "validated": "回复中的每个数字都能在工具输出中找到",
     "notValidated": "回复未通过数字校验",
-    "auditSeqs": "审计记录"
-  }
+    "auditSeqs": "审计记录",
+    "sub": "Setu 如何处理您的请求"
+  },
+  "newChat": "新对话",
+  "placeholder": "随便问… 例如：支付宿舍费、3月1日前需要多少塔卡？"
 }
