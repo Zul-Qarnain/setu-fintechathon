@@ -95,7 +95,7 @@ const evServer = http.createServer((req, res) => {
 // ---------- run ----------
 await fetch(`${API}/demo/reset`, { method: "POST" });
 const browser = await chromium.launch({ channel: "chrome", headless: true, args: ["--force-device-scale-factor=1"] });
-const ctx = await browser.newContext({ viewport: { width: VW, height: VH }, recordVideo: { dir: path.join(OUT, "vid"), size: { width: 1920, height: 1080 } }, locale: "en-US" });
+const ctx = await browser.newContext({ viewport: { width: VW, height: VH }, recordVideo: { dir: path.join(OUT, "vid"), size: { width: VW, height: VH } }, locale: "en-US" });
 await ctx.addInitScript(OVERLAY);
 const t0 = Date.now();
 const page = await ctx.newPage();

@@ -14,7 +14,7 @@ Source: https://github.com/Zul-Qarnain/setu-fintechathon
 - **Project name:** Setu 桥
 - **One-line summary:** Setu reads a fee notice, explains it in English or 简体中文, shows the real total cost and prepares the payment — but never moves money on a model's say-so.
 - **GitHub repository:** https://github.com/Zul-Qarnain/setu-fintechathon
-- **Demo video:** https://github.com/Zul-Qarnain/setu-fintechathon/blob/main/submission/Setu_Demo.mp4 (3 min 26 s)
+- **Demo video:** https://github.com/Zul-Qarnain/setu-fintechathon/blob/main/submission/Setu_Demo.mp4 (3 min 03 s, 1920×1080, burned-in English subtitles)
 - **Live demo:** not hosted; run locally with `make install && make demo` (offline, no keys)
 
 ## How it is safe (one paragraph)

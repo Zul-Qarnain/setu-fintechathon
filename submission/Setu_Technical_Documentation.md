@@ -340,7 +340,7 @@ CI: `.github/workflows/ci-ts.yml` runs `npm ci`, lint, typecheck, tests and buil
 - `security/` — the 17 attack scenarios and ReDoS tests.
 - `parity/` — replay of the Python demo transcript.
 
-Latest run (`npx vitest run`, 18 Oct 2026): **22 test files passed, 507 tests passed.**
+Latest run (`npx vitest run`, 19 Oct 2026): **24 test files passed, 524 tests passed.**
 
 ### 7.3 Web tests
 `web/`: `npm run lint`, `tsc --noEmit`, vitest unit tests, `next build`, and a Playwright smoke suite against the real backend (`cd web && npm run build && E2E_RESET_API=http://localhost:8000 npx playwright test --project=smoke`). EN and zh-CN screenshots in `web/screenshots/` were regenerated from the TypeScript backend.
