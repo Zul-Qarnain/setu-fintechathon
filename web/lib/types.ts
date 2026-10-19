@@ -49,6 +49,8 @@ export interface TotpVerifyResult {
 
 export interface Obligation {
   id: string;
+  title?: string | null;
+  reference?: string | null;
   amount_cny: string;
   due_date: string;
   payee_id: string;

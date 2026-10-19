@@ -1,13 +1,16 @@
-export function Logo({ className = "" }: { className?: string }) {
+export function Logo({ className = "", tagline }: { className?: string; tagline?: string }) {
   return (
-    <span className={`inline-flex items-center gap-2 ${className}`}>
-      <svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
-        <rect width="32" height="32" rx="7" fill="#0b7a5a" />
-        <path d="M4 22h24" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
-        <path d="M7 22c0-6 4-10 9-10s9 4 9 10" fill="none" stroke="#fde9b3" strokeWidth="2.2" strokeLinecap="round" />
-        <path d="M11 22v-5M16 22v-8M21 22v-5" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" />
+    <span className={`inline-flex items-center gap-2.5 ${className}`}>
+      <svg width="34" height="24" viewBox="0 0 34 24" aria-hidden="true" focusable="false">
+        <defs><linearGradient id="setu-g" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#4fa3ff" /><stop offset="1" stopColor="#1a5fdb" /></linearGradient></defs>
+        <path d="M2 20C5 9 12 4 17 4s12 5 15 16" fill="none" stroke="url(#setu-g)" strokeWidth="4" strokeLinecap="round" />
+        <path d="M1 21h32" stroke="currentColor" strokeOpacity=".9" strokeWidth="2" strokeLinecap="round" />
+        <path d="M10 21v-6M17 21V9M24 21v-6" stroke="currentColor" strokeOpacity=".7" strokeWidth="1.6" strokeLinecap="round" />
       </svg>
-      <span className="text-lg font-bold tracking-tight">Setu <span lang="zh-CN">桥</span></span>
+      <span className="leading-tight">
+        <span className="block text-xl font-bold tracking-tight">Setu <span lang="zh-CN">桥</span></span>
+        {tagline ? <span className="block text-[11px] font-medium opacity-80">{tagline}</span> : null}
+      </span>
     </span>
   );
 }
