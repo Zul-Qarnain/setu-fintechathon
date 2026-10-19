@@ -53,5 +53,14 @@
   "step1": "Step 1. Student TOTP",
   "step2": "Step 2. Family approver",
   "stepDone": "Approved",
-  "stepWaiting": "Waiting for approval"
+  "stepWaiting": "Waiting for approval",
+  "hist": {
+    "date": "Date",
+    "type": "Type",
+    "payee": "Payee",
+    "amount": "Amount (CNY)",
+    "tier": "Tier",
+    "status": "Status",
+    "by": "Approved by"
+  }
 }

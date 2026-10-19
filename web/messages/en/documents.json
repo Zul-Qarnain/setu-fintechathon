@@ -7,7 +7,7 @@
   "filename": "File name",
   "upload": "Or upload a file",
   "dropTitle": "Drop a .txt or text-layer .pdf here, or press to browse",
-  "dropHint": "Text-layer PDFs only — no OCR. Max a few MB.",
+  "dropHint": "Supports .txt and text-layer .pdf (no OCR) · or press to browse",
   "sample": "Synthetic sample notices",
   "sampleSelect": "Load a sample…",
   "loadClean": "Load clean sample",
@@ -61,5 +61,32 @@
   "hide": "Hide",
   "pending": "Awaiting your confirmation",
   "readFailed": "Could not read that file.",
-  "emptyText": "Paste some text or choose a file first."
+  "emptyText": "Paste some text or choose a file first.",
+  "dropBig": "Drop a fee notice, SMS or invoice",
+  "dropSub": "Setu reads it, but never takes orders from it.",
+  "confirmField": "Confirm {field}",
+  "confirmShort": "Confirm",
+  "parsed": "Parsed",
+  "previewTitle": "Document text",
+  "untrustedChip": "UNTRUSTED",
+  "discard": "Discard",
+  "verdict": {
+    "clean": "Safe",
+    "suspicious": "Suspicious",
+    "blocked": "Blocked"
+  },
+  "info": {
+    "extract": {
+      "title": "Extract key details",
+      "body": "Payee, amount, due date, reference…"
+    },
+    "scan": {
+      "title": "Check for hidden instructions",
+      "body": "The guardian scans for prompt injection, payee changes and scam patterns."
+    },
+    "control": {
+      "title": "You stay in control",
+      "body": "You confirm every field before anything is used."
+    }
+  }
 }

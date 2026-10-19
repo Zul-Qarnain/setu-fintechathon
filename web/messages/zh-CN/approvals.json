@@ -53,5 +53,14 @@
   "step1": "第 1 步：学生 TOTP",
   "step2": "第 2 步：家人审批",
   "stepDone": "已批准",
-  "stepWaiting": "等待审批"
+  "stepWaiting": "等待审批",
+  "hist": {
+    "date": "日期",
+    "type": "类型",
+    "payee": "收款方",
+    "amount": "金额（人民币）",
+    "tier": "等级",
+    "status": "状态",
+    "by": "审批人"
+  }
 }
