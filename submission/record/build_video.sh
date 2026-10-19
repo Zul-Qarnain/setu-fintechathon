@@ -47,5 +47,5 @@ cmd = ["ffmpeg", "-y", "-loglevel", "error", "-i", "raw.webm", *ins, "-filter_co
        "-shortest", "../../Setu_Demo.mp4"]
 subprocess.run(cmd, check=True)
 PY
-cp ../../Setu_Demo.mp4 "../../official/C-[TeamName]-DemoVideo.mp4"
+cp ../../Setu_Demo.mp4 "../../official/C-VIRSYS-DemoVideo.mp4"
 ffprobe -v error -show_entries format=duration:stream=codec_name,width,height -of default=nw=1 ../../Setu_Demo.mp4

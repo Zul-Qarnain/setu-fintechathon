@@ -8,7 +8,7 @@ Legend: ✅ present · ⚠️ partial · ❌ missing
 | Template section / field | Status in README.md | Gap |
 |---|---|---|
 | **1. Project Overview** – Track | ✅ "International Track · Topic C" (subtitle) | Template calls it "International AI Track"; no section with this heading |
-| – Team name | ❌ | No team name anywhere (use `[TEAM NAME]` until confirmed) |
+| – Team name | ✅ | VIRSYS |
 | – Project name | ✅ "Setu 桥" | — |
 | – One-line summary | ✅ bold sentence in intro | Not labelled as the one-line summary |
 | **2. System Architecture** – components, models, tools, data sources and their relationships | ⚠️ "How it is safe" paragraph + repository map + link to docs/ARCHITECTURE.md | Tools allowlist, models (scripted planner, optional Gemini/Groq) and data sources are not listed together in README |
@@ -38,7 +38,7 @@ Legend: ✅ present · ⚠️ partial · ❌ missing
 ```markdown
 ## FinTechathon submission summary
 - **Track:** International AI Track · Topic C — Cross-border & Student Finance Assistant
-- **Team name:** [TEAM NAME]
+- **Team name:** VIRSYS
 - **Project name:** Setu 桥
 - **One-line summary:** Setu reads a fee notice, explains it in English or 简体中文, shows the real total cost and prepares the payment — but never moves money on a model's say-so.
 - **GitHub repository:** https://github.com/Zul-Qarnain/setu-fintechathon

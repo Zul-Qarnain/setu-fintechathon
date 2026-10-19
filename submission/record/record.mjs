@@ -49,12 +49,12 @@ const OVERLAY = `(() => {
   if (window.__demoInstalled) return; window.__demoInstalled = true;
   const css = document.createElement('style');
   css.textContent = \`
-  #__cap{position:fixed;left:0;right:0;top:0;z-index:2147483646;pointer-events:none;display:none;
-    background:linear-gradient(0deg,rgba(10,18,40,.94),rgba(10,18,40,.86));color:#fff;padding:8px 20px 9px;
-    font-family:"Noto Sans","Noto Sans SC","Noto Sans CJK SC","DejaVu Sans",sans-serif;border-bottom:3px solid #2dd4a3}
-  #__cap .t{font-size:21px;font-weight:700;line-height:1.25} #__cap .s{font-size:15px;opacity:.88;margin-top:2px;line-height:1.3}
-  #__cap .chip{position:absolute;right:14px;bottom:-26px;background:#f59e0b;color:#1a1200;font-size:12px;font-weight:800;
-    padding:3px 10px;border-radius:0 0 8px 8px;letter-spacing:.04em}
+  #__cap{position:fixed;left:10px;bottom:14px;width:226px;z-index:2147483646;pointer-events:none;display:none;box-sizing:border-box;
+    background:rgba(10,18,40,.93);color:#fff;padding:9px 12px 10px;border-radius:10px;border-left:4px solid #2dd4a3;box-shadow:0 6px 20px rgba(0,0,0,.28);
+    font-family:"Noto Sans","Noto Sans SC","Noto Sans CJK SC","DejaVu Sans",sans-serif}
+  #__cap .t{font-size:16px;font-weight:700;line-height:1.25} #__cap .s{font-size:12.5px;opacity:.88;margin-top:4px;line-height:1.3}
+  #__cap .chip{display:inline-block;background:#f59e0b;color:#1a1200;font-size:9.5px;font-weight:800;margin-bottom:6px;
+    padding:2px 7px;border-radius:5px;letter-spacing:.04em}
   #__card{position:fixed;inset:0;z-index:2147483647;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;
     background:radial-gradient(circle at 30% 20%,#1d3a6e,#0a1228 70%);color:#fff;font-family:"Noto Sans","Noto Sans SC","Noto Sans CJK SC","DejaVu Sans",sans-serif;padding:40px}
   #__card .t{font-size:58px;font-weight:800;letter-spacing:.01em} #__card .s{font-size:25px;margin-top:16px;opacity:.92;max-width:1000px;line-height:1.35}
@@ -174,7 +174,7 @@ const AISHA = "aisha@demo.setu.test", FATHER = "father.rahman@demo.setu.test";
 await page.goto(`${WEB}/en/login`);
 await scene(null, "This is Setu, a bridge for international students paying fees abroad. Everything in this video is the real application, recorded live, using synthetic data and a sandbox bank.",
   async () => {}, { card: ["Setu 桥", "A safe agent for cross-border student fee payments. Real UI, recorded live."], minTail: 0.8 });
-state = { card: [process.env.TEAM_NAME ?? "[TEAM NAME]", "2026 FinTechathon · International AI Track · Topic C — Cross-border & Student Finance Assistant"] }; await apply();
+state = { card: [`Team ${process.env.TEAM_NAME ?? "VIRSYS"}`, "2026 FinTechathon · International AI Track · Topic C — Cross-border & Student Finance Assistant"] }; await apply();
 timeline.push({ start: now(), text: "", audio: null, dur: 3.2, caption: null }); await sleep(3200);
 state = {}; await apply();
 

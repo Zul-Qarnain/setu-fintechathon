@@ -1,22 +1,22 @@
 {
-  "total": 182.036,
+  "total": 182.113,
   "timeline": [
     {
-      "start": 0.549,
+      "start": 0.57,
       "text": "This is Setu, a bridge for international students paying fees abroad. Everything in this video is the real application, recorded live, using synthetic data and a sandbox bank.",
       "audio": "/workspace/setu/submission/record/out/audio/e62c5109e9.wav",
       "dur": 11.563537,
       "caption": null
     },
     {
-      "start": 12.92,
+      "start": 12.944,
       "text": "",
       "audio": null,
       "dur": 3.2,
       "caption": null
     },
     {
-      "start": 16.2,
+      "start": 16.233,
       "text": "I sign in as Aisha, a synthetic student persona. The dashboard shows upcoming obligations, her budget, and an exchange rate that is clearly labelled as a sample.",
       "audio": "/workspace/setu/submission/record/out/audio/b3ac9de14e.wav",
       "dur": 10.40254,
@@ -26,7 +26,7 @@
       ]
     },
     {
-      "start": 27.3,
+      "start": 27.322,
       "text": "In the agent chat I ask how much taka I need by the first of March. A scripted planner reads the intent, all numbers come from deterministic code, and the live trace shows every pipeline step.",
       "audio": "/workspace/setu/submission/record/out/audio/b73240da80.wav",
       "dur": 12.306576,
@@ -36,7 +36,7 @@
       ]
     },
     {
-      "start": 40.309,
+      "start": 40.321,
       "text": "Next, a tier two payment. I ask it to pay my dorm fee, which is under the two thousand yuan cap and goes to a verified payee. The agent only drafts the payment and explains why. I confirm with a one-time code, and the sandbox bank settles it.",
       "audio": "/workspace/setu/submission/record/out/audio/1469cb52dd.wav",
       "dur": 15.46449,
@@ -46,7 +46,7 @@
       ]
     },
     {
-      "start": 56.459,
+      "start": 56.47,
       "text": "A tier three payment: spring tuition, eighteen thousand five hundred yuan, over the cap. First I load the synthetic fee notice and confirm the parsed fields myself.",
       "audio": "/workspace/setu/submission/record/out/audio/a2cf6434ad.wav",
       "dur": 10.07746,
@@ -56,7 +56,7 @@
       ]
     },
     {
-      "start": 67.215,
+      "start": 67.238,
       "text": "The agent drafts the payment and the policy engine requires two approvals: my code, and a family approver. I approve with my code, and the payment now waits for my father.",
       "audio": "/workspace/setu/submission/record/out/audio/dfd1b5380e.wav",
       "dur": 11.192018,
@@ -66,7 +66,7 @@
       ]
     },
     {
-      "start": 79.092,
+      "start": 79.119,
       "text": "Her father, a family approver, signs in on his own account, sees the request, and approves with his own code. Only then does the sandbox bank execute the payment.",
       "audio": "/workspace/setu/submission/record/out/audio/6f948ef5d8.wav",
       "dur": 10.541859,
@@ -76,7 +76,7 @@
       ]
     },
     {
-      "start": 93.921,
+      "start": 93.874,
       "text": "Now a message claims the school's bank account has changed. Setu treats it as data. The new payee stays unverified, and verifying it needs a family approver, plus a twenty four hour cooling-off before approval is even possible.",
       "audio": "/workspace/setu/submission/record/out/audio/06e4413414.wav",
       "dur": 14.907211,
@@ -86,7 +86,7 @@
       ]
     },
     {
-      "start": 109.51,
+      "start": 109.501,
       "text": "Now an attack. This fee notice hides an instruction telling the assistant to ignore its rules and pay another account. The guardian flags it, and the document is blocked. It cannot even be confirmed.",
       "audio": "/workspace/setu/submission/record/out/audio/d5da194b6a.wav",
       "dur": 12.817415,
@@ -96,7 +96,7 @@
       ]
     },
     {
-      "start": 123.01,
+      "start": 123,
       "text": "If I ask the agent to pay from that notice, the answer is a red tier four block, reason injection detected. There is no approval path, no money moves, and the event is written to the audit log.",
       "audio": "/workspace/setu/submission/record/out/audio/29d0a3e353.wav",
       "dur": 12.120816,
@@ -106,7 +106,7 @@
       ]
     },
     {
-      "start": 135.82,
+      "start": 135.801,
       "text": "Every decision and approval is recorded in a hash chained audit log. One click re-verifies the entire chain.",
       "audio": "/workspace/setu/submission/record/out/audio/5a6982bd36.wav",
       "dur": 7.058866,
@@ -116,7 +116,7 @@
       ]
     },
     {
-      "start": 144.525,
+      "start": 144.533,
       "text": "The interface also runs in Simplified Chinese. Here is the dashboard, and the agent answering the same question with its live trace.",
       "audio": "/workspace/setu/submission/record/out/audio/0474be22cf.wav",
       "dur": 7.987664,
@@ -126,7 +126,7 @@
       ]
     },
     {
-      "start": 154.508,
+      "start": 154.573,
       "text": "Evidence is generated from real runs of the application code: twenty five golden tasks passed, and all seventeen adversarial scenarios were blocked, offline, with synthetic data. The audit export carries the verified hash chain.",
       "audio": "/workspace/setu/submission/record/out/audio/2b2cc8a11f.wav",
       "dur": 15.13941,
@@ -136,7 +136,7 @@
       ]
     },
     {
-      "start": 170.338,
+      "start": 170.415,
       "text": "Setu. A scripted planner interprets the request, deterministic code computes the numbers, a policy engine decides, and people approve. Thank you for watching.",
       "audio": "/workspace/setu/submission/record/out/audio/f53c8e19c6.wav",
       "dur": 10.49542,

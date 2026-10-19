@@ -10,7 +10,7 @@ Source: https://github.com/Zul-Qarnain/setu-fintechathon
 
 ## FinTechathon submission summary
 - **Track:** International AI Track · Topic C — Cross-border & Student Finance Assistant
-- **Team name:** [TEAM NAME]
+- **Team name:** VIRSYS
 - **Project name:** Setu 桥
 - **One-line summary:** Setu reads a fee notice, explains it in English or 简体中文, shows the real total cost and prepares the payment — but never moves money on a model's say-so.
 - **GitHub repository:** https://github.com/Zul-Qarnain/setu-fintechathon
