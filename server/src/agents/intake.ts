@@ -1,6 +1,6 @@
 /* eslint-disable no-control-regex */
 /** Intake: treat uploaded documents / messages as untrusted DATA; parse notices (no OCR). Text only (.txt); PDF uploads are out of scope for the TS rewrite.
- * Port of backend/app/agents/intake.py — regexes kept verbatim (Unicode-aware equivalents of Python's \d/\w/\b). */
+ * Regexes use Unicode-aware equivalents of \d/\w/\b. */
 import { Decimal } from '../domain/money.js';
 import * as tokenize from '../domain/tokenize.js';
 
@@ -33,7 +33,7 @@ const MONTHS: Record<string, number> = Object.fromEntries(
 
 export interface ParsedFields {
   amount_cny: Decimal | null;
-  due_date: string | null; // ISO YYYY-MM-DD (Python: datetime.date)
+  due_date: string | null; // ISO YYYY-MM-DD
   payee_name: string | null;
   account_number: string | null; // normalised as found (may be invalid / homoglyph-laden)
   account_raw: string | null;

@@ -1,4 +1,4 @@
-/** Document upload/confirm flow. Documents are untrusted DATA; user confirmation required. Port of backend/app/doc_service.py. */
+/** Document upload/confirm flow. Documents are untrusted DATA; user confirmation required. */
 import { createHash } from 'node:crypto';
 import type { AppContext } from './app.js';
 import * as guardian from './agents/guardian.js';

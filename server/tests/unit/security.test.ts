@@ -14,8 +14,8 @@ import {
 
 const S = 'JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP';
 
-describe('TOTP (vectors from pyotp)', () => {
-  it('matches pyotp', () => {
+describe('TOTP (RFC 6238 reference vectors)', () => {
+  it('matches reference vectors', () => {
     expect([0, 59, 1700000000, 1760000000].map((t) => totpAt(S, t))).toEqual([
       '702218',
       '503347',

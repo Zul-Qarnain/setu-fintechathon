@@ -1,4 +1,4 @@
-/** Read-only sandbox bank API at /sandbox — port of backend/app/sandbox_bank/api.py */
+/** Read-only sandbox bank API at /sandbox */
 import type { FastifyPluginAsync } from 'fastify';
 import { currentUser } from '../deps.js';
 import { getAccountByOwner, listTransactions } from '../sandboxBank/ledger.js';

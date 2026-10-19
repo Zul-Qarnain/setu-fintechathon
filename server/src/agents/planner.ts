@@ -1,4 +1,4 @@
-/** Planner contract: the model may emit ONLY ToolCall JSON from an allowlist, schema-validated (extra keys forbidden, like Python's extra="forbid"). Port of planner.py. */
+/** Planner contract: the model may emit ONLY ToolCall JSON from an allowlist, schema-validated (extra keys forbidden). */
 import { z } from 'zod';
 
 export const INTENTS = [

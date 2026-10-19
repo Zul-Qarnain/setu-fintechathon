@@ -1,4 +1,4 @@
-/** LLM adapter interface + the deterministic scripted planner (offline default). Port of llm_adapters.py.
+/** LLM adapter interface + the deterministic scripted planner (offline default).
  * Gemini/Groq network adapters are intentionally NOT ported (scope cut): any provider setting falls back to the scripted adapter. */
 import { parseDate } from './intake.js';
 
@@ -18,8 +18,8 @@ export interface LLMAdapter {
 }
 
 const W = '[\\p{L}\\p{N}_]';
-const BS = `(?<!${W})`; // Python \b start
-const BE = `(?!${W})`; // Python \b end
+const BS = `(?<!${W})`; // Unicode-aware \b start
+const BE = `(?!${W})`; // Unicode-aware \b end
 const R = (src: string): RegExp => new RegExp(src, 'iu');
 
 const UNSAFE = R(

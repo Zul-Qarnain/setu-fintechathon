@@ -1,4 +1,4 @@
-/** Scripted reply composer (EN / 简体中文). Numbers are copied verbatim from tool outputs. Port of replies.py. */
+/** Scripted reply composer (EN / 简体中文). Numbers are copied verbatim from tool outputs. */
 import { Decimal } from '../domain/money.js';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */

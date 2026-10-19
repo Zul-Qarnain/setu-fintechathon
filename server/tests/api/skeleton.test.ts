@@ -44,7 +44,7 @@ describe('skeleton', () => {
     expect(r.headers['access-control-allow-origin']).toBe('http://localhost:3000');
   });
 
-  it('unknown routes return FastAPI-style {detail} (Python parity)', async () => {
+  it('unknown routes return plain {detail} (API contract)', async () => {
     const r = await app.inject({ method: 'GET', url: '/nope' });
     expect(r.statusCode).toBe(404);
     expect(r.json()).toEqual({ detail: 'Not Found' });

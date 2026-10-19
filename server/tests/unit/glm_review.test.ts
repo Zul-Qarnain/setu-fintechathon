@@ -13,10 +13,10 @@ import { openAccount, transfer } from '../../src/sandboxBank/ledger.js';
 import { hashPassword } from '../../src/security.js';
 
 describe('GLM review fixes', () => {
-  it('argon2id PHC params match Python (m=65536,t=3,p=4)', async () => {
+  it('argon2id PHC params (m=65536,t=3,p=4)', async () => {
     expect(await hashPassword('x')).toMatch(/^\$argon2id\$v=19\$m=65536,t=3,p=4\$/);
   });
-  it('ledger: 1.005 quantizes HALF_EVEN to 1.00 and replays with 1.00 (Python-identical request hash)', () => {
+  it('ledger: 1.005 quantizes HALF_EVEN to 1.00 and replays with 1.00 (stable request hash)', () => {
     const db = openDb(':memory:');
     createSchema(db);
     openAccount(db, '6222000000000001', 'S', '100');
@@ -35,7 +35,7 @@ describe('GLM review fixes', () => {
       transfer(db, 'k', '6222000000000001', '6222000000004821', 100.155 as unknown as string)
     ).toThrow(TypeError);
   });
-  it('nameSkeleton casefold vectors (Python)', () => {
+  it('nameSkeleton casefold vectors (reference)', () => {
     expect(['Straße University', 'STRASSE University', 'İstanbul Uni'].map(nameSkeleton)).toEqual([
       'strasseuniversity',
       'strasseuniversity',

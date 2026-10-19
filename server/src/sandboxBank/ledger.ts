@@ -1,5 +1,5 @@
 /**
- * Sandbox bank ledger (SYNTHETIC). Port of backend/app/sandbox_bank/ledger.py.
+ * Sandbox bank ledger (SYNTHETIC).
  * Deterministic failures: dest ending "0013" -> ACCOUNT_CLOSED; > CNY 50,000.00 -> LIMIT_EXCEEDED;
  * cents == .99 -> RISK_HOLD (held, funds not moved); balance < amount -> INSUFFICIENT_FUNDS.
  */
@@ -57,7 +57,7 @@ export function transferResultDict(r: TransferResult) {
   };
 }
 
-/** `amount` must already be quantized (HALF_EVEN, 2dp) so the hash matches Python's f"{amount:.2f}". */
+/** `amount` must already be quantized (HALF_EVEN, 2dp) so the request hash uses a canonical 2-decimal string. */
 const reqHash = (
   from: string,
   to: string,
@@ -123,7 +123,7 @@ export function transfer(
     .transaction((): TransferResult => {
       const srcN = normalizeAccount(fromAccountNumber);
       const dstN = normalizeAccount(toAccountNumber);
-      const amount = toDecimal(amountCny).toDecimalPlaces(2, HALF_EVEN); // Python quantize default
+      const amount = toDecimal(amountCny).toDecimalPlaces(2, HALF_EVEN); // HALF_EVEN, 2dp
       const rh = reqHash(srcN, dstN, amount, reference);
       const prior = db
         .prepare('SELECT * FROM sbx_txns WHERE idempotency_key = ?')

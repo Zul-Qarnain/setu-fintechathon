@@ -5,12 +5,12 @@ import { runDemo } from '../../src/demo.js';
 type Step = Record<string, unknown> & { step: string };
 const py = (
   JSON.parse(
-    readFileSync(new URL('../fixtures/py_demo_summary.json', import.meta.url), 'utf-8')
+    readFileSync(new URL('../fixtures/reference_demo_summary.json', import.meta.url), 'utf-8')
   ) as { steps: Step[] }
 ).steps;
 
-/** Shape-parity (not byte-parity) replay of the Python demo transcript against the TS backend. */
-describe('TS demo vs Python demo transcript', () => {
+/** Shape-parity (not byte-parity) replay of the recorded reference demo transcript against the backend. */
+describe('demo vs recorded reference transcript', () => {
   it('same steps, same decisions, same key fields', { timeout: 60000 }, async () => {
     const ts = (await runDemo(false)).steps as Step[];
     expect(ts.map((s) => s.step)).toEqual(py.map((s) => s.step));

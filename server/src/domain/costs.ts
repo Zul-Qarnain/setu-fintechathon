@@ -1,4 +1,4 @@
-/** Deterministic cost / BDT-needed computation. Port of backend/app/domain/costs.py. */
+/** Deterministic cost / BDT-needed computation. */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { FxService } from './fx.js';

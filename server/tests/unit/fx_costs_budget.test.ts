@@ -62,7 +62,7 @@ describe('fx', () => {
 
 describe('costs', () => {
   const channels = loadChannels(DATA);
-  it('known values (Python-verified)', async () => {
+  it('known values (reference-verified)', async () => {
     const c = await computeCosts(D('18500'), svc(), { channels });
     expect(c.fees.map((f) => f.amount_cny.toFixed(2))).toEqual(['21.43', '74.00']);
     expect(c.total_fees_cny.toFixed(2)).toBe('95.43');

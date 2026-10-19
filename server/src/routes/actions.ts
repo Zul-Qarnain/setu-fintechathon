@@ -1,4 +1,4 @@
-/** /actions — port of backend/app/routes/actions.py */
+/** /actions */
 import type { FastifyPluginAsync } from 'fastify';
 import { actionOut, approve, getVisible, reject, visibleActions } from '../actionsService.js';
 import { currentUser, rateLimit } from '../deps.js';

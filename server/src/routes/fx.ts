@@ -1,4 +1,4 @@
-/** /fx/quote — port of backend/app/routes/fx.py */
+/** /fx/quote */
 import type { FastifyPluginAsync } from 'fastify';
 import { currentUser, rateLimit, apiError } from '../deps.js';
 import { Decimal } from '../domain/money.js';

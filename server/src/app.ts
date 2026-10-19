@@ -111,7 +111,7 @@ export async function buildApp(opts: BuildOptions = {}): Promise<FastifyInstance
     reply.header('strict-transport-security', 'max-age=15552000; includeSubDomains');
   });
   app.setErrorHandler(errorHandler);
-  // Parity with the Python backend: unknown routes bypass the error envelope (FastAPI's default {"detail":"Not Found"}).
+  // API contract: unknown routes bypass the error envelope and return {"detail":"Not Found"} (see docs/API.md).
   app.setNotFoundHandler((_req, reply) => reply.status(404).send({ detail: 'Not Found' }));
 
   await app.register(authRoutes, { prefix: '/auth' });

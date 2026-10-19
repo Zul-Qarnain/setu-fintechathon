@@ -1,8 +1,8 @@
-/** Live contract diff: runs the same request sequence against the Python backend and the TS backend and compares response STATUS + JSON SHAPE (keys/types, not values).
- * Usage: start BOTH backends on FRESH databases (state-dependent shapes otherwise differ): Python `DEMO_MODE=true DATABASE_URL=sqlite:////tmp/py.db uvicorn app.main:app --port 8002`, TS `DEMO_MODE=true PORT=8001 DATABASE_URL=sqlite:////tmp/ts.db npm start`; then `PY=http://localhost:8002 TS=http://localhost:8001 npm run contract`. */
+/** Live contract diff: runs the same request sequence against two running backends (BASELINE, e.g. the last release, and CANDIDATE, e.g. your branch) and compares response STATUS + JSON SHAPE (keys/types, not values).
+ * Usage: start BOTH on FRESH databases (state-dependent shapes otherwise differ), e.g. `DEMO_MODE=true PORT=8002 DATABASE_URL=sqlite:////tmp/base.db npm start` (baseline checkout) and `DEMO_MODE=true PORT=8001 DATABASE_URL=sqlite:////tmp/cand.db npm start`; then `BASELINE=http://localhost:8002 CANDIDATE=http://localhost:8001 npm run contract`. */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-const PY = process.env.PY ?? 'http://localhost:8000';
-const TS = process.env.TS ?? 'http://localhost:8001';
+const BASELINE = process.env.BASELINE ?? 'http://localhost:8000';
+const CANDIDATE = process.env.CANDIDATE ?? 'http://localhost:8001';
 
 const shape = (v: any): any => {
   if (v === null) return 'null';
@@ -29,13 +29,13 @@ function diff(a: any, b: any, path: string, out: string[]): void {
     !Array.isArray(b)
   ) {
     for (const k of new Set([...Object.keys(a), ...Object.keys(b)])) {
-      if (!(k in a)) out.push(`${path}.${k}: only in TS (${JSON.stringify(b[k])})`);
-      else if (!(k in b)) out.push(`${path}.${k}: only in PY (${JSON.stringify(a[k])})`);
+      if (!(k in a)) out.push(`${path}.${k}: only in CANDIDATE (${JSON.stringify(b[k])})`);
+      else if (!(k in b)) out.push(`${path}.${k}: only in BASELINE (${JSON.stringify(a[k])})`);
       else diff(a[k], b[k], `${path}.${k}`, out);
     }
     return;
   }
-  out.push(`${path}: PY=${JSON.stringify(a)} TS=${JSON.stringify(b)}`);
+  out.push(`${path}: BASELINE=${JSON.stringify(a)} CANDIDATE=${JSON.stringify(b)}`);
 }
 
 interface Side {
@@ -68,9 +68,9 @@ async function call(
   return { status: r.status, json };
 }
 
-const sides: Record<'py' | 'ts', Side> = {
-  py: { base: PY, tok: '', ids: {} },
-  ts: { base: TS, tok: '', ids: {} },
+const sides: Record<'base' | 'cand', Side> = {
+  base: { base: BASELINE, tok: '', ids: {} },
+  cand: { base: CANDIDATE, tok: '', ids: {} },
 };
 let fails = 0,
   total = 0;
@@ -79,10 +79,10 @@ async function both(
   name: string,
   f: (s: Side) => Promise<{ status: number; json: any }>
 ): Promise<void> {
-  const [a, b] = [await f(sides.py), await f(sides.ts)];
+  const [a, b] = [await f(sides.base), await f(sides.cand)];
   total++;
   const out: string[] = [];
-  if (a.status !== b.status) out.push(`status PY=${a.status} TS=${b.status}`);
+  if (a.status !== b.status) out.push(`status BASELINE=${a.status} CANDIDATE=${b.status}`);
   diff(shape(a.json), shape(b.json), '$', out);
   if (out.length) {
     fails++;

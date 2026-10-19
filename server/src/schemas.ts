@@ -1,4 +1,4 @@
-/** Request schemas (zod). Mirrors backend/app/schemas.py request models; extra fields ignored like pydantic's default. */
+/** Request schemas (zod). Extra fields are ignored (zod default strip). */
 import { z } from 'zod';
 
 export const Role = z.enum(['student', 'family_approver', 'admin']);

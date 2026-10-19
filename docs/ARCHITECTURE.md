@@ -1,11 +1,11 @@
 # Architecture
 
-> **Implementation note (TS rewrite).** The backend is now TypeScript (`server/src`, Fastify + Zod + better-sqlite3). Module names below use the original Python file names (`domain/fx.py`, `agents/graph.py`, …); the TypeScript twins are the same paths in camelCase (`domain/fx.ts`, `agents/graph.ts`, `sandboxBank/ledger.ts`). The design, tiers and flow are unchanged. See [ARCHITECTURE_TS](ARCHITECTURE_TS.md) for what differs.
+> **Implementation.** The backend is TypeScript (`server/src`, Fastify + Zod + better-sqlite3). Module paths below are relative to `server/src`. See [ARCHITECTURE_TS](ARCHITECTURE_TS.md) for implementation details.
 
 Setu 桥 is a guarded agent for cross-border student finance. **All data is SYNTHETIC, the bank is a SANDBOX, FX defaults to labelled SAMPLE rates, and Setu never holds funds.**
 
 ## Design principles
-1. **The LLM interprets; deterministic code computes.** Every number a user sees (fees, BDT needed, rates, dates) comes from deterministic code (`domain/fx.py`, `costs.py`, `budget.py`). A reply validator rejects any reply containing a number that is not in a tool output or the user's own message.
+1. **The LLM interprets; deterministic code computes.** Every number a user sees (fees, BDT needed, rates, dates) comes from deterministic code (`domain/fx.ts`, `costs.ts`, `budget.ts`). A reply validator rejects any reply containing a number that is not in a tool output or the user's own message.
 2. **The server decides, never the model.** One pure function, `policy.decide(action, ctx)`, authorises every action. It is evaluated when an action is proposed, again on every approval, and a last time inside the executor. The executor accepts only `ALLOW`.
 3. **Documents and SMS are DATA.** They are wrapped in `<untrusted>`, scanned by the guardian, and can never be the *source* of a payment, a payee or an amount. Payees and amounts are resolved server-side from the payee registry or a user-confirmed obligation.
 4. **Default deny, smallest blast radius.** Unknown action types, unregistered/unverified payees, document-sourced actions and bulk exports are T4 (blocked).
@@ -21,10 +21,10 @@ flowchart LR
   end
   subgraph API["server/src (Fastify + Zod)"]
     R[routes/*: auth, documents, chat, actions, payees, fx, audit, evidence, dashboard, demo]
-    AG[agents/graph.py: plain state machine]
-    POL[domain/policy.py: decide()]
+    AG[agents/graph.ts: plain state machine]
+    POL[domain/policy.ts: decide()]
     DOM[domain/: fx, costs, budget, crypto, tokenize, audit]
-    SBX[sandbox_bank/ledger.py]
+    SBX[sandboxBank/ledger.ts]
     DB[(SQLite via better-sqlite3)]
   end
   UI -->|JSON over HTTP, JWT| R
@@ -32,7 +32,7 @@ flowchart LR
   AG --> DOM
   AG --> POL
   R -->|approve| POL
-  POL -->|ALLOW only| EX[agents/executor.py]
+  POL -->|ALLOW only| EX[agents/executor.ts]
   EX --> SBX
   R --> DB
   SBX --> DB
@@ -42,7 +42,7 @@ flowchart LR
   LLM[Gemini / Groq  optional, tokenised text only] -.-> AG
 ```
 
-## Agent flow (`agents/graph.py`, no framework)
+## Agent flow (`agents/graph.ts`, no framework)
 
 `intake → planner → tools → guardian → policy → executor | await_approval → validator`
 
@@ -70,14 +70,14 @@ The `trace` object returned by `POST /chat` exposes these seven steps so the UI 
 Payee lifecycle: `create (unverified, T4 for payments)` → `verify by linked family approver / admin` → payments become T3 until `cooling_off_until` (created + 24 h) passes → then T2/T3 by amount. Seeded institutions (university, dorm, insurance, provider) are verified and have no cooling-off.
 
 ## Modules
-- `domain/crypto.py` AES-256-GCM with AAD (`enc:v1:` prefix) for payee accounts and TOTP secrets.
-- `domain/tokenize.py` NFKC normalisation, homoglyph detection, name skeletons, HMAC tokens, `redact_pii` for logs/audit.
-- `domain/audit.py` hash-chain compute/verify. `models.py:append_audit/verify_audit` persist it.
-- `domain/fx.py` FX service: fixture (labelled SAMPLE) or live adapter, 24 h cache, injectable clock, live-failure fallback that is labelled as fixture.
-- `domain/costs.py`, `budget.py` fee model (sandbox "licensed partner A": USD 3.00 fixed + 0.40 % FX margin, **illustrative**), budget summaries.
-- `security.py`, `deps.py` argon2id passwords, JWT (HS256 pinned, `exp/sub/iat` required, role re-checked in DB), TOTP with ±1 step, replay protection, lockout; in-memory rate limiter.
+- `domain/crypto.ts` AES-256-GCM with AAD (`enc:v1:` prefix) for payee accounts and TOTP secrets.
+- `domain/tokenize.ts` NFKC normalisation, homoglyph detection, name skeletons, HMAC tokens, `redact_pii` for logs/audit.
+- `domain/audit.ts` hash-chain compute/verify. `db/auditStore.ts` persists it (atomic append + verify).
+- `domain/fx.ts` FX service: fixture (labelled SAMPLE) or live adapter, 24 h cache, injectable clock, live-failure fallback that is labelled as fixture.
+- `domain/costs.ts`, `budget.ts` fee model (sandbox "licensed partner A": USD 3.00 fixed + 0.40 % FX margin, **illustrative**), budget summaries.
+- `security.ts`, `deps.ts` argon2id passwords, JWT (HS256 pinned, `exp/sub/iat` required, role re-checked in DB), TOTP with ±1 step, replay protection, lockout; in-memory rate limiter.
 - `sandbox_bank/` double-entry-less toy ledger with idempotency keys and deterministic failures (see below).
-- `seed.py`, `demo.py`, `eval/` seeding, the scripted demo, golden tasks and attack scenarios.
+- `seed.ts`, `demo.ts`, `evalkit/` seeding, the scripted demo, golden tasks and attack scenarios.
 
 ## Sandbox bank behaviour (deterministic, for demos and tests)
 | Trigger | Result |

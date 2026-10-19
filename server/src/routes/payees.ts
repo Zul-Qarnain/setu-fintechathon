@@ -1,4 +1,4 @@
-/** /payees — port of backend/app/routes/payees.py */
+/** /payees */
 import type { FastifyPluginAsync } from 'fastify';
 import type { PayeeRow, UserRow } from '../db/schema.js';
 import { apiError, currentUser, rateLimit, requireRoles } from '../deps.js';

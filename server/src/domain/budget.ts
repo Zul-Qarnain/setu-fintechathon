@@ -1,4 +1,4 @@
-/** Budget helpers (deterministic). Port of backend/app/domain/budget.py. Dates are ISO 'YYYY-MM-DD' strings. */
+/** Budget helpers (deterministic). Dates are ISO 'YYYY-MM-DD' strings. */
 import { Decimal, HALF_EVEN } from './money.js';
 
 export interface Obl {

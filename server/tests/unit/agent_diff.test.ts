@@ -21,7 +21,7 @@ const iso = (d: unknown): string | null =>
       ? d.toISOString().slice(0, 10)
       : String(d);
 
-describe('guardian/intake differential vs real Python (555 vectors: regex-sampled, corpus, label/format fuzz)', () => {
+describe('guardian/intake differential vs recorded reference vectors (555 vectors: regex-sampled, corpus, label/format fuzz)', () => {
   it('parse_notice fields identical', () => {
     const bad: unknown[] = [];
     for (const v of vecs) {
@@ -41,7 +41,7 @@ describe('guardian/intake differential vs real Python (555 vectors: regex-sample
         ...v.parsed,
         amount_cny: v.parsed.amount_cny === null ? null : String(v.parsed.amount_cny),
       };
-      // compare amounts numerically-normalised (Python str(Decimal) keeps trailing zeros)
+      // compare amounts numerically-normalised (reference vectors keep trailing zeros)
       const norm = (o: Record<string, unknown>) => ({
         ...o,
         amount_cny: o.amount_cny === null ? null : String(Number(o.amount_cny)),

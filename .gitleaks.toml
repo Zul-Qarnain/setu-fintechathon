@@ -4,13 +4,13 @@ useDefault = true
 [allowlist]
 description = "DEV-ONLY placeholder secrets that ship in config defaults / .env.example / docs, and SYNTHETIC TOTP secrets in demo personas"
 paths = [
-  '''backend/app/config\.py''',
+  '''server/src/config\.ts''',
   '''\.env\.example''',
   '''data/personas\.json''',
-  '''data/generate_data\.py''',
+  '''server/scripts/generate_data\.ts''',
   '''docs/.*''',
   '''evidence/.*''',
   '''docker-compose\.yml''',
-  '''backend/tests/.*''',
-  '''backend/eval/.*''',
+  '''server/tests/.*''',
+  '''server/eval/.*''',
 ]

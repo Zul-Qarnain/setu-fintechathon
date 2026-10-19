@@ -1,4 +1,4 @@
-/** Request-scoped helpers: auth, roles, TOTP verification, rate limiting. Port of backend/app/deps.py. */
+/** Request-scoped helpers: auth, roles, TOTP verification, rate limiting. */
 import type { FastifyRequest } from 'fastify';
 import type { AppContext } from './app.js';
 import { appendAudit } from './db/auditStore.js';

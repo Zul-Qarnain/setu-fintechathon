@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { validateReply, numbersIn } from '../../src/agents/replyValidator.js';
 
-// Expected values produced by the real Python validator.
+// Expected values from recorded reference vectors.
 const cases: [string, unknown[], string, boolean, string[]][] = [
   [
     'Pay 1,234.50 CNY, fee 21.43 by T3 ACCT_7f3a91c2e0',
@@ -16,7 +16,7 @@ const cases: [string, unknown[], string, boolean, string[]][] = [
   ['rate 17.2000', [{ r: '17.20' }], '', true, []],
 ];
 
-describe('reply validator (matches Python)', () => {
+describe('reply validator (matches reference vectors)', () => {
   it.each(cases)('%s', (reply, tools, user, ok, bad) => {
     expect(validateReply(reply, tools, user)).toEqual({ ok, unsupported: bad });
   });

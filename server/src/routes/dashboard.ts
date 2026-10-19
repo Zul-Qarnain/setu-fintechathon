@@ -1,4 +1,4 @@
-/** /me, /obligations, DELETE /me (PIPL erasure) — port of backend/app/routes/dashboard.py (GET /dashboard added with agent tools in M4). */
+/** /me, /obligations, DELETE /me (PIPL erasure) (GET /dashboard added with agent tools in M4). */
 import type { FastifyPluginAsync } from 'fastify';
 import { appendAudit } from '../db/auditStore.js';
 import type { ObligationRow } from '../db/schema.js';

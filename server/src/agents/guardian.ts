@@ -1,6 +1,6 @@
 /** Guardian: rules + payee registry (no ML). Flags prompt injection, scams, spoofing. Pure functions; a `blocked` verdict forces Tier 4.
- * Port of backend/app/agents/guardian.py. Rule regexes are copied VERBATIM from Python; the only edits are Unicode-aware stand-ins
- * for Python's `\w` and `\b` (JS's are ASCII-only). */
+ * Rule regexes use Unicode-aware stand-ins
+ * for `\w` and `\b` (JS built-ins are ASCII-only). */
 import type { Decimal } from '../domain/money.js';
 import * as tokenize from '../domain/tokenize.js';
 import { parseAmount, type ParsedFields } from './intake.js';
@@ -16,9 +16,9 @@ export interface GuardianVerdict {
   flags: GuardianFlag[];
 }
 
-const W = '[\\p{L}\\p{N}_]'; // Python \w
-const BS = `(?<!${W})`; // Python \b (start-of-word side)
-const BE = `(?!${W})`; // Python \b (end-of-word side)
+const W = '[\\p{L}\\p{N}_]'; // Unicode-aware \w
+const BS = `(?<!${W})`; // Unicode-aware \b (start-of-word side)
+const BE = `(?!${W})`; // Unicode-aware \b (end-of-word side)
 
 const RULES: [string, GuardianFlag['severity'], string, string][] = [
   [

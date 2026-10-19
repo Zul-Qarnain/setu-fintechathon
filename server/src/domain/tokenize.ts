@@ -1,4 +1,4 @@
-/** HMAC tokenisation, normalisation and PII redaction. Port of backend/app/domain/tokenize.py. */
+/** HMAC tokenisation, normalisation and PII redaction. */
 import { getHmacKey } from './keys.js';
 import { hmacSha256Hex } from './crypto.js';
 
@@ -15,7 +15,7 @@ const CONFUSABLES: Record<string, string> = Object.fromEntries(
 );
 const LOOKALIKE: Record<string, string> = { '1': 'l', '0': 'o', '5': 's', '3': 'e', '@': 'a' };
 
-// Python's \w is Unicode-aware: use \p{L}\p{N}_ with the u flag.
+// Unicode-aware \w: use \p{L}\p{N}_ with the u flag.
 const ACCT_RE = /(?<![\p{L}\p{N}_])(?:\d[ -]?){12,19}(?![\p{L}\p{N}_])/gu;
 const EMAIL_RE = /[\p{L}\p{N}_.+-]+@[\p{L}\p{N}_-]+(?:\.[\p{L}\p{N}_-]+)+/gu;
 const PHONE_RE = /(?<!\d)(?:\+?86[ -]?)?1[3-9]\d{9}(?!\d)/g;

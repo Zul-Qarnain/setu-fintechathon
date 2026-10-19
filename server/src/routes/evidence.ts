@@ -1,4 +1,4 @@
-/** GET /evidence/export — port of backend/app/routes/evidence.py */
+/** GET /evidence/export */
 import type { FastifyPluginAsync } from 'fastify';
 import type { AppContext } from '../app.js';
 import { verifyAudit } from '../db/auditStore.js';

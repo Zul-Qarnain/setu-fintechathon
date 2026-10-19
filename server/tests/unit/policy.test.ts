@@ -1,4 +1,4 @@
-/** Policy engine tests. Ported from backend/tests/unit/test_policy.py */
+/** Policy engine tests. */
 import { describe, it, expect } from 'vitest';
 import {
   decide,

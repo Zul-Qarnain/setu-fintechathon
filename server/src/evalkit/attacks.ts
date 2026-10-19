@@ -1,4 +1,4 @@
-/** Adversarial scenarios. Each returns a real, evidence-backed AttackResult (blocked: boolean). Port of backend/eval/attacks.py (all 17).
+/** Adversarial scenarios. Each returns a real, evidence-backed AttackResult (blocked: boolean).
  * Used by tests/security (assert blocked) and src/evidence.ts (writes evidence/security_report.md). */
 import { createHmac } from 'node:crypto';
 import { propose } from '../actionsService.js';

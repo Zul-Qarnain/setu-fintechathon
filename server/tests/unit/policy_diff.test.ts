@@ -1,4 +1,4 @@
-/** Differential test: policy.decide() must equal the Python engine on every recorded vector. */
+/** Differential test: policy.decide() must equal the reference engine on every recorded vector. */
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { Decimal } from '../../src/domain/money.js';
@@ -23,7 +23,7 @@ const dec = (s: string | null | undefined) =>
   s === null || s === undefined ? null : new Decimal(s);
 
 function toAction(a: Record<string, any>): Action {
-  const p = ('payee' in a ? a['payee'] : {}) as Record<string, any> | null; // key absent => Python helper's default verified payee
+  const p = ('payee' in a ? a['payee'] : {}) as Record<string, any> | null; // key absent => default verified payee
   const payee: PayeeState | null = p
     ? {
         payee_id: p['payee_id'] ?? 'p1',
@@ -53,7 +53,7 @@ function toCtx(c: Record<string, any> = {}): Context {
   };
 }
 
-describe('policy differential vs Python', () => {
+describe('policy differential vs reference vectors', () => {
   it('has >= 200 vectors', () => expect(vectors.length).toBeGreaterThanOrEqual(200));
   it.each(vectors.map((v, i) => [i, v] as const))('vector %i', (_i, v) => {
     const d = decide(toAction(v.input.action), toCtx(v.input.context));

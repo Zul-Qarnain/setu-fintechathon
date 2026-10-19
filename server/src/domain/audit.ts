@@ -1,4 +1,4 @@
-/** SHA-256 hash-chained audit log: pure functions. Port of backend/app/domain/audit.py. */
+/** SHA-256 hash-chained audit log: pure functions. */
 import { createHash, timingSafeEqual } from 'node:crypto';
 
 export const GENESIS_HASH = '0'.repeat(64);
@@ -13,7 +13,7 @@ function codePointCompare(a: string, b: string): number {
   return x.length - y.length;
 }
 
-/** json.dumps(obj, sort_keys=True, separators=(',',':'), ensure_ascii=False). Floats/undefined are rejected. */
+/** Canonical JSON: keys sorted by Unicode code point (recursively), compact separators, non-ASCII emitted raw. Floats/undefined are rejected. */
 export function canonicalJSON(v: unknown): string {
   if (v === null) return 'null';
   switch (typeof v) {

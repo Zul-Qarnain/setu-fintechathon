@@ -1,5 +1,5 @@
 /** Explicit state machine (no LangGraph): intake -> planner -> tools -> guardian -> policy -> executor | await_approval -> validator.
- * Every step is traced and audited. Port of backend/app/agents/graph.py. */
+ * Every step is traced and audited. */
 import { randomBytes } from 'node:crypto';
 import type { AppContext } from '../app.js';
 import { actionOut, evaluate, propose } from '../actionsService.js';

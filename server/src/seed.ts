@@ -1,4 +1,4 @@
-/** Seed SYNTHETIC personas from data/personas.json. Port of backend/app/seed.py. */
+/** Seed SYNTHETIC personas from data/personas.json. */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { AppContext } from './app.js';

@@ -1,5 +1,5 @@
 /** `npm run demo`: scripted end-to-end run on a fresh in-memory DB seeded with SYNTHETIC personas.
- * Writes evidence/sandbox_logs.jsonl, audit_export.json and demo_summary.json. Offline, no keys. Port of backend/app/demo.py. */
+ * Writes evidence/sandbox_logs.jsonl, audit_export.json and demo_summary.json. Offline, no keys. */
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';

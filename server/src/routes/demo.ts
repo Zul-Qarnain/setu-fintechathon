@@ -1,4 +1,4 @@
-/** /demo/* helpers — SYNTHETIC data only. Available only when DEMO_MODE=true or a valid X-Admin-Token equals ADMIN_TOKEN. Port of backend/app/routes/demo.py. */
+/** /demo/* helpers — SYNTHETIC data only. Available only when DEMO_MODE=true or a valid X-Admin-Token equals ADMIN_TOKEN. */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { FastifyPluginAsync, FastifyRequest } from 'fastify';

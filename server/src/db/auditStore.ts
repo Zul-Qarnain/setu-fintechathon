@@ -1,4 +1,4 @@
-/** Audit persistence: atomic append (contiguous seq) + verify + export. Port of append_audit/verify_audit in backend/app/db.py. */
+/** Audit persistence: atomic append (contiguous seq) + verify + export. */
 import type { Db } from './connection.js';
 import {
   GENESIS_HASH,

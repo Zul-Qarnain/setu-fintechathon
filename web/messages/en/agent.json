@@ -51,7 +51,7 @@
     "desc": {
       "intake": "Message and any document text are wrapped as untrusted data and the intent is detected.",
       "planner": "The planner emits only allow-listed tool calls as JSON.",
-      "tools": "Deterministic Python tools compute amounts, fees and exchange rates.",
+      "tools": "Deterministic TypeScript tools compute amounts, fees and exchange rates.",
       "guardian": "Rules and the payee registry check the content for injection, scams and unknown payees.",
       "policy": "The server-side policy engine assigns the tier and required approvals. The LLM never decides.",
       "executor": "Only an ALLOW decision can reach the sandbox bank.",

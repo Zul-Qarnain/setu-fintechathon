@@ -4,7 +4,7 @@ The web app is unchanged by the backend rewrite. Verified against the TS server 
 
 - `npm run lint`, `tsc --noEmit`, `vitest` (13) and `next build` pass.
 - Playwright smoke (8 tests, real backend, `NEXT_PUBLIC_MOCK=false`) and the EN + zh-CN screenshot run pass; `web/screenshots/` was regenerated from the TS backend.
-- Live status+shape diff vs the Python backend: 29/29 requests identical (`server/scripts/contract_diff.ts`).
+- Live status+shape contract diff (`server/scripts/contract_diff.ts`, 29 requests): 29/29 identical.
 
 Known differences (none break the UI):
 - PDF upload is not supported by the TS backend (422 `UNSUPPORTED_DOCUMENT`); the Documents page's text/`.txt` path is unaffected.

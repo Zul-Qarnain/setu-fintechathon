@@ -1,6 +1,6 @@
 # Threat model
 
-Method: data-flow decomposition (`DATA_FLOW.md`) → STRIDE per trust boundary → mapping to the OWASP Top 10 for LLM Applications (2025 numbering) and to China's PIPL / Data Security Law (DSL). Attack IDs (A01–A17) refer to the executable scenarios in `backend/eval/attacks.py`; results are in `evidence/security_report.md`. This is a builders' analysis, not an independent review.
+Method: data-flow decomposition (`DATA_FLOW.md`) → STRIDE per trust boundary → mapping to the OWASP Top 10 for LLM Applications (2025 numbering) and to China's PIPL / Data Security Law (DSL). Attack IDs (A01–A17) refer to the executable scenarios in `server/src/evalkit/attacks.ts`; results are in `evidence/security_report.md`. This is a builders' analysis, not an independent review.
 
 ## 1. Assets and actors
 | Asset | Why it matters |
@@ -45,7 +45,7 @@ Actors: student (legitimate), family approver (legitimate, higher authority), ad
 |---|---|---|---|
 | LLM01 | Prompt injection | mitigated by design | untrusted wrapper, guardian, T4 for document-sourced actions, validated planner output (A01, A02, A14) |
 | LLM02 | Sensitive information disclosure | mitigated | tokenisation before any model call, redaction, encryption, masked API (A10) |
-| LLM03 | Supply chain | partial | pinned lockfile (`uv.lock`), gitleaks; no SCA/SAST |
+| LLM03 | Supply chain | partial | pinned lockfiles (`package-lock.json`), gitleaks; no SCA/SAST |
 | LLM04 | Data and model poisoning | not applicable / low | no training or fine-tuning; static synthetic data |
 | LLM05 | Improper output handling | mitigated | model output is only schema-validated JSON tool calls; reply validator; UI should render text, not HTML |
 | LLM06 | Excessive agency | mitigated | no tool moves money; propose-then-approve; server policy; executor accepts `ALLOW` only (A04, A13) |

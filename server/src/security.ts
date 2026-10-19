@@ -1,10 +1,10 @@
-/** Password hashing (argon2id), JWT (HS256, pinned alg), RFC 6238 TOTP with replay protection. Port of backend/app/security.py. */
+/** Password hashing (argon2id), JWT (HS256, pinned alg), RFC 6238 TOTP with replay protection. */
 import { createHmac, randomBytes, randomUUID, timingSafeEqual } from 'node:crypto';
 import { hash as argonHash, verify as argonVerify } from '@node-rs/argon2';
 import { SignJWT, jwtVerify } from 'jose';
 import { decrypt, encrypt } from './domain/crypto.js';
 
-/** Same cost as Python argon2-cffi PasswordHasher() defaults: m=64 MiB, t=3, p=4 (argon2id). */
+/** argon2id cost: m=64 MiB, t=3, p=4 (argon2id). */
 export const ARGON2_PARAMS = { memoryCost: 65536, timeCost: 3, parallelism: 4 } as const;
 export const JWT_ALG = 'HS256';
 export const JWT_TTL_SECONDS = 3600;
@@ -93,7 +93,7 @@ export function base32Decode(s: string): Buffer {
   return Buffer.from(out);
 }
 
-export const newTotpSecret = (): string => base32Encode(randomBytes(20)).slice(0, 32); // 160 bits -> 32 base32 chars (like pyotp)
+export const newTotpSecret = (): string => base32Encode(randomBytes(20)).slice(0, 32); // 160 bits -> 32 base32 chars
 
 export const totpUri = (secret: string, email: string): string =>
   `otpauth://totp/Setu:${encodeURIComponent(email)}?secret=${secret}&issuer=Setu`;

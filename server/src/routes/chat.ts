@@ -1,4 +1,4 @@
-/** POST /chat — port of backend/app/routes/chat.py */
+/** POST /chat */
 import type { FastifyPluginAsync } from 'fastify';
 import { runChat } from '../agents/graph.js';
 import { currentUser, rateLimit } from '../deps.js';

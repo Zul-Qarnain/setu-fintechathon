@@ -1,4 +1,4 @@
-/** Deterministic tools. They are the ONLY source of numbers. propose_* never execute anything. Port of backend/app/agents/tools.py. */
+/** Deterministic tools. They are the ONLY source of numbers. propose_* never execute anything. */
 import type { AppContext } from '../app.js';
 import type { ActionRow, DocumentRow, ObligationRow, PayeeRow, UserRow } from '../db/schema.js';
 import { summarize, totalDueBy } from '../domain/budget.js';
@@ -54,7 +54,7 @@ function resolve(value: unknown, st: ToolState): unknown {
   return value;
 }
 
-/** Python `_dec`: cleaned decimal string or null. */
+/** `_dec`: cleaned decimal string or null. */
 function decStr(v: unknown): string | null {
   if (v === null || v === undefined) return null;
   const s = String(v).replace(/,/g, '').trim();

@@ -62,7 +62,7 @@ async function request<T>(method: string, path: string, opts: { body?: unknown; 
   try { json = text ? JSON.parse(text) : null; } catch { /* non-JSON */ }
   if (!res.ok) {
     const e = (json as { error?: { code?: string; message?: string; details?: unknown }; request_id?: string; detail?: unknown } | null) ?? {};
-    // Backend contract: {error:{code,message,details}, request_id}. FastAPI default {detail} tolerated.
+    // Backend contract: {error:{code,message,details}, request_id}. Plain {detail} (unknown-route 404) tolerated.
     const msg = e.error?.message ?? (typeof e.detail === "string" ? e.detail : res.statusText);
     throw new ApiError(res.status, e.error?.code ?? `HTTP_${res.status}`, msg, e.request_id, e.error?.details);
   }

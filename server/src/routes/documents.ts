@@ -1,4 +1,4 @@
-/** /documents — port of backend/app/routes/documents.py. JSON {filename,text,synthetic} or multipart `file` (.txt only; PDF is out of scope). */
+/** /documents. JSON {filename,text,synthetic} or multipart `file` (.txt only; PDF is out of scope). */
 import multipart from '@fastify/multipart';
 import type { FastifyPluginAsync } from 'fastify';
 import * as intake from '../agents/intake.js';

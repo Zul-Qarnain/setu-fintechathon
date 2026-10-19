@@ -15,7 +15,7 @@ describe('crypto', () => {
     expect(tok.startsWith('enc:v1:') && !tok.includes('6222')).toBe(true);
     expect(decrypt(tok, { aad: 'payee:1' })).toBe('6222000000004821');
   });
-  it('decrypts a Python-produced ciphertext (cross-language)', () => {
+  it('decrypts a recorded reference ciphertext (cross-implementation)', () => {
     expect(decrypt(V['ct'] as string, { aad: 'payee:1' })).toBe('6222000000004821');
   });
   it('fresh nonce per call', () => expect(encrypt('x')).not.toBe(encrypt('x')));
@@ -45,7 +45,7 @@ describe('tokenize', () => {
     expect(T.normalizeAccount('6222 0000-0000_4821')).toBe('6222000000004821');
     expect(T.normalizeAccount('６２２２００００')).toBe('62220000');
   });
-  it('tokens match Python values', () => {
+  it('tokens match reference values', () => {
     const a = T.accountToken('6222 0000 0000 4821');
     expect(a).toBe(V['acct_token']);
     expect(a).toBe(T.accountToken('6222000000004821'));

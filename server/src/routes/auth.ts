@@ -1,4 +1,4 @@
-/** /auth/* — port of backend/app/routes/auth.py */
+/** /auth/* */
 import type { FastifyPluginAsync } from 'fastify';
 import { appendAudit } from '../db/auditStore.js';
 import type { UserRow } from '../db/schema.js';

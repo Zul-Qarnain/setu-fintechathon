@@ -1,4 +1,4 @@
-/** Reply validator: reject any reply containing numbers absent from tool outputs (anti-hallucination). Port of agents/validator.py. */
+/** Reply validator: reject any reply containing numbers absent from tool outputs (anti-hallucination). */
 
 // digits not glued to letters (so "T3"/"ACCT_7f3a" are ignored); allows 1,234.56 and 1.5
 const NUM = /(?<![A-Za-z_\d.])\d[\d,]*(?:\.\d+)?/g;

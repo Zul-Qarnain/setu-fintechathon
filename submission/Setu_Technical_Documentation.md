@@ -35,8 +35,8 @@ What is built:
 | Policy engine | Pure function `policy.decide(action, ctx)` | `server/src/domain/policy.ts` |
 | Sandbox bank | Toy ledger with idempotency keys and deterministic failure modes | `server/src/sandboxBank/` |
 | Web app | Next.js, bilingual (English / 简体中文) via next-intl | `web/` |
+| Seed-data generator | Deterministic TypeScript generator for all SYNTHETIC data | `server/scripts/generate_data.ts` |
 | Evaluation kit | 25 golden tasks, 17 attack scenarios, 33-notice corpus | `server/eval/`, `server/src/evalkit/`, `data/` |
-| Reference implementation | Original Python/FastAPI backend, source of differential test vectors | `legacy/backend-py/` |
 
 ---
 
@@ -260,7 +260,7 @@ Method: data-flow decomposition → STRIDE per trust boundary → mapping to the
 ## 6. Deployment
 
 ### 6.1 Prerequisites
-Node 20+ (`.nvmrc`: 20). No Python, API keys or network access are needed. Every `make` target is a thin wrapper over `cd server && npm run …`.
+Node 20+ (`.nvmrc`: 20). No API keys or network access are needed. Every `make` target is a thin wrapper over `cd server && npm run …`.
 
 ### 6.2 Native (reference path used to produce the evidence)
 ```bash
@@ -325,11 +325,11 @@ With `DEMO_MODE=true`, `GET /demo/totp/{email}` returns the current 6-digit code
 ### 7.1 Commands
 ```bash
 make lint        # eslint + tsc --noEmit
-make test        # vitest: unit, Python-pinned vectors, API, golden, security, parity
+make test        # vitest: unit, pinned reference vectors, API, golden, security, parity
 make demo        # scripted end-to-end scenario on an in-memory DB -> evidence/sandbox_logs.jsonl, audit_export.json, demo_summary.json
 make evidence    # tests + demo + npm run evidence -> evidence/eval_report.md, security_report.md
-make contract    # live status+shape diff of TS vs legacy Python backend (both on fresh DBs)
-make seed-data   # regenerate data/ deterministically
+make contract    # live status+shape diff, BASELINE vs CANDIDATE backend (both on fresh DBs)
+make seed-data   # regenerate data/ deterministically (server/scripts/generate_data.ts)
 ```
 CI: `.github/workflows/ci-ts.yml` runs `npm ci`, lint, typecheck, tests and build on Node 20 for every change under `server/`.
 
@@ -338,7 +338,7 @@ CI: `.github/workflows/ci-ts.yml` runs `npm ci`, lint, typecheck, tests and buil
 - `api/` — `fastify.inject()` tests for auth & payees, documents, chat, actions, audit/evidence/sandbox, seed.
 - `golden/` — the 25 golden tasks from `server/eval/tasks.yaml`.
 - `security/` — the 17 attack scenarios and ReDoS tests.
-- `parity/` — replay of the Python demo transcript.
+- `parity/` — replay of the recorded reference demo transcript.
 
 Latest run (`npx vitest run`, 19 Oct 2026): **24 test files passed, 524 tests passed.**
 
@@ -389,7 +389,7 @@ Screenshots: `web/screenshots/en/` and `web/screenshots/zh-CN/` (login, dashboar
 server/src/        Fastify app: routes/, domain/ (policy, fx, costs, budget, crypto, tokenize, audit), agents/, sandboxBank/, evalkit/ (golden + attacks)
 server/tests/      unit/, api/, golden/, security/, parity/ (vitest)
 server/eval/       golden tasks (tasks.yaml)
-legacy/backend-py/ original Python implementation (reference + differential vectors)
+server/scripts/    seed-data generator (generate_data.ts), live contract diff
 data/              SYNTHETIC personas, 33 fee notices (EN/ZH/mixed, 13 attack/negative), 12 SMS, FX SAMPLE rates, channel costs
 docs/              API, ARCHITECTURE, ARCHITECTURE_TS, DATA_FLOW, THREAT_MODEL, SECURITY_SELF_ASSESSMENT, GLOSSARY_EN_ZH, MOBILE_PLAN
 evidence/          generated reports and logs

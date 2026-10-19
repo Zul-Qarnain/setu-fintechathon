@@ -1,4 +1,4 @@
-/** Executor: performs side effects ONLY for Decision.ALLOW. The LLM never reaches this. Port of backend/app/agents/executor.py. */
+/** Executor: performs side effects ONLY for Decision.ALLOW. The LLM never reaches this. */
 import type { AppContext } from '../app.js';
 import { appendAudit } from '../db/auditStore.js';
 import type { ActionRow, ObligationRow, PayeeRow } from '../db/schema.js';

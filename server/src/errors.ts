@@ -1,7 +1,7 @@
 import type { FastifyError, FastifyReply, FastifyRequest } from 'fastify';
 import { ZodError } from 'zod';
 
-/** Same envelope as the Python backend: {error:{code,message,details},request_id}. */
+/** Error envelope (API contract): {error:{code,message,details},request_id}. */
 export class AppError extends Error {
   constructor(
     public readonly code: string,

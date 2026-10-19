@@ -1,4 +1,4 @@
-/** AES-256-GCM field encryption (PII columns, TOTP secrets). Port of backend/app/domain/crypto.py. Format: enc:v1:<b64(nonce||ct||tag)> */
+/** AES-256-GCM field encryption (PII columns, TOTP secrets). Format: enc:v1:<b64(nonce||ct||tag)> */
 import {
   createCipheriv,
   createDecipheriv,

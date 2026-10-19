@@ -1,4 +1,4 @@
-/** Action lifecycle: propose -> policy -> approvals (TOTP, family approver) -> execute. Port of backend/app/actions_service.py. */
+/** Action lifecycle: propose -> policy -> approvals (TOTP, family approver) -> execute. */
 import { randomBytes } from 'node:crypto';
 import type { AppContext } from './app.js';
 import { execute } from './agents/executor.js';

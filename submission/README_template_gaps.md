@@ -70,7 +70,7 @@ flowchart LR
 ```markdown
 ## Environment and dependencies
 - **Operating system:** [STATE THE OS(ES) YOU TESTED ON — not recorded in the repo]
-- **Runtime:** Node 20+ (`.nvmrc` = 20); no Python, no API keys, no network needed
+- **Runtime:** Node 20+ (`.nvmrc` = 20) only; no API keys, no network needed
 - **Server:** TypeScript (strict), Fastify, Zod, better-sqlite3 12.4.1, decimal.js, jose, @node-rs/argon2, pino; tests: vitest
 - **Web:** Next.js 16.4.2, React 19, next-intl 4; tests: vitest, Playwright
 - **Environment variables:** copy `.env.example` to `.env`; `JWT_SECRET`, `HMAC_KEY`, `AES_KEY_B64` ship with public dev defaults and must be replaced outside a demo. Never commit real secrets.

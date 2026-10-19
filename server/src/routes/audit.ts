@@ -1,4 +1,4 @@
-/** GET /audit — port of backend/app/routes/audit.py */
+/** GET /audit */
 import type { FastifyPluginAsync } from 'fastify';
 import type { AppContext } from '../app.js';
 import { verifyAudit } from '../db/auditStore.js';

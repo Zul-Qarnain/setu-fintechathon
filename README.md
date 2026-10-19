@@ -45,7 +45,7 @@ flowchart LR
 
 ## Environment and dependencies
 - **Operating system:** Linux x86_64 (Debian-based, kernel 6.12; tested 19 Oct 2026 with Node 20.19.2 / npm 11.21). macOS and WSL2 are expected to work but were not tested.
-- **Runtime:** Node 20+ (`.nvmrc` = 20); no Python, no API keys, no network needed
+- **Runtime:** Node 20+ (`.nvmrc` = 20) only; no API keys, no network needed
 - **Server:** TypeScript (strict), Fastify, Zod, better-sqlite3 12.4.1, decimal.js, jose, @node-rs/argon2, pino; tests: vitest
 - **Web:** Next.js 16.4.2, React 19, next-intl 4; tests: vitest, Playwright
 - **Environment variables:** copy `.env.example` to `.env`; `JWT_SECRET`, `HMAC_KEY`, `AES_KEY_B64` ship with public dev defaults and must be replaced outside a demo. Never commit real secrets.
@@ -62,13 +62,13 @@ Sign in as `aisha@demo.setu.test` / `demo-password-123` (SYNTHETIC).
 
 ## Run it (one command)
 
-> **Backend rewrite.** The backend is now **TypeScript (Node 20 + Fastify)** in `server/`, with the same HTTP contract as before (`docs/API.md`; `web/` is unchanged). The original Python/FastAPI implementation is kept in `legacy/backend-py/` for reference and as the source of the differential test vectors. See [ARCHITECTURE_TS](docs/ARCHITECTURE_TS.md).
+> **Backend.** The backend is **TypeScript (Node 20 + Fastify)** in `server/`; the HTTP contract is in `docs/API.md`. See [ARCHITECTURE_TS](docs/ARCHITECTURE_TS.md).
 
-Prerequisites: Node 20+ (no Python, no API keys, no network needed). No `make`? Every target is a thin wrapper over `cd server && npm run …`.
+Prerequisites: Node 20+ only (no API keys, no network needed). No `make`? Every target is a thin wrapper over `cd server && npm run …`.
 
 ```bash
 make install && make demo        # seeds synthetic personas, runs the scripted end-to-end scenario, writes evidence/
-make test                        # unit, differential-vs-Python, API, golden (25 tasks), attack scenarios
+make test                        # unit, recorded reference vectors, API, golden (25 tasks), attack scenarios
 make api                         # backend on http://localhost:8000 (DEMO_MODE=true for the web demo helpers)
 make web                         # Next.js UI on http://localhost:3000
 ```
@@ -85,10 +85,10 @@ docker compose up --build        # api :8000, web :3000, offline, no keys
 |---|---|
 | `make install` | `npm ci` (server) and `npm install` (web) |
 | `make lint` | eslint + `tsc --noEmit` |
-| `make test` | vitest (unit + Python-pinned vectors + API + golden + security) |
+| `make test` | vitest (unit + pinned reference vectors + API + golden + security) |
 | `make demo` | `npm run demo`: scripted scenario on an in-memory DB → `evidence/sandbox_logs.jsonl`, `audit_export.json`, `demo_summary.json` (prints the audit `head_hash`) |
 | `make evidence` | tests + demo + `npm run evidence` (golden tasks + notice corpus → `eval_report.md`; attacks → `security_report.md`) |
-| `make contract` | live status+shape diff of TS vs the legacy Python backend (start both on fresh DBs) |
+| `make contract` | live status+shape diff between two running backends (BASELINE vs CANDIDATE, both on fresh DBs) |
 | `make seed-data` | regenerates `data/` (personas, 33 notices, 12 messages, FX sample, channel costs) deterministically |
 
 ## Demo personas (all SYNTHETIC, password `demo-password-123`)
@@ -136,7 +136,7 @@ Test suites: `server/tests/unit`, `api`, `golden`, `security`, `parity`.
 server/src/        Fastify app: routes/, domain/ (policy, fx, costs, crypto, audit), agents/, sandboxBank/, evalkit/ (golden + attacks)
 server/tests/      unit/, api/, golden/, security/, parity/ (vitest)
 server/eval/       golden tasks (tasks.yaml)
-legacy/backend-py/ the original Python implementation (reference + differential vectors)
+server/scripts/    seed-data generator (generate_data.ts), live contract diff
 data/               SYNTHETIC personas, 33 fee notices (EN/ZH/mixed, 13 attack/negative), 12 SMS, FX SAMPLE rates, channel costs
 docs/               API.md, ARCHITECTURE.md, DATA_FLOW.md, THREAT_MODEL.md, SECURITY_SELF_ASSESSMENT.md, GLOSSARY_EN_ZH.md
 evidence/           generated reports and logs

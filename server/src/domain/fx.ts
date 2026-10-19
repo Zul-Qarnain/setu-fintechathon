@@ -1,4 +1,4 @@
-/** FX rates: offline SAMPLE fixture (default) + optional live adapter. Port of backend/app/domain/fx.py. */
+/** FX rates: offline SAMPLE fixture (default) + optional live adapter. */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { Decimal, quantizeMoney, quantizeRate } from './money.js';

@@ -1,4 +1,4 @@
-/** Business logic shared by routes. Port of backend/app/services.py. Timestamps are TEXT 'YYYY-MM-DDTHH:MM:SS.ffffffZ'. */
+/** Business logic shared by routes. Timestamps are TEXT 'YYYY-MM-DDTHH:MM:SS.ffffffZ'. */
 import type { AppContext } from './app.js';
 import { appendAudit } from './db/auditStore.js';
 import type { ObligationRow, PayeeRow, UserRow } from './db/schema.js';

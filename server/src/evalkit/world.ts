@@ -1,4 +1,4 @@
-/** Fresh in-memory test/eval world: 1 approver, 2 students (one linked), 1 admin, verified payee, 2 obligations. Port of backend/eval/world.py. */
+/** Fresh in-memory test/eval world: 1 approver, 2 students (one linked), 1 admin, verified payee, 2 obligations. */
 import type { FastifyInstance } from 'fastify';
 import { buildApp } from '../app.js';
 import { loadConfig } from '../config.js';

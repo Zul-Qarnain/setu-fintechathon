@@ -1,4 +1,4 @@
-/** Guardian + parser evaluation on the SYNTHETIC notice corpus (data/fee_notices/manifest.json). Port of backend/eval/run_corpus.py. */
+/** Guardian + parser evaluation on the SYNTHETIC notice corpus (data/fee_notices/manifest.json). */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { buildApp } from '../app.js';

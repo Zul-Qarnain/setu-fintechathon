@@ -11,7 +11,7 @@ import {
   type AuditRowLike,
 } from '../../src/domain/audit.js';
 
-// Vectors produced by the real Python implementation (backend/app/domain/audit.py).
+// Recorded reference vectors (frozen cross-implementation test data).
 const V = JSON.parse(
   readFileSync(new URL('../fixtures/audit_vectors.json', import.meta.url), 'utf8')
 ) as {
@@ -21,7 +21,7 @@ const V = JSON.parse(
   rows: AuditRowLike[];
 };
 
-describe('canonicalJSON / payloadHash match Python', () => {
+describe('canonicalJSON / payloadHash match reference vectors', () => {
   V.payloads.forEach((p, i) => {
     it(`payload ${i}`, () => {
       expect(canonicalJSON(p)).toBe(V.canon[i]);
@@ -35,12 +35,12 @@ describe('canonicalJSON / payloadHash match Python', () => {
 });
 
 describe('hash chain', () => {
-  it('computeHash matches Python for all rows', () => {
+  it('computeHash matches reference vectors for all rows', () => {
     for (const r of V.rows)
       expect(computeHash(r.seq, r.ts, r.actor, r.event, r.payload_hash, r.prev_hash)).toBe(r.hash);
     expect(V.rows[0]?.prev_hash).toBe(GENESIS_HASH);
   });
-  it('verifies the Python-produced chain', () => {
+  it('verifies the recorded reference chain', () => {
     expect(verifyChain(V.rows)).toEqual({
       ok: true,
       checked: 4,
